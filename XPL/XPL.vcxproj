@@ -118,7 +118,7 @@
     <ClCompile Include="xpl.tab.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="y.tab.h" />
+    <ClInclude Include="xpl.tab.h" />
   </ItemGroup>
   <ItemGroup>
     <Bison Include="xpl.y" />

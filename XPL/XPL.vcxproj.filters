@@ -26,7 +26,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="y.tab.h">
+    <ClInclude Include="xpl.tab.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

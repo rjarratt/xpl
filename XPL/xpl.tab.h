@@ -46,12 +46,32 @@ extern int yydebug;
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     NL = 258,
-     SEGMENT = 259,
-     ENDOFSEGMENT = 260,
-     BEGIN = 261,
-     END = 262,
-     DECIMAL = 263
+     T_NL = 258,
+     T_SEGMENT = 259,
+     T_ENDOFSEGMENT = 260,
+     T_BEGIN = 261,
+     T_END = 262,
+     T_COMMENT = 263,
+     T_NAME = 264,
+     T_DECIMAL = 265,
+     T_LABEL = 266,
+     T_B = 267,
+     T_LOAD = 268,
+     T_LOAD_DEC = 269,
+     T_STACK_LOAD = 270,
+     T_STORE = 271,
+     T_ADD = 272,
+     T_SUB = 273,
+     T_MUL = 274,
+     T_NEQV = 275,
+     T_OR = 276,
+     T_AND = 277,
+     T_SHIFT = 278,
+     T_RSUB = 279,
+     T_COMP = 280,
+     T_CINC = 281,
+     T_B_REL = 282,
+     T_0_REL = 283
    };
 #endif
 
