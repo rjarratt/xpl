@@ -1,6 +1,7 @@
 %option noyywrap
 
 %{
+#include "xpl.h"
 #include "xpl.tab.h"
 
 %}
@@ -15,6 +16,10 @@ BEGIN              { return T_BEGIN; }
 END                { return T_END; }
 
 B                  { return T_B; }
+NB                 { return T_NB; }
+SF                 { return T_SF; }
+=NB\+              { return T_LOAD_NB_ADD; }
+=SF\+              { return T_LOAD_SF_ADD; }
 =                  { return T_LOAD; }
 ='                 { return T_LOAD_DEC; }
 \*=                { return T_STACK_LOAD; }
@@ -35,7 +40,7 @@ CINC               { return T_CINC; }
 
 {NAME}\:           { return T_LABEL; }
 {NAME}             { return T_NAME; }
-{DECIMAL}          { return T_DECIMAL; }
+{DECIMAL}          { yylval.uval = atoi(yytext); return T_DECIMAL; }
 \:\:.*\n           { return T_COMMENT; }
 \n                 { return T_NL;}
 . ;

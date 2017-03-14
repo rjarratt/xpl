@@ -56,28 +56,43 @@ extern int yydebug;
      T_DECIMAL = 265,
      T_LABEL = 266,
      T_B = 267,
-     T_LOAD = 268,
-     T_LOAD_DEC = 269,
-     T_STACK_LOAD = 270,
-     T_STORE = 271,
-     T_ADD = 272,
-     T_SUB = 273,
-     T_MUL = 274,
-     T_NEQV = 275,
-     T_OR = 276,
-     T_AND = 277,
-     T_SHIFT = 278,
-     T_RSUB = 279,
-     T_COMP = 280,
-     T_CINC = 281,
-     T_B_REL = 282,
-     T_0_REL = 283
+     T_NB = 268,
+     T_SF = 269,
+     T_LOAD_NB_ADD = 270,
+     T_LOAD_SF_ADD = 271,
+     T_LOAD = 272,
+     T_LOAD_DEC = 273,
+     T_STACK_LOAD = 274,
+     T_STORE = 275,
+     T_ADD = 276,
+     T_SUB = 277,
+     T_MUL = 278,
+     T_NEQV = 279,
+     T_OR = 280,
+     T_AND = 281,
+     T_SHIFT = 282,
+     T_RSUB = 283,
+     T_COMP = 284,
+     T_CINC = 285,
+     T_B_REL = 286,
+     T_0_REL = 287
    };
 #endif
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+typedef union YYSTYPE
+{
+/* Line 2058 of yacc.c  */
+#line 53 "xpl.y"
+
+    t_uint64 uval;
+	char * sval;
+
+
+/* Line 2058 of yacc.c  */
+#line 95 "xpl.tab.h"
+} YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

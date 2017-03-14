@@ -29,6 +29,9 @@
     <ClInclude Include="xpl.tab.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="xpl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Bison Include="xpl.y">
