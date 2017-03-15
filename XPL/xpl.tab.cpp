@@ -161,7 +161,7 @@ typedef union YYSTYPE
 #line 53 "xpl.y"
 
     t_uint64 uval;
-	char * sval;
+    char * sval;
 
 
 /* Line 387 of yacc.c  */
@@ -1823,11 +1823,26 @@ yyreturn:
 
 extern FILE *yyin;
 
-int main()
+int main(int argc, char *argv[])
 {
-    do
-	{
-	    yyparse();
-	}
-	while (!feof(yyin));
+    if (argc != 2)
+    {
+        fprintf(stderr, "usage: xpl [infile]\n");
+    }
+    else
+    {
+        yyin = fopen(argv[1], "r");
+        if (yyin == NULL)
+        {
+            fprintf(stderr, "cannot open %s\n", argv[1]);
+        }
+        else
+        {
+            do
+            {
+                yyparse();
+            }
+            while (!feof(yyin));
+        }
+    }
 }

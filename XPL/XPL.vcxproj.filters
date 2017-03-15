@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Flex Include="xpl.l" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="xpl.flex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -37,5 +34,10 @@
     <Bison Include="xpl.y">
       <Filter>Source Files</Filter>
     </Bison>
+  </ItemGroup>
+  <ItemGroup>
+    <Flex Include="xpl.l">
+      <Filter>Source Files</Filter>
+    </Flex>
   </ItemGroup>
 </Project>

@@ -87,7 +87,7 @@ typedef union YYSTYPE
 #line 53 "xpl.y"
 
     t_uint64 uval;
-	char * sval;
+    char * sval;
 
 
 /* Line 2058 of yacc.c  */
