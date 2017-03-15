@@ -1,12 +1,12 @@
 %token T_NL
+%token T_COLON
 %token T_SEGMENT
 %token T_ENDOFSEGMENT
 %token T_BEGIN
 %token T_END
 %token T_COMMENT
-%token T_NAME
-%token T_DECIMAL
-%token T_LABEL
+%token <nameval> T_NAME
+%token <numval> T_DECIMAL
 %token T_B
 %token T_NB
 %token T_SF
@@ -37,6 +37,7 @@ extern int yylex();
 extern char *yytext;
 extern int yylineno;
 
+unsigned int instructionNum;
 unsigned int cr;
 unsigned int f;
 unsigned int k;
@@ -51,8 +52,8 @@ void yyerror(char *msg)
 
 %union
 {
-    t_uint64 uval;
-    char * sval;
+    t_uint64 numval;
+    char * nameval;
 }
 
 %%
@@ -62,10 +63,12 @@ program:
 | program statement;
 
 statement:
-  T_LABEL
-| T_LABEL sep
-| instruction sep { printf("order cr=%u, f=%u, k=%d, n=%llu\n", cr, f, k, n); }
+  label
+| label sep
+| instruction sep { printf("order cr=%u, f=%u, k=%d, n=%llu\n", cr, f, k, n); instructionNum++; }
 | sep;
+
+label: T_NAME T_COLON { printf("Label %s at instruction %d\n", $1, instructionNum); }
 
 instruction:
   comput                    
@@ -111,7 +114,7 @@ simple_operand:
   T_NAME                    { k = 255; }
 | literal                   { k = 0; }
 
-literal: T_DECIMAL          { n = yylval.uval; }
+literal: T_DECIMAL          { n = yylval.numval; }
 
 sep: T_NL | T_COMMENT;
 %%

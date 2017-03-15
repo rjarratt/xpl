@@ -47,14 +47,14 @@ extern int yydebug;
       know about them.  */
    enum yytokentype {
      T_NL = 258,
-     T_SEGMENT = 259,
-     T_ENDOFSEGMENT = 260,
-     T_BEGIN = 261,
-     T_END = 262,
-     T_COMMENT = 263,
-     T_NAME = 264,
-     T_DECIMAL = 265,
-     T_LABEL = 266,
+     T_COLON = 259,
+     T_SEGMENT = 260,
+     T_ENDOFSEGMENT = 261,
+     T_BEGIN = 262,
+     T_END = 263,
+     T_COMMENT = 264,
+     T_NAME = 265,
+     T_DECIMAL = 266,
      T_B = 267,
      T_NB = 268,
      T_SF = 269,
@@ -84,10 +84,10 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 53 "xpl.y"
+#line 54 "xpl.y"
 
-    t_uint64 uval;
-    char * sval;
+    t_uint64 numval;
+    char * nameval;
 
 
 /* Line 2058 of yacc.c  */

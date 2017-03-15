@@ -15,6 +15,7 @@ DECIMAL [0-9]+
 BEGIN              { return T_BEGIN; }
 END                { return T_END; }
 
+:                  { return T_COLON; }
 B                  { return T_B; }
 NB                 { return T_NB; }
 SF                 { return T_SF; }
@@ -38,9 +39,8 @@ CINC               { return T_CINC; }
 \[B\]              { return T_B_REL; }
 \[0\]              { return T_0_REL; }
 
-{NAME}\:           { return T_LABEL; }
-{NAME}             { return T_NAME; }
-{DECIMAL}          { yylval.uval = atoi(yytext); return T_DECIMAL; }
+{NAME}             { yylval.nameval = _strdup(yytext); return T_NAME; }
+{DECIMAL}          { yylval.numval = atoi(yytext); return T_DECIMAL; }
 \:\:.*\n           { return T_COMMENT; }
 \n                 { return T_NL;}
 . ;
