@@ -75,8 +75,8 @@ CINC               { return T_CINC; }
 \[0\]              { return T_0_REL; }
 
 {NAME}             { yylval.nameval = _strdup(yytext); return T_NAME; }
-{INTEGER}          { yylval.numval = atoi(yytext); return T_INTEGER; }
-%[0-9A-F]+         { sscanf(yytext + 1, "%llX", &yylval.numval); return T_HEX_DIGITS; }
+{INTEGER}          { yylval.unsignedval = atoi(yytext); return T_INTEGER; }
+%[0-9A-F]+         { sscanf(yytext + 1, "%llX", &yylval.unsignedval); return T_HEX_DIGITS; }
 \:\:.*\n           { return T_COMMENT; }
 \n                 { yylineno++; return T_NL;}
 . ;

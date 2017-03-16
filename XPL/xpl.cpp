@@ -25,6 +25,7 @@ in this Software without prior written authorization from Robert Jarratt.
 */
 
 #include <stdio.h>
+#include <string.h>
 #include "xpl.h"
 
 extern char *yytext;
@@ -35,3 +36,10 @@ void yyerror(char *msg)
     fprintf(stderr, "%d: %s at '%s'\n", yylineno, msg, yytext);
 }
 
+void add_declaration(t_var_type var_type, t_var_relative_to relativeTo, t_var_spec *varspec)
+{
+    if (relativeTo == STK && varspec->displacement != 0)
+    {
+        yyerror("displacement must be zero");
+    }
+}

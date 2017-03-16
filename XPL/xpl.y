@@ -27,7 +27,7 @@ in this Software without prior written authorization from Robert Jarratt.
 %token T_NL
 %token T_COLON
 %token T_SLASH
-%token <numval> T_HEX_DIGITS
+%token <unsignedval> T_HEX_DIGITS
 %token T_SEGMENT
 %token T_ENDOFSEGMENT
 %token T_BEGIN
@@ -37,7 +37,7 @@ in this Software without prior written authorization from Robert Jarratt.
 %token T_V64
 %token T_VV
 %token <nameval> T_NAME
-%token <numval> T_INTEGER
+%token <unsignedval> T_INTEGER
 %token T_B
 %token T_NB
 %token T_XNB
@@ -63,6 +63,11 @@ in this Software without prior written authorization from Robert Jarratt.
 %token T_B_REL
 %token T_0_REL
 
+%type <signedval> displacement
+%type <vartype> var_type
+%type <varrelativeto> var_rel
+%type <varspec> var_spec
+
 %{
 #include <stdio.h>
 #include "xpl.h"
@@ -81,8 +86,12 @@ t_uint64 n;
 
 %union
 {
-    t_uint64 numval;
+    t_uint64 unsignedval;
+    t_int64 signedval;
     char * nameval;
+    t_var_type vartype;
+    t_var_relative_to varrelativeto;
+    t_var_spec varspec;
 }
 
 %%
@@ -103,11 +112,14 @@ label: T_NAME T_COLON { printf("Label %s at instruction %d\n", $1, instructionNu
 declarative:
   var_dec;
 
-var_dec: var_type T_SLASH var_rel var_spec;
-var_type: T_V32 | T_V64 | T_VV;
-var_rel: T_NB | T_XNB | T_SF | T_ZERO | T_STK;
-var_spec: T_NAME T_COLON displacement;
-displacement: T_MINUS T_INTEGER | T_INTEGER | T_HEX_DIGITS;
+var_dec: var_type T_SLASH var_rel var_spec { add_declaration($1, $3, &$4); }
+var_type: T_V32 { $$=V32; } | T_V64 { $$ = V64; } | T_VV { $$ = VV; }
+var_rel: T_NB { $$ = NB; } | T_XNB { $$ = XNB; } | T_SF { $$ =SF; } | T_ZERO { $$ = ZERO; } | T_STK { $$ = STK; }
+var_spec: T_NAME T_COLON displacement { $$.name = $1; $$.displacement = $3; }
+displacement:
+  T_MINUS T_INTEGER         { $$ = 0 - $2; }
+| T_INTEGER                 { $$ = $1; }
+| T_HEX_DIGITS              { $$ = $1; }
 
 instruction:
   comput                    
@@ -155,8 +167,8 @@ simple_operand:
 
 literal: decimal | T_HEX_DIGITS;
 decimal:
-  sign T_INTEGER            { n = yylval.numval; }
-| T_INTEGER                 { n = yylval.numval; }
+  sign T_INTEGER            { n = yylval.unsignedval; }
+| T_INTEGER                 { n = yylval.unsignedval; }
 sign: T_PLUS | T_MINUS;
 
 sep: T_NL | T_COMMENT;

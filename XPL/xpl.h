@@ -29,4 +29,27 @@ in this Software without prior written authorization from Robert Jarratt.
 typedef signed __int64          t_int64;
 typedef unsigned __int64        t_uint64;
 
+typedef enum VAR_TYPE
+{
+    V32,
+    V64,
+    VV
+} t_var_type;
+
+typedef enum VAR_RELATIVE_TO
+{
+    NB,
+    XNB,
+    SF,
+    ZERO,
+    STK
+} t_var_relative_to;
+
+typedef struct VAR_SPEC
+{
+    char *name;
+    t_int64 displacement;
+} t_var_spec;
+
 void yyerror(char *msg);
+void add_declaration(t_var_type var_type, t_var_relative_to relativeTo, t_var_spec *varspec);

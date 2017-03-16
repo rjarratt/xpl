@@ -1064,12 +1064,12 @@ YY_RULE_SETUP
 case 35:
 YY_RULE_SETUP
 #line 78 "xpl.l"
-{ yylval.numval = atoi(yytext); return T_INTEGER; }
+{ yylval.unsignedval = atoi(yytext); return T_INTEGER; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
 #line 79 "xpl.l"
-{ sscanf(yytext + 1, "%llX", &yylval.numval); return T_HEX_DIGITS; }
+{ sscanf(yytext + 1, "%llX", &yylval.unsignedval); return T_HEX_DIGITS; }
 	YY_BREAK
 case 37:
 /* rule 37 can match eol */
