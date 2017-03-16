@@ -28,8 +28,13 @@ in this Software without prior written authorization from Robert Jarratt.
 #include <string.h>
 #include "xpl.h"
 
+#define MAX_SYMBOLS 100
+
 extern char *yytext;
 extern int yylineno;
+
+static t_var_decl SymbolTable[MAX_SYMBOLS];
+static int numSymbols = 0;
 
 void yyerror(char *msg)
 {
@@ -41,5 +46,18 @@ void add_declaration(t_var_type var_type, t_var_relative_to relativeTo, t_var_sp
     if (relativeTo == STK && varspec->displacement != 0)
     {
         yyerror("displacement must be zero");
+    }
+
+    if (numSymbols >= MAX_SYMBOLS)
+    {
+        yyerror("symbol table full");
+    }
+    else
+    {
+        t_var_decl *entry = &SymbolTable[numSymbols++];
+        entry->vartype = var_type;
+        entry->relativeTo = relativeTo;
+        entry->varspec.name = _strdup(varspec->name);
+        entry->varspec.displacement = varspec->displacement;
     }
 }

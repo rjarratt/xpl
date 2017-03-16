@@ -51,5 +51,12 @@ typedef struct VAR_SPEC
     t_int64 displacement;
 } t_var_spec;
 
+typedef struct VAR_DECL
+{
+    t_var_type vartype;
+    t_var_relative_to relativeTo;
+    t_var_spec varspec;
+} t_var_decl;
+
 void yyerror(char *msg);
 void add_declaration(t_var_type var_type, t_var_relative_to relativeTo, t_var_spec *varspec);

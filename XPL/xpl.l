@@ -32,8 +32,6 @@ in this Software without prior written authorization from Robert Jarratt.
 
 %}
 
-%s REL
-
 NAME    [A-Z][A-Z0-9\.]*
 INTEGER [0-9]+
 
@@ -44,7 +42,7 @@ BEGIN              { return T_BEGIN; }
 END                { return T_END; }
 
 :                  { return T_COLON; }
-\/                 { BEGIN REL; return T_SLASH; }
+\/                 { return T_SLASH; }
 V32                { return T_V32; }
 V64                { return T_V64; }
 VV                 { return T_VV; }
@@ -52,7 +50,6 @@ B                  { return T_B; }
 NB                 { return T_NB; }
 XNB                { return T_XNB; }
 SF                 { return T_SF; }
-<REL>0             { BEGIN 0; return T_ZERO; }
 STK                { return T_STK; }
 =NB\+              { return T_LOAD_NB_ADD; }
 =SF\+              { return T_LOAD_SF_ADD; }
@@ -77,7 +74,7 @@ CINC               { return T_CINC; }
 {NAME}             { yylval.nameval = _strdup(yytext); return T_NAME; }
 {INTEGER}          { yylval.unsignedval = atoi(yytext); return T_INTEGER; }
 %[0-9A-F]+         { sscanf(yytext + 1, "%llX", &yylval.unsignedval); return T_HEX_DIGITS; }
-\:\:.*\n           { return T_COMMENT; }
+\:\:.*\n           {  yylineno++; return T_COMMENT; }
 \n                 { yylineno++; return T_NL;}
 . ;
 %%

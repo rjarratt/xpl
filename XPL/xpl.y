@@ -42,7 +42,6 @@ in this Software without prior written authorization from Robert Jarratt.
 %token T_NB
 %token T_XNB
 %token T_SF
-%token T_ZERO
 %token T_STK
 %token T_LOAD_NB_ADD
 %token T_LOAD_SF_ADD
@@ -114,7 +113,12 @@ declarative:
 
 var_dec: var_type T_SLASH var_rel var_spec { add_declaration($1, $3, &$4); }
 var_type: T_V32 { $$=V32; } | T_V64 { $$ = V64; } | T_VV { $$ = VV; }
-var_rel: T_NB { $$ = NB; } | T_XNB { $$ = XNB; } | T_SF { $$ =SF; } | T_ZERO { $$ = ZERO; } | T_STK { $$ = STK; }
+var_rel:
+  T_NB { $$ = NB; }
+| T_XNB { $$ = XNB; }
+| T_SF { $$ =SF; }
+| T_INTEGER { if ($1 != 0) yyerror("invalid relative-to"); $$ = ZERO; }
+| T_STK { $$ = STK; }
 var_spec: T_NAME T_COLON displacement { $$.name = $1; $$.displacement = $3; }
 displacement:
   T_MINUS T_INTEGER         { $$ = 0 - $2; }

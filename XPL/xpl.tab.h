@@ -64,26 +64,25 @@ extern int yydebug;
      T_NB = 273,
      T_XNB = 274,
      T_SF = 275,
-     T_ZERO = 276,
-     T_STK = 277,
-     T_LOAD_NB_ADD = 278,
-     T_LOAD_SF_ADD = 279,
-     T_LOAD = 280,
-     T_LOAD_DEC = 281,
-     T_STACK_LOAD = 282,
-     T_STORE = 283,
-     T_PLUS = 284,
-     T_MINUS = 285,
-     T_MUL = 286,
-     T_NEQV = 287,
-     T_OR = 288,
-     T_AND = 289,
-     T_SHIFT = 290,
-     T_RSUB = 291,
-     T_COMP = 292,
-     T_CINC = 293,
-     T_B_REL = 294,
-     T_0_REL = 295
+     T_STK = 276,
+     T_LOAD_NB_ADD = 277,
+     T_LOAD_SF_ADD = 278,
+     T_LOAD = 279,
+     T_LOAD_DEC = 280,
+     T_STACK_LOAD = 281,
+     T_STORE = 282,
+     T_PLUS = 283,
+     T_MINUS = 284,
+     T_MUL = 285,
+     T_NEQV = 286,
+     T_OR = 287,
+     T_AND = 288,
+     T_SHIFT = 289,
+     T_RSUB = 290,
+     T_COMP = 291,
+     T_CINC = 292,
+     T_B_REL = 293,
+     T_0_REL = 294
    };
 #endif
 
@@ -92,7 +91,7 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 88 "xpl.y"
+#line 87 "xpl.y"
 
     t_uint64 unsignedval;
     t_int64 signedval;
@@ -103,7 +102,7 @@ typedef union YYSTYPE
 
 
 /* Line 2058 of yacc.c  */
-#line 107 "xpl.tab.h"
+#line 106 "xpl.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
