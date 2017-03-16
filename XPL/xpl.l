@@ -78,7 +78,7 @@ CINC               { return T_CINC; }
 {INTEGER}          { yylval.numval = atoi(yytext); return T_INTEGER; }
 %[0-9A-F]+         { sscanf(yytext + 1, "%llX", &yylval.numval); return T_HEX_DIGITS; }
 \:\:.*\n           { return T_COMMENT; }
-\n                 { return T_NL;}
+\n                 { yylineno++; return T_NL;}
 . ;
 %%
 

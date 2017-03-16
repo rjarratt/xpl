@@ -78,14 +78,9 @@ unsigned int f;
 unsigned int k;
 t_uint64 n;
 
-void yyerror(char *msg)
-{
-    fprintf(stderr, "%d: %s at '%s'\n", yylineno, msg, yytext);
-}
-
 
 /* Line 371 of yacc.c  */
-#line 89 "xpl.tab.cpp"
+#line 84 "xpl.tab.cpp"
 
 # ifndef YY_NULL
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -167,14 +162,14 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 387 of yacc.c  */
-#line 88 "xpl.y"
+#line 83 "xpl.y"
 
     t_uint64 numval;
     char * nameval;
 
 
 /* Line 387 of yacc.c  */
-#line 178 "xpl.tab.cpp"
+#line 173 "xpl.tab.cpp"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -202,7 +197,7 @@ int yyparse ();
 /* Copy the second part of user declarations.  */
 
 /* Line 390 of yacc.c  */
-#line 206 "xpl.tab.cpp"
+#line 201 "xpl.tab.cpp"
 
 #ifdef short
 # undef short
@@ -513,13 +508,13 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    94,    94,    96,    97,   100,   101,   102,   103,   104,
-     106,   109,   111,   112,   112,   112,   113,   113,   113,   113,
-     113,   114,   115,   115,   115,   118,   119,   121,   122,   124,
-     125,   126,   127,   128,   129,   130,   131,   132,   133,   134,
-     135,   136,   137,   140,   141,   144,   145,   146,   149,   150,
-     153,   154,   155,   158,   159,   161,   161,   163,   164,   165,
-     165,   167,   167
+       0,    89,    89,    91,    92,    95,    96,    97,    98,    99,
+     101,   104,   106,   107,   107,   107,   108,   108,   108,   108,
+     108,   109,   110,   110,   110,   113,   114,   116,   117,   119,
+     120,   121,   122,   123,   124,   125,   126,   127,   128,   129,
+     130,   131,   132,   135,   136,   139,   140,   141,   144,   145,
+     148,   149,   150,   153,   154,   156,   156,   158,   159,   160,
+     160,   162,   162
 };
 #endif
 
@@ -1479,169 +1474,169 @@ yyreduce:
     {
         case 8:
 /* Line 1792 of yacc.c  */
-#line 103 "xpl.y"
+#line 98 "xpl.y"
     { printf("order cr=%u, f=%u, k=%d, n=%llu\n", cr, f, k, n); instructionNum++; }
     break;
 
   case 10:
 /* Line 1792 of yacc.c  */
-#line 106 "xpl.y"
+#line 101 "xpl.y"
     { printf("Label %s at instruction %d\n", (yyvsp[(1) - (2)].nameval), instructionNum); }
     break;
 
   case 26:
 /* Line 1792 of yacc.c  */
-#line 119 "xpl.y"
+#line 114 "xpl.y"
     { cr = 0; }
     break;
 
   case 27:
 /* Line 1792 of yacc.c  */
-#line 121 "xpl.y"
+#line 116 "xpl.y"
     { cr = 1; }
     break;
 
   case 29:
 /* Line 1792 of yacc.c  */
-#line 124 "xpl.y"
+#line 119 "xpl.y"
     { f = 0; }
     break;
 
   case 30:
 /* Line 1792 of yacc.c  */
-#line 125 "xpl.y"
+#line 120 "xpl.y"
     { f = 1; }
     break;
 
   case 31:
 /* Line 1792 of yacc.c  */
-#line 126 "xpl.y"
+#line 121 "xpl.y"
     { f = 2; }
     break;
 
   case 32:
 /* Line 1792 of yacc.c  */
-#line 127 "xpl.y"
+#line 122 "xpl.y"
     { f = 3; }
     break;
 
   case 33:
 /* Line 1792 of yacc.c  */
-#line 128 "xpl.y"
+#line 123 "xpl.y"
     { f = 4; }
     break;
 
   case 34:
 /* Line 1792 of yacc.c  */
-#line 129 "xpl.y"
+#line 124 "xpl.y"
     { f = 5; }
     break;
 
   case 35:
 /* Line 1792 of yacc.c  */
-#line 130 "xpl.y"
+#line 125 "xpl.y"
     { f = 6; }
     break;
 
   case 36:
 /* Line 1792 of yacc.c  */
-#line 131 "xpl.y"
+#line 126 "xpl.y"
     { f = 8; }
     break;
 
   case 37:
 /* Line 1792 of yacc.c  */
-#line 132 "xpl.y"
+#line 127 "xpl.y"
     { f = 9; }
     break;
 
   case 38:
 /* Line 1792 of yacc.c  */
-#line 133 "xpl.y"
+#line 128 "xpl.y"
     { f = 10; }
     break;
 
   case 39:
 /* Line 1792 of yacc.c  */
-#line 134 "xpl.y"
+#line 129 "xpl.y"
     { f = 11; }
     break;
 
   case 40:
 /* Line 1792 of yacc.c  */
-#line 135 "xpl.y"
+#line 130 "xpl.y"
     { f = 12; }
     break;
 
   case 41:
 /* Line 1792 of yacc.c  */
-#line 136 "xpl.y"
+#line 131 "xpl.y"
     { f = 13; }
     break;
 
   case 42:
 /* Line 1792 of yacc.c  */
-#line 137 "xpl.y"
+#line 132 "xpl.y"
     { f = 14; }
     break;
 
   case 45:
 /* Line 1792 of yacc.c  */
-#line 144 "xpl.y"
+#line 139 "xpl.y"
     { f = 24; }
     break;
 
   case 46:
 /* Line 1792 of yacc.c  */
-#line 145 "xpl.y"
+#line 140 "xpl.y"
     { f = 25; }
     break;
 
   case 47:
 /* Line 1792 of yacc.c  */
-#line 146 "xpl.y"
+#line 141 "xpl.y"
     { f = 26; }
     break;
 
   case 48:
 /* Line 1792 of yacc.c  */
-#line 149 "xpl.y"
+#line 144 "xpl.y"
     { f = 28; }
     break;
 
   case 49:
 /* Line 1792 of yacc.c  */
-#line 150 "xpl.y"
+#line 145 "xpl.y"
     { f = 29; }
     break;
 
   case 53:
 /* Line 1792 of yacc.c  */
-#line 158 "xpl.y"
+#line 153 "xpl.y"
     { k = 255; }
     break;
 
   case 54:
 /* Line 1792 of yacc.c  */
-#line 159 "xpl.y"
+#line 154 "xpl.y"
     { k = 0; }
     break;
 
   case 57:
 /* Line 1792 of yacc.c  */
-#line 163 "xpl.y"
+#line 158 "xpl.y"
     { n = yylval.numval; }
     break;
 
   case 58:
 /* Line 1792 of yacc.c  */
-#line 164 "xpl.y"
+#line 159 "xpl.y"
     { n = yylval.numval; }
     break;
 
 
 /* Line 1792 of yacc.c  */
-#line 1645 "xpl.tab.cpp"
+#line 1640 "xpl.tab.cpp"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1873,7 +1868,7 @@ yyreturn:
 
 
 /* Line 2055 of yacc.c  */
-#line 168 "xpl.y"
+#line 163 "xpl.y"
 
 
 extern FILE *yyin;

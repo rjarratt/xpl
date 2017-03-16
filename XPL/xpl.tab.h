@@ -92,7 +92,7 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 88 "xpl.y"
+#line 83 "xpl.y"
 
     t_uint64 numval;
     char * nameval;

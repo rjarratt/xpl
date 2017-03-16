@@ -1081,7 +1081,7 @@ case 38:
 /* rule 38 can match eol */
 YY_RULE_SETUP
 #line 81 "xpl.l"
-{ return T_NL;}
+{ yylineno++; return T_NL;}
 	YY_BREAK
 case 39:
 YY_RULE_SETUP

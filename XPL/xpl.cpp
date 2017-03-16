@@ -27,3 +27,11 @@ in this Software without prior written authorization from Robert Jarratt.
 #include <stdio.h>
 #include "xpl.h"
 
+extern char *yytext;
+extern int yylineno;
+
+void yyerror(char *msg)
+{
+    fprintf(stderr, "%d: %s at '%s'\n", yylineno, msg, yytext);
+}
+

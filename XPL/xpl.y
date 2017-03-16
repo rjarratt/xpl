@@ -77,11 +77,6 @@ unsigned int f;
 unsigned int k;
 t_uint64 n;
 
-void yyerror(char *msg)
-{
-    fprintf(stderr, "%d: %s at '%s'\n", yylineno, msg, yytext);
-}
-
 %}
 
 %union
