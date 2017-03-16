@@ -48,34 +48,42 @@ extern int yydebug;
    enum yytokentype {
      T_NL = 258,
      T_COLON = 259,
-     T_SEGMENT = 260,
-     T_ENDOFSEGMENT = 261,
-     T_BEGIN = 262,
-     T_END = 263,
-     T_COMMENT = 264,
-     T_NAME = 265,
-     T_DECIMAL = 266,
-     T_B = 267,
-     T_NB = 268,
-     T_SF = 269,
-     T_LOAD_NB_ADD = 270,
-     T_LOAD_SF_ADD = 271,
-     T_LOAD = 272,
-     T_LOAD_DEC = 273,
-     T_STACK_LOAD = 274,
-     T_STORE = 275,
-     T_ADD = 276,
-     T_SUB = 277,
-     T_MUL = 278,
-     T_NEQV = 279,
-     T_OR = 280,
-     T_AND = 281,
-     T_SHIFT = 282,
-     T_RSUB = 283,
-     T_COMP = 284,
-     T_CINC = 285,
-     T_B_REL = 286,
-     T_0_REL = 287
+     T_SLASH = 260,
+     T_HEX_DIGITS = 261,
+     T_SEGMENT = 262,
+     T_ENDOFSEGMENT = 263,
+     T_BEGIN = 264,
+     T_END = 265,
+     T_COMMENT = 266,
+     T_V32 = 267,
+     T_V64 = 268,
+     T_VV = 269,
+     T_NAME = 270,
+     T_INTEGER = 271,
+     T_B = 272,
+     T_NB = 273,
+     T_XNB = 274,
+     T_SF = 275,
+     T_ZERO = 276,
+     T_STK = 277,
+     T_LOAD_NB_ADD = 278,
+     T_LOAD_SF_ADD = 279,
+     T_LOAD = 280,
+     T_LOAD_DEC = 281,
+     T_STACK_LOAD = 282,
+     T_STORE = 283,
+     T_PLUS = 284,
+     T_MINUS = 285,
+     T_MUL = 286,
+     T_NEQV = 287,
+     T_OR = 288,
+     T_AND = 289,
+     T_SHIFT = 290,
+     T_RSUB = 291,
+     T_COMP = 292,
+     T_CINC = 293,
+     T_B_REL = 294,
+     T_0_REL = 295
    };
 #endif
 
@@ -84,14 +92,14 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 54 "xpl.y"
+#line 88 "xpl.y"
 
     t_uint64 numval;
     char * nameval;
 
 
 /* Line 2058 of yacc.c  */
-#line 95 "xpl.tab.h"
+#line 103 "xpl.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

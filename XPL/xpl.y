@@ -1,23 +1,57 @@
+/* xpl.y: MU5 XPL cross-compiler Yacc syntax analyzer
+
+Copyright (c) 2017, Robert Jarratt
+
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the "Software"),
+to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+ROBERT JARRATT BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+Except as contained in this notice, the name of Robert Jarratt shall not be
+used in advertising or otherwise to promote the sale, use or other dealings
+in this Software without prior written authorization from Robert Jarratt.
+*/
+
 %token T_NL
 %token T_COLON
+%token T_SLASH
+%token <numval> T_HEX_DIGITS
 %token T_SEGMENT
 %token T_ENDOFSEGMENT
 %token T_BEGIN
 %token T_END
 %token T_COMMENT
+%token T_V32
+%token T_V64
+%token T_VV
 %token <nameval> T_NAME
-%token <numval> T_DECIMAL
+%token <numval> T_INTEGER
 %token T_B
 %token T_NB
+%token T_XNB
 %token T_SF
+%token T_ZERO
+%token T_STK
 %token T_LOAD_NB_ADD
 %token T_LOAD_SF_ADD
 %token T_LOAD
 %token T_LOAD_DEC
 %token T_STACK_LOAD
 %token T_STORE
-%token T_ADD
-%token T_SUB
+%token T_PLUS
+%token T_MINUS
 %token T_MUL
 %token T_NEQV
 %token T_OR
@@ -57,7 +91,7 @@ void yyerror(char *msg)
 }
 
 %%
-program_of_a_segment: T_SEGMENT T_DECIMAL T_NL T_BEGIN  T_NL program T_END T_NL T_ENDOFSEGMENT T_NL
+program_of_a_segment: T_SEGMENT T_INTEGER T_NL T_BEGIN  T_NL program T_END T_NL T_ENDOFSEGMENT T_NL
 program:
   statement
 | program statement;
@@ -65,10 +99,20 @@ program:
 statement:
   label
 | label sep
+| declarative sep
 | instruction sep { printf("order cr=%u, f=%u, k=%d, n=%llu\n", cr, f, k, n); instructionNum++; }
 | sep;
 
 label: T_NAME T_COLON { printf("Label %s at instruction %d\n", $1, instructionNum); }
+
+declarative:
+  var_dec;
+
+var_dec: var_type T_SLASH var_rel var_spec;
+var_type: T_V32 | T_V64 | T_VV;
+var_rel: T_NB | T_XNB | T_SF | T_ZERO | T_STK;
+var_spec: T_NAME T_COLON displacement;
+displacement: T_MINUS T_INTEGER | T_INTEGER | T_HEX_DIGITS;
 
 instruction:
   comput                    
@@ -81,8 +125,8 @@ b_operator:
 | T_LOAD_DEC                { f = 1; }
 | T_STACK_LOAD              { f = 2; }
 | T_STORE	                { f = 3; }
-| T_ADD		                { f = 4; }
-| T_SUB		                { f = 5; }
+| T_PLUS	                { f = 4; }
+| T_MINUS	                { f = 5; }
 | T_MUL		                { f = 6; }
 | T_NEQV	                { f = 8; }
 | T_OR		                { f = 9; }
@@ -98,7 +142,7 @@ org:
 
 nb_ord:
   T_NB T_LOAD operand        { f = 24; }
-| T_NB T_ADD operand         { f = 25; }
+| T_NB T_PLUS operand        { f = 25; }
 | T_NB T_LOAD_SF_ADD operand { f = 26; }
 
 sf_ord:
@@ -114,7 +158,11 @@ simple_operand:
   T_NAME                    { k = 255; }
 | literal                   { k = 0; }
 
-literal: T_DECIMAL          { n = yylval.numval; }
+literal: decimal | T_HEX_DIGITS;
+decimal:
+  sign T_INTEGER            { n = yylval.numval; }
+| T_INTEGER                 { n = yylval.numval; }
+sign: T_PLUS | T_MINUS;
 
 sep: T_NL | T_COMMENT;
 %%

@@ -116,6 +116,7 @@
     <Flex Include="xpl.l" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="xpl.c" />
     <ClCompile Include="xpl.flex.cpp" />
     <ClCompile Include="xpl.tab.cpp" />
   </ItemGroup>

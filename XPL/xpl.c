@@ -1,4 +1,4 @@
-/* xpl.h: MU5 XPL cross-compiler definitions
+/* xpl.c: MU5 XPL cross-compiler routines
 
 Copyright (c) 2017, Robert Jarratt
 
@@ -24,9 +24,6 @@ used in advertising or otherwise to promote the sale, use or other dealings
 in this Software without prior written authorization from Robert Jarratt.
 */
 
-#pragma once
+#include <stdio.h>
+#include "xpl.h"
 
-typedef signed __int64          t_int64;
-typedef unsigned __int64        t_uint64;
-
-void yyerror(char *msg);
