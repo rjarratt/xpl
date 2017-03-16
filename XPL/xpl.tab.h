@@ -47,42 +47,43 @@ extern int yydebug;
       know about them.  */
    enum yytokentype {
      T_NL = 258,
-     T_COLON = 259,
-     T_SLASH = 260,
-     T_HEX_DIGITS = 261,
-     T_SEGMENT = 262,
-     T_ENDOFSEGMENT = 263,
-     T_BEGIN = 264,
-     T_END = 265,
-     T_COMMENT = 266,
-     T_V32 = 267,
-     T_V64 = 268,
-     T_VV = 269,
-     T_NAME = 270,
-     T_INTEGER = 271,
-     T_B = 272,
-     T_NB = 273,
-     T_XNB = 274,
-     T_SF = 275,
-     T_STK = 276,
-     T_LOAD_NB_ADD = 277,
-     T_LOAD_SF_ADD = 278,
-     T_LOAD = 279,
-     T_LOAD_DEC = 280,
-     T_STACK_LOAD = 281,
-     T_STORE = 282,
-     T_PLUS = 283,
-     T_MINUS = 284,
-     T_MUL = 285,
-     T_NEQV = 286,
-     T_OR = 287,
-     T_AND = 288,
-     T_SHIFT = 289,
-     T_RSUB = 290,
-     T_COMP = 291,
-     T_CINC = 292,
-     T_B_REL = 293,
-     T_0_REL = 294
+     T_COMMA = 259,
+     T_COLON = 260,
+     T_SLASH = 261,
+     T_HEX_DIGITS = 262,
+     T_SEGMENT = 263,
+     T_ENDOFSEGMENT = 264,
+     T_BEGIN = 265,
+     T_END = 266,
+     T_COMMENT = 267,
+     T_V32 = 268,
+     T_V64 = 269,
+     T_VV = 270,
+     T_NAME = 271,
+     T_INTEGER = 272,
+     T_B = 273,
+     T_NB = 274,
+     T_XNB = 275,
+     T_SF = 276,
+     T_STK = 277,
+     T_LOAD_NB_ADD = 278,
+     T_LOAD_SF_ADD = 279,
+     T_LOAD = 280,
+     T_LOAD_DEC = 281,
+     T_STACK_LOAD = 282,
+     T_STORE = 283,
+     T_PLUS = 284,
+     T_MINUS = 285,
+     T_MUL = 286,
+     T_NEQV = 287,
+     T_OR = 288,
+     T_AND = 289,
+     T_SHIFT = 290,
+     T_RSUB = 291,
+     T_COMP = 292,
+     T_CINC = 293,
+     T_B_REL = 294,
+     T_0_REL = 295
    };
 #endif
 
@@ -91,7 +92,7 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 87 "xpl.y"
+#line 89 "xpl.y"
 
     t_uint64 unsignedval;
     t_int64 signedval;
@@ -99,10 +100,11 @@ typedef union YYSTYPE
     t_var_type vartype;
     t_var_relative_to varrelativeto;
     t_var_spec varspec;
+    t_var_spec_list varspeclist;
 
 
 /* Line 2058 of yacc.c  */
-#line 106 "xpl.tab.h"
+#line 108 "xpl.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

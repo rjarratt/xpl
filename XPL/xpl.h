@@ -26,6 +26,9 @@ in this Software without prior written authorization from Robert Jarratt.
 
 #pragma once
 
+#define MAX_SYMBOLS 100
+#define MAX_VAR_SPECS 16
+
 typedef signed __int64          t_int64;
 typedef unsigned __int64        t_uint64;
 
@@ -51,6 +54,12 @@ typedef struct VAR_SPEC
     t_int64 displacement;
 } t_var_spec;
 
+typedef struct VAR_SPEC_LIST
+{
+    int length;
+    t_var_spec var_specs[MAX_VAR_SPECS];
+} t_var_spec_list;
+
 typedef struct VAR_DECL
 {
     t_var_type vartype;
@@ -59,4 +68,6 @@ typedef struct VAR_DECL
 } t_var_decl;
 
 void yyerror(char *msg);
-void add_declaration(t_var_type var_type, t_var_relative_to relativeTo, t_var_spec *varspec);
+void init_var_spec_list(t_var_spec_list *var_spec_list);
+void add_var_spec_list(t_var_spec_list *var_spec_list, t_var_spec *var_spec);
+void add_declaration(t_var_type var_type, t_var_relative_to relativeTo, t_var_spec_list *var_spec_list);

@@ -28,12 +28,10 @@ in this Software without prior written authorization from Robert Jarratt.
 #include <string.h>
 #include "xpl.h"
 
-#define MAX_SYMBOLS 100
-
 extern char *yytext;
 extern int yylineno;
 
-static t_var_decl SymbolTable[MAX_SYMBOLS];
+static t_var_decl symbol_table[MAX_SYMBOLS];
 static int numSymbols = 0;
 
 void yyerror(char *msg)
@@ -41,23 +39,46 @@ void yyerror(char *msg)
     fprintf(stderr, "%d: %s at '%s'\n", yylineno, msg, yytext);
 }
 
-void add_declaration(t_var_type var_type, t_var_relative_to relativeTo, t_var_spec *varspec)
+void init_var_spec_list(t_var_spec_list *var_spec_list)
 {
-    if (relativeTo == STK && varspec->displacement != 0)
-    {
-        yyerror("displacement must be zero");
-    }
+    var_spec_list->length = 0;
+}
 
-    if (numSymbols >= MAX_SYMBOLS)
+void add_var_spec_list(t_var_spec_list *var_spec_list, t_var_spec *var_spec)
+{
+    if (var_spec_list->length >= MAX_VAR_SPECS)
     {
-        yyerror("symbol table full");
+        yyerror("var spec list full");
     }
     else
     {
-        t_var_decl *entry = &SymbolTable[numSymbols++];
-        entry->vartype = var_type;
-        entry->relativeTo = relativeTo;
-        entry->varspec.name = _strdup(varspec->name);
-        entry->varspec.displacement = varspec->displacement;
+        memcpy(&var_spec_list->var_specs[var_spec_list->length++], var_spec, sizeof(t_var_spec));
+    }
+
+}
+
+void add_declaration(t_var_type var_type, t_var_relative_to relativeTo, t_var_spec_list *var_spec_list)
+{
+    int i;
+    for (i = 0; i < var_spec_list->length; i++)
+    {
+        t_var_spec *varspec = &var_spec_list->var_specs[i];
+        if (relativeTo == STK && varspec->displacement != 0)
+        {
+            yyerror("displacement must be zero");
+        }
+
+        if (numSymbols >= MAX_SYMBOLS)
+        {
+            yyerror("symbol table full");
+        }
+        else
+        {
+            t_var_decl *entry = &symbol_table[numSymbols++];
+            entry->vartype = var_type;
+            entry->relativeTo = relativeTo;
+            entry->varspec.name = _strdup(varspec->name);
+            entry->varspec.displacement = varspec->displacement;
+        }
     }
 }

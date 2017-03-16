@@ -25,6 +25,7 @@ in this Software without prior written authorization from Robert Jarratt.
 */
 
 %token T_NL
+%token T_COMMA
 %token T_COLON
 %token T_SLASH
 %token <unsignedval> T_HEX_DIGITS
@@ -66,6 +67,7 @@ in this Software without prior written authorization from Robert Jarratt.
 %type <vartype> var_type
 %type <varrelativeto> var_rel
 %type <varspec> var_spec
+%type <varspeclist> var_spec_list
 
 %{
 #include <stdio.h>
@@ -91,6 +93,7 @@ t_uint64 n;
     t_var_type vartype;
     t_var_relative_to varrelativeto;
     t_var_spec varspec;
+    t_var_spec_list varspeclist;
 }
 
 %%
@@ -111,7 +114,7 @@ label: T_NAME T_COLON { printf("Label %s at instruction %d\n", $1, instructionNu
 declarative:
   var_dec;
 
-var_dec: var_type T_SLASH var_rel var_spec { add_declaration($1, $3, &$4); }
+var_dec: var_type T_SLASH var_rel var_spec_list { add_declaration($1, $3, &$4); }
 var_type: T_V32 { $$=V32; } | T_V64 { $$ = V64; } | T_VV { $$ = VV; }
 var_rel:
   T_NB { $$ = NB; }
@@ -119,6 +122,7 @@ var_rel:
 | T_SF { $$ =SF; }
 | T_INTEGER { if ($1 != 0) yyerror("invalid relative-to"); $$ = ZERO; }
 | T_STK { $$ = STK; }
+var_spec_list: var_spec { init_var_spec_list(&$$); add_var_spec_list(&$$, &$1); } | var_spec_list T_COMMA var_spec  { add_var_spec_list(&$$, &$3); }
 var_spec: T_NAME T_COLON displacement { $$.name = $1; $$.displacement = $3; }
 displacement:
   T_MINUS T_INTEGER         { $$ = 0 - $2; }

@@ -41,6 +41,7 @@ INTEGER [0-9]+
 BEGIN              { return T_BEGIN; }
 END                { return T_END; }
 
+,                  { return T_COMMA; }
 :                  { return T_COLON; }
 \/                 { return T_SLASH; }
 V32                { return T_V32; }
