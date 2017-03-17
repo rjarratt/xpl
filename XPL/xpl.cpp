@@ -106,13 +106,40 @@ t_var_decl *find_declaration(char *name)
 
 void process_instruction(unsigned int cr, unsigned int f, t_operand *operand)
 {
-	printf("cr=%u f=%u ", cr, f);
-	if (operand->operand_type == OPERAND_LITERAL)
+	unsigned int instruction;
+
+	if (cr == 0)
 	{
-		printf("lit=0x%llX\n", operand->unsignedLiteral);
+		instruction = (cr & 7) << 13;
+		instruction |= (f & 0x3F) << 7;
 	}
 	else
 	{
-		printf("var=%s\n", operand->var_decl->varspec.name);
+		instruction = (cr & 7) << 13;
+		instruction |= (f & 0xF) << 9;
 	}
+
+	if (operand->operand_type == OPERAND_LITERAL)
+	{
+		if (operand->unsignedLiteral < 0x40)
+		{
+			instruction |= operand->unsignedLiteral;
+		}
+		else
+		{
+			yyerror("can't do big operands yet");
+		}
+	}
+
+	printf("cr=%u f=%u ", cr, f);
+	if (operand->operand_type == OPERAND_LITERAL)
+	{
+		printf("lit=0x%llX", operand->unsignedLiteral);
+	}
+	else
+	{
+		printf("var=%s", operand->var_decl->varspec.name);
+	}
+
+	printf(" %04X\n", instruction);
 }

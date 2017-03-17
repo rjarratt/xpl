@@ -160,17 +160,18 @@ b_operator:
 | T_CINC	                { $$ = 14; }
 
 org:
-  nb_ord operand             { process_instruction(1, $1, &$2); }
-| sf_ord operand             { process_instruction(1, $1, &$2); }
+  nb_ord operand             { process_instruction(0, $1, &$2); }
+| sf_ord operand             { process_instruction(0, $1, &$2); }
 
 nb_ord:
-  T_NB T_LOAD                { $$ = 24; }
-| T_NB T_PLUS                { $$ = 25; }
-| T_NB T_LOAD_SF_ADD         { $$ = 26; }
+  T_NB T_LOAD                { $$ = 28; }
+| T_NB T_LOAD_SF_ADD         { $$ = 29; }
+| T_NB T_PLUS                { $$ = 30; }
 
 sf_ord:
-  T_SF T_LOAD                { $$ = 28; }
-| T_SF T_LOAD_NB_ADD         { $$ = 29; }
+  T_SF T_LOAD                { $$ = 24; }
+| T_SF T_PLUS                { $$ = 25; }
+| T_SF T_LOAD_NB_ADD         { $$ = 26; }
 
 operand:
   simple_operand
