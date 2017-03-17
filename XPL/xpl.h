@@ -67,7 +67,32 @@ typedef struct VAR_DECL
     t_var_spec varspec;
 } t_var_decl;
 
+typedef enum
+{
+	OPERAND_LITERAL,
+	OPERAND_VARIABLE
+} t_operand_type;
+
+typedef struct OPERAND
+{
+	t_operand_type operand_type;
+	union
+	{
+		t_var_decl *var_decl;
+		t_uint64 unsignedLiteral;
+	};
+} t_operand;
+
+typedef struct INSTRUCTION
+{
+	unsigned int cr;
+	unsigned int f;
+	t_operand operand;
+} t_instruction;
+
 void yyerror(char *msg);
 void init_var_spec_list(t_var_spec_list *var_spec_list);
 void add_var_spec_list(t_var_spec_list *var_spec_list, t_var_spec *var_spec);
 void add_declaration(t_var_type var_type, t_var_relative_to relativeTo, t_var_spec_list *var_spec_list);
+t_var_decl *find_declaration(char *name);
+void process_instruction(unsigned int cr, unsigned int f, t_operand *operand);

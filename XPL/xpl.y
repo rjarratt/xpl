@@ -68,6 +68,15 @@ in this Software without prior written authorization from Robert Jarratt.
 %type <varrelativeto> var_rel
 %type <varspec> var_spec
 %type <varspeclist> var_spec_list
+%type <operand> operand
+%type <operand> simple_operand
+%type <unsignedval> literal
+%type <unsignedval> decimal
+%type <f> b_operator
+%type <f> b_ord
+%type <f> org
+%type <f> nb_ord
+%type <f> sf_ord
 
 %{
 #include <stdio.h>
@@ -78,15 +87,12 @@ extern char *yytext;
 extern int yylineno;
 
 unsigned int instructionNum;
-unsigned int cr;
-unsigned int f;
-unsigned int k;
-t_uint64 n;
 
 %}
 
 %union
 {
+    unsigned int f;
     t_uint64 unsignedval;
     t_int64 signedval;
     char * nameval;
@@ -94,6 +100,8 @@ t_uint64 n;
     t_var_relative_to varrelativeto;
     t_var_spec varspec;
     t_var_spec_list varspeclist;
+	t_operand operand;
+	t_instruction instruction;
 }
 
 %%
@@ -106,7 +114,7 @@ statement:
   label
 | label sep
 | declarative sep
-| instruction sep { printf("order cr=%u, f=%u, k=%d, n=%llu\n", cr, f, k, n); instructionNum++; }
+| instruction sep { instructionNum++; }
 | sep;
 
 label: T_NAME T_COLON { printf("Label %s at instruction %d\n", $1, instructionNum); }
@@ -130,53 +138,53 @@ displacement:
 | T_HEX_DIGITS              { $$ = $1; }
 
 instruction:
-  comput                    
-| org                       { cr = 0; }
+  comput
+| org
 
-comput: b_ord operand       { cr = 1; }
-b_ord: T_B b_operator;
+comput: b_ord operand       { process_instruction(1, $1, &$2); }
+b_ord: T_B b_operator       { $$ = $2; }
 b_operator:
-  T_LOAD                    { f = 0; }
-| T_LOAD_DEC                { f = 1; }
-| T_STACK_LOAD              { f = 2; }
-| T_STORE	                { f = 3; }
-| T_PLUS	                { f = 4; }
-| T_MINUS	                { f = 5; }
-| T_MUL		                { f = 6; }
-| T_NEQV	                { f = 8; }
-| T_OR		                { f = 9; }
-| T_SHIFT	                { f = 10; }
-| T_AND		                { f = 11; }
-| T_RSUB	                { f = 12; }
-| T_COMP	                { f = 13; }
-| T_CINC	                { f = 14; }
+  T_LOAD                    { $$ = 0; }
+| T_LOAD_DEC                { $$ = 1; }
+| T_STACK_LOAD              { $$ = 2; }
+| T_STORE	                { $$ = 3; }
+| T_PLUS	                { $$ = 4; }
+| T_MINUS	                { $$ = 5; }
+| T_MUL		                { $$ = 6; }
+| T_NEQV	                { $$ = 8; }
+| T_OR		                { $$ = 9; }
+| T_SHIFT	                { $$ = 10; }
+| T_AND		                { $$ = 11; }
+| T_RSUB	                { $$ = 12; }
+| T_COMP	                { $$ = 13; }
+| T_CINC	                { $$ = 14; }
 
 org:
-  nb_ord
-| sf_ord;
+  nb_ord operand             { process_instruction(1, $1, &$2); }
+| sf_ord operand             { process_instruction(1, $1, &$2); }
 
 nb_ord:
-  T_NB T_LOAD operand        { f = 24; }
-| T_NB T_PLUS operand        { f = 25; }
-| T_NB T_LOAD_SF_ADD operand { f = 26; }
+  T_NB T_LOAD                { $$ = 24; }
+| T_NB T_PLUS                { $$ = 25; }
+| T_NB T_LOAD_SF_ADD         { $$ = 26; }
 
 sf_ord:
-  T_SF T_LOAD operand        { f = 28; }
-| T_SF T_LOAD_NB_ADD operand { f = 29; }
+  T_SF T_LOAD                { $$ = 28; }
+| T_SF T_LOAD_NB_ADD         { $$ = 29; }
 
 operand:
   simple_operand
-| T_NAME T_B_REL
-| T_NAME T_0_REL;
+| T_NAME T_B_REL { $$.operand_type = OPERAND_VARIABLE; $$.var_decl = find_declaration($1); }
+| T_NAME T_0_REL { $$.operand_type = OPERAND_VARIABLE; $$.var_decl = find_declaration($1); }
 
 simple_operand:
-  T_NAME                    { k = 255; }
-| literal                   { k = 0; }
+  T_NAME                    { $$.operand_type = OPERAND_VARIABLE; $$.var_decl = find_declaration($1); }
+| literal                   { $$.operand_type = OPERAND_LITERAL; $$.unsignedLiteral = $1; }
 
 literal: decimal | T_HEX_DIGITS;
 decimal:
-  sign T_INTEGER            { n = yylval.unsignedval; }
-| T_INTEGER                 { n = yylval.unsignedval; }
+  sign T_INTEGER            { $$ = $2; /* TODO: process sign */ }
+| T_INTEGER;
 sign: T_PLUS | T_MINUS;
 
 sep: T_NL | T_COMMENT;

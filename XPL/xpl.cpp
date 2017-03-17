@@ -82,3 +82,37 @@ void add_declaration(t_var_type var_type, t_var_relative_to relativeTo, t_var_sp
         }
     }
 }
+
+t_var_decl *find_declaration(char *name)
+{
+	int i;
+	t_var_decl *result = NULL;
+	for (i = 0; i < numSymbols; i++)
+	{
+		if (strcmp(name, symbol_table[i].varspec.name) == 0)
+		{
+			result = &symbol_table[i];
+			break;
+		}
+	}
+
+	if (result == NULL)
+	{
+		yyerror("variable not declared");
+	}
+
+	return result;
+}
+
+void process_instruction(unsigned int cr, unsigned int f, t_operand *operand)
+{
+	printf("cr=%u f=%u ", cr, f);
+	if (operand->operand_type == OPERAND_LITERAL)
+	{
+		printf("lit=0x%llX\n", operand->unsignedLiteral);
+	}
+	else
+	{
+		printf("var=%s\n", operand->var_decl->varspec.name);
+	}
+}
