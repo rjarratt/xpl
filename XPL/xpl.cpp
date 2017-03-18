@@ -132,6 +132,11 @@ void process_instruction(unsigned int cr, unsigned int f, t_operand *operand)
 						k = 2;
 						n = operand->var_decl->varspec.displacement;
 					}
+					else if (operand->var_decl->relativeTo == STK)
+					{
+						k = 7;
+						n = 0x14;
+					}
 					else
 					{
 						yyerror("non-NB relative not handled yet");
@@ -144,6 +149,11 @@ void process_instruction(unsigned int cr, unsigned int f, t_operand *operand)
 					{
 						k = 3;
 						n = operand->var_decl->varspec.displacement;
+					}
+					else if (operand->var_decl->relativeTo == STK)
+					{
+						k = 7;
+						n = 0x1C;
 					}
 					else
 					{
