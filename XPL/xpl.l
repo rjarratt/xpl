@@ -47,6 +47,7 @@ END                { return T_END; }
 V32                { return T_V32; }
 V64                { return T_V64; }
 VV                 { return T_VV; }
+D                  { return T_D; }
 B                  { return T_B; }
 NB                 { return T_NB; }
 XNB                { return T_XNB; }
@@ -61,16 +62,19 @@ STK                { return T_STK; }
 \+                 { return T_PLUS; }
 \-                 { return T_MINUS; }
 \*                 { return T_MUL; }
-\-/=               { return T_NEQV; }
+\-\/=              { return T_NEQV; }
 V                  { return T_OR; }
 &                  { return T_AND; }
 \<=                { return T_SHIFT; }
 -:                 { return T_RSUB; }
 COMP               { return T_COMP; }
 CINC               { return T_CINC; }
+\/:                { return T_RDIV; }
 
 \[B\]              { return T_B_REL; }
 \[0\]              { return T_0_REL; }
+
+STACK              { return T_STACK; }
 
 {NAME}             { yylval.nameval = _strdup(yytext); return T_NAME; }
 {INTEGER}          { yylval.unsignedval = atoi(yytext); return T_INTEGER; }

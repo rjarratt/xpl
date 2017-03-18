@@ -34,6 +34,8 @@ extern int yylineno;
 static t_var_decl symbol_table[MAX_SYMBOLS];
 static int numSymbols = 0;
 
+static void emit(unsigned int word);
+
 void yyerror(char *msg)
 {
     fprintf(stderr, "%d: %s at '%s'\n", yylineno, msg, yytext);
@@ -59,6 +61,7 @@ void add_var_spec_list(t_var_spec_list *var_spec_list, t_var_spec *var_spec)
 
 void add_declaration(t_var_type var_type, t_var_relative_to relativeTo, t_var_spec_list *var_spec_list)
 {
+	/* TODO: check decl does not already exist, use a structure that is sorted */
     int i;
     for (i = 0; i < var_spec_list->length; i++)
     {
@@ -107,39 +110,94 @@ t_var_decl *find_declaration(char *name)
 void process_instruction(unsigned int cr, unsigned int f, t_operand *operand)
 {
 	unsigned int instruction;
+	unsigned int k = 0;
+	t_uint64 n = 0;
+
+	if (operand->operand_type == OPERAND_LITERAL)
+	{
+		k = 0;
+		n = operand->unsignedLiteral;
+	}
+	else
+	{
+		
+		if (operand->var_decl != NULL)
+		{
+			switch (operand->var_decl->vartype)
+			{
+				case V32:
+				{
+					if (operand->var_decl->relativeTo == NB)
+					{
+						k = 2;
+						n = operand->var_decl->varspec.displacement;
+					}
+					else
+					{
+						yyerror("non-NB relative not handled yet");
+					}
+					break;
+				}
+				case V64:
+				{
+					if (operand->var_decl->relativeTo == NB)
+					{
+						k = 3;
+						n = operand->var_decl->varspec.displacement;
+					}
+					else
+					{
+						yyerror("non-NB relative not handled yet");
+					}
+					break;
+				}
+				default:
+				{
+					yyerror("unhandled vartype");
+					break;
+				}
+			}
+		}
+
+	}
 
 	if (cr == 0)
 	{
 		instruction = (cr & 7) << 13;
 		instruction |= (f & 0x3F) << 7;
+		instruction |= (k & 1) << 6;
 	}
 	else
 	{
 		instruction = (cr & 7) << 13;
 		instruction |= (f & 0xF) << 9;
+		instruction |= (k & 7) << 6;
 	}
 
-	if (operand->operand_type == OPERAND_LITERAL)
-	{
-		if (operand->unsignedLiteral < 0x40)
-		{
-			instruction |= operand->unsignedLiteral;
-		}
-		else
-		{
-			yyerror("can't do big operands yet");
-		}
-	}
 
-	printf("cr=%u f=%u ", cr, f);
-	if (operand->operand_type == OPERAND_LITERAL)
+	if (n < 0x40)
 	{
-		printf("lit=0x%llX", operand->unsignedLiteral);
+		instruction |= n;
+		emit(instruction);
 	}
 	else
 	{
-		printf("var=%s", operand->var_decl->varspec.name);
+		yyerror("can't do big operands yet");
 	}
 
-	printf(" %04X\n", instruction);
+	//printf("cr=%u f=%u ", cr, f);
+	//if (operand->operand_type == OPERAND_LITERAL)
+	//{
+	//	printf("lit=0x%llX ", operand->unsignedLiteral);
+	//}
+	//else
+	//{
+	//	printf("var=%s ", operand->var_decl->varspec.name);
+	//}
+
+}
+
+static void emit(unsigned int word)
+{
+	printf("%04X\n", word);
 }

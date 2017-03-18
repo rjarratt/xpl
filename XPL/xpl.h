@@ -87,7 +87,6 @@ typedef struct INSTRUCTION
 {
 	unsigned int cr;
 	unsigned int f;
-	t_operand operand;
 } t_instruction;
 
 void yyerror(char *msg);

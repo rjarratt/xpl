@@ -39,6 +39,7 @@ in this Software without prior written authorization from Robert Jarratt.
 %token T_VV
 %token <nameval> T_NAME
 %token <unsignedval> T_INTEGER
+%token T_D
 %token T_B
 %token T_NB
 %token T_XNB
@@ -60,8 +61,10 @@ in this Software without prior written authorization from Robert Jarratt.
 %token T_RSUB
 %token T_COMP
 %token T_CINC
+%token T_RDIV
 %token T_B_REL
 %token T_0_REL
+%token T_STACK
 
 %type <signedval> displacement
 %type <vartype> var_type
@@ -74,9 +77,12 @@ in this Software without prior written authorization from Robert Jarratt.
 %type <unsignedval> decimal
 %type <f> b_operator
 %type <f> b_ord
+%type <f> sts
 %type <f> org
 %type <f> nb_ord
 %type <f> sf_ord
+%type <instruction> fn_1
+%type <instruction> fn_2
 
 %{
 #include <stdio.h>
@@ -139,6 +145,7 @@ displacement:
 
 instruction:
   comput
+| sts
 | org
 
 comput: b_ord operand       { process_instruction(1, $1, &$2); }
@@ -151,6 +158,7 @@ b_operator:
 | T_PLUS	                { $$ = 4; }
 | T_MINUS	                { $$ = 5; }
 | T_MUL		                { $$ = 6; }
+| T_SLASH                   { $$ = 7; }
 | T_NEQV	                { $$ = 8; }
 | T_OR		                { $$ = 9; }
 | T_SHIFT	                { $$ = 10; }
@@ -158,6 +166,7 @@ b_operator:
 | T_RSUB	                { $$ = 12; }
 | T_COMP	                { $$ = 13; }
 | T_CINC	                { $$ = 14; }
+| T_RDIV	                { $$ = 15; }
 
 org:
   nb_ord operand             { process_instruction(0, $1, &$2); }
@@ -172,6 +181,16 @@ sf_ord:
   T_SF T_LOAD                { $$ = 24; }
 | T_SF T_PLUS                { $$ = 25; }
 | T_SF T_LOAD_NB_ADD         { $$ = 26; }
+
+sts:
+  fn_1 operand               { process_instruction($1.cr, $1.f, &$2); }
+| fn_2 simple_operand        { process_instruction($1.cr, $1.f, &$2); }
+
+fn_1:
+  T_STACK                    { $$.cr = 2; $$.f = 2; }
+
+fn_2:
+  T_D T_STORE                { $$.cr = 3; $$.f = 3; }
 
 operand:
   simple_operand
