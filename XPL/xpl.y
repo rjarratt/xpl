@@ -40,6 +40,15 @@ in this Software without prior written authorization from Robert Jarratt.
 %token <nameval> T_NAME
 %token <unsignedval> T_INTEGER
 %token T_D
+%token T_DO
+%token T_XD
+%token T_XDO
+%token T_DB
+%token T_XDB
+%token T_MOD
+%token T_RMOD
+%token T_SMOD
+%token T_XMOD
 %token T_A
 %token T_AU
 %token T_B
@@ -234,10 +243,20 @@ sts:
 | fn_2 simple_operand        { process_instruction($1.cr, $1.f, &$2); }
 
 fn_1:
-  T_STACK                    { $$.cr = 2; $$.f = 2; }
+  T_XDO T_LOAD               { $$.cr = 2; $$.f = 0; }
+| T_XD T_LOAD                { $$.cr = 2; $$.f = 1; }
+| T_STACK                    { $$.cr = 2; $$.f = 2; }
+| T_DO T_LOAD                { $$.cr = 3; $$.f = 0; }
+| T_D T_LOAD                 { $$.cr = 3; $$.f = 1; }
+| T_D T_STACK_LOAD           { $$.cr = 3; $$.f = 2; }
 
 fn_2:
-  T_D T_STORE                { $$.cr = 3; $$.f = 3; }
+  T_XD T_STORE               { $$.cr = 2; $$.f = 3; }
+| T_XDB T_STORE              { $$.cr = 2; $$.f = 4; }
+| T_XMOD                     { $$.cr = 2; $$.f = 7; }
+| T_D T_STORE                { $$.cr = 3; $$.f = 3; }
+| T_DB T_STORE               { $$.cr = 3; $$.f = 4; }
+| T_MOD                      { $$.cr = 3; $$.f = 6; }
 
 operand:
   simple_operand

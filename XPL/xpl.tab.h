@@ -62,34 +62,43 @@ extern int yydebug;
      T_NAME = 271,
      T_INTEGER = 272,
      T_D = 273,
-     T_A = 274,
-     T_AU = 275,
-     T_B = 276,
-     T_NB = 277,
-     T_XNB = 278,
-     T_SF = 279,
-     T_STK = 280,
-     T_LOAD_NB_ADD = 281,
-     T_LOAD_SF_ADD = 282,
-     T_LOAD = 283,
-     T_LOAD_DEC = 284,
-     T_STACK_LOAD = 285,
-     T_STORE = 286,
-     T_PLUS = 287,
-     T_MINUS = 288,
-     T_MUL = 289,
-     T_NEQV = 290,
-     T_OR = 291,
-     T_AND = 292,
-     T_SHIFT = 293,
-     T_RSUB = 294,
-     T_COMP = 295,
-     T_CINC = 296,
-     T_CONV = 297,
-     T_RDIV = 298,
-     T_B_REL = 299,
-     T_0_REL = 300,
-     T_STACK = 301
+     T_DO = 274,
+     T_XD = 275,
+     T_XDO = 276,
+     T_DB = 277,
+     T_XDB = 278,
+     T_MOD = 279,
+     T_RMOD = 280,
+     T_SMOD = 281,
+     T_XMOD = 282,
+     T_A = 283,
+     T_AU = 284,
+     T_B = 285,
+     T_NB = 286,
+     T_XNB = 287,
+     T_SF = 288,
+     T_STK = 289,
+     T_LOAD_NB_ADD = 290,
+     T_LOAD_SF_ADD = 291,
+     T_LOAD = 292,
+     T_LOAD_DEC = 293,
+     T_STACK_LOAD = 294,
+     T_STORE = 295,
+     T_PLUS = 296,
+     T_MINUS = 297,
+     T_MUL = 298,
+     T_NEQV = 299,
+     T_OR = 300,
+     T_AND = 301,
+     T_SHIFT = 302,
+     T_RSUB = 303,
+     T_COMP = 304,
+     T_CINC = 305,
+     T_CONV = 306,
+     T_RDIV = 307,
+     T_B_REL = 308,
+     T_0_REL = 309,
+     T_STACK = 310
    };
 #endif
 
@@ -98,7 +107,7 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 107 "xpl.y"
+#line 116 "xpl.y"
 
     unsigned int f;
     t_uint64 unsignedval;
@@ -115,7 +124,7 @@ typedef union YYSTYPE
 
 
 /* Line 2058 of yacc.c  */
-#line 119 "xpl.tab.h"
+#line 128 "xpl.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

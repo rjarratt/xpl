@@ -51,6 +51,15 @@ AFL                { return T_A; }
 A                  { return T_A; }
 AU                 { return T_AU; }
 D                  { return T_D; }
+DO                 { return T_DO; }
+XD                 { return T_XD; }
+XDO                { return T_XDO; }
+DB                 { return T_DB; }
+XDB                { return T_XDB; }
+MOD                { return T_MOD; }
+RMOD               { return T_RMOD; }
+SMOD               { return T_SMOD; }
+XMOD               { return T_XMOD; }
 B                  { return T_B; }
 NB                 { return T_NB; }
 XNB                { return T_XNB; }
