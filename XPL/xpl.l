@@ -47,6 +47,9 @@ END                { return T_END; }
 V32                { return T_V32; }
 V64                { return T_V64; }
 VV                 { return T_VV; }
+AFL                { return T_A; }
+A                  { return T_A; }
+AU                 { return T_AU; }
 D                  { return T_D; }
 B                  { return T_B; }
 NB                 { return T_NB; }
@@ -69,6 +72,7 @@ V                  { return T_OR; }
 -:                 { return T_RSUB; }
 COMP               { return T_COMP; }
 CINC               { return T_CINC; }
+CONV               { return T_CONV; }
 \/:                { return T_RDIV; }
 
 \[B\]              { return T_B_REL; }
