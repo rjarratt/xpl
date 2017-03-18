@@ -34,6 +34,7 @@ extern int yylineno;
 static t_var_decl symbol_table[MAX_SYMBOLS];
 static int numSymbols = 0;
 
+static int is_extended_operand(unsigned int cr, unsigned int k);
 static void emit(unsigned int word);
 
 void yyerror(char *msg)
@@ -112,6 +113,9 @@ void process_instruction(unsigned int cr, unsigned int f, t_operand *operand)
 	unsigned int instruction;
 	unsigned int k = 0;
 	t_int64 n = 0;
+	unsigned int kp = 0;
+	unsigned int np = 0;
+	unsigned int offset = 0;
 
 	if (operand->operand_type == OPERAND_LITERAL)
 	{
@@ -134,8 +138,16 @@ void process_instruction(unsigned int cr, unsigned int f, t_operand *operand)
 					}
 					else if (operand->var_decl->relativeTo == STK)
 					{
-						k = 7;
-						n = 0x14;
+						k = (cr == 0) ? 1 : 7;
+						kp = 2;
+						np = 4;
+					}
+					else if (operand->var_decl->relativeTo == ZERO)
+					{
+						k = (cr == 0) ? 1 : 7;
+						kp = 2;
+						np = 1;
+						offset = operand->var_decl->varspec.displacement;
 					}
 					else
 					{
@@ -152,8 +164,16 @@ void process_instruction(unsigned int cr, unsigned int f, t_operand *operand)
 					}
 					else if (operand->var_decl->relativeTo == STK)
 					{
-						k = 7;
-						n = 0x1C;
+						k = (cr == 0) ? 1 : 7;
+						kp = 3;
+						np = 4;
+					}
+					else if (operand->var_decl->relativeTo == ZERO)
+					{
+						k = (cr == 0) ? 1 : 7;
+						kp = 3;
+						np = 1;
+						offset = operand->var_decl->varspec.displacement;
 					}
 					else
 					{
@@ -184,15 +204,25 @@ void process_instruction(unsigned int cr, unsigned int f, t_operand *operand)
 		instruction |= (k & 7) << 6;
 	}
 
-
-	if (n > -65 && n < 64)
+	if (is_extended_operand(cr, k))
+	{
+		instruction |= kp << 3;
+		instruction |= np;
+	}
+	else if (n > -65 && n < 64)
 	{
 		instruction |= (n & 0x3F);
-		emit(instruction);
 	}
 	else
 	{
 		yyerror("can't do big operands yet");
+	}
+
+	emit(instruction);
+
+	if (is_extended_operand(cr, k) && kp > 1 && np < 4)
+	{
+		emit(offset);
 	}
 
 	//printf("cr=%u f=%u ", cr, f);
@@ -205,6 +235,11 @@ void process_instruction(unsigned int cr, unsigned int f, t_operand *operand)
 	//	printf("var=%s ", operand->var_decl->varspec.name);
 	//}
 
+}
+
+static int is_extended_operand(unsigned int cr, unsigned int k)
+{
+	return (cr != 0 && k == 7) || (cr == 0 && k == 1);
 }
 
 static void emit(unsigned int word)
