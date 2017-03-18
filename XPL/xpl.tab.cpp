@@ -63,7 +63,7 @@
 
 /* Copy the first part of user declarations.  */
 /* Line 371 of yacc.c  */
-#line 87 "xpl.y"
+#line 88 "xpl.y"
 
 #include <stdio.h>
 #include "xpl.h"
@@ -161,7 +161,7 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 387 of yacc.c  */
-#line 100 "xpl.y"
+#line 101 "xpl.y"
 
     unsigned int f;
     t_uint64 unsignedval;
@@ -171,12 +171,14 @@ typedef union YYSTYPE
     t_var_relative_to varrelativeto;
     t_var_spec varspec;
     t_var_spec_list varspeclist;
+    t_int64 sign;
+	t_literal literal;
 	t_operand operand;
 	t_instruction instruction;
 
 
 /* Line 387 of yacc.c  */
-#line 180 "xpl.tab.cpp"
+#line 182 "xpl.tab.cpp"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -204,7 +206,7 @@ int yyparse ();
 /* Copy the second part of user declarations.  */
 
 /* Line 390 of yacc.c  */
-#line 208 "xpl.tab.cpp"
+#line 210 "xpl.tab.cpp"
 
 #ifdef short
 # undef short
@@ -519,14 +521,14 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,   114,   114,   116,   117,   120,   121,   122,   123,   124,
-     126,   129,   131,   132,   132,   132,   134,   135,   136,   137,
-     138,   139,   139,   140,   142,   143,   144,   147,   148,   149,
-     151,   152,   154,   155,   156,   157,   158,   159,   160,   161,
-     162,   163,   164,   165,   166,   167,   168,   169,   172,   173,
-     176,   177,   178,   181,   182,   183,   186,   187,   190,   193,
-     196,   197,   198,   201,   202,   204,   204,   206,   207,   208,
-     208,   210,   210
+       0,   117,   117,   119,   120,   123,   124,   125,   126,   127,
+     129,   132,   134,   135,   135,   135,   137,   138,   139,   140,
+     141,   142,   142,   143,   145,   146,   147,   150,   151,   152,
+     154,   155,   157,   158,   159,   160,   161,   162,   163,   164,
+     165,   166,   167,   168,   169,   170,   171,   172,   175,   176,
+     179,   180,   181,   184,   185,   186,   189,   190,   193,   196,
+     199,   200,   201,   204,   205,   208,   209,   212,   213,   215,
+     215,   217,   217
 };
 #endif
 
@@ -1495,319 +1497,343 @@ yyreduce:
     {
         case 8:
 /* Line 1792 of yacc.c  */
-#line 123 "xpl.y"
+#line 126 "xpl.y"
     { instructionNum++; }
     break;
 
   case 10:
 /* Line 1792 of yacc.c  */
-#line 126 "xpl.y"
+#line 129 "xpl.y"
     { printf("Label %s at instruction %d\n", (yyvsp[(1) - (2)].nameval), instructionNum); }
     break;
 
   case 12:
 /* Line 1792 of yacc.c  */
-#line 131 "xpl.y"
+#line 134 "xpl.y"
     { add_declaration((yyvsp[(1) - (4)].vartype), (yyvsp[(3) - (4)].varrelativeto), &(yyvsp[(4) - (4)].varspeclist)); }
     break;
 
   case 13:
 /* Line 1792 of yacc.c  */
-#line 132 "xpl.y"
+#line 135 "xpl.y"
     { (yyval.vartype)=V32; }
     break;
 
   case 14:
 /* Line 1792 of yacc.c  */
-#line 132 "xpl.y"
+#line 135 "xpl.y"
     { (yyval.vartype) = V64; }
     break;
 
   case 15:
 /* Line 1792 of yacc.c  */
-#line 132 "xpl.y"
+#line 135 "xpl.y"
     { (yyval.vartype) = VV; }
     break;
 
   case 16:
 /* Line 1792 of yacc.c  */
-#line 134 "xpl.y"
+#line 137 "xpl.y"
     { (yyval.varrelativeto) = NB; }
     break;
 
   case 17:
 /* Line 1792 of yacc.c  */
-#line 135 "xpl.y"
+#line 138 "xpl.y"
     { (yyval.varrelativeto) = XNB; }
     break;
 
   case 18:
 /* Line 1792 of yacc.c  */
-#line 136 "xpl.y"
+#line 139 "xpl.y"
     { (yyval.varrelativeto) =SF; }
     break;
 
   case 19:
 /* Line 1792 of yacc.c  */
-#line 137 "xpl.y"
+#line 140 "xpl.y"
     { if ((yyvsp[(1) - (1)].unsignedval) != 0) yyerror("invalid relative-to"); (yyval.varrelativeto) = ZERO; }
     break;
 
   case 20:
 /* Line 1792 of yacc.c  */
-#line 138 "xpl.y"
+#line 141 "xpl.y"
     { (yyval.varrelativeto) = STK; }
     break;
 
   case 21:
 /* Line 1792 of yacc.c  */
-#line 139 "xpl.y"
+#line 142 "xpl.y"
     { init_var_spec_list(&(yyval.varspeclist)); add_var_spec_list(&(yyval.varspeclist), &(yyvsp[(1) - (1)].varspec)); }
     break;
 
   case 22:
 /* Line 1792 of yacc.c  */
-#line 139 "xpl.y"
+#line 142 "xpl.y"
     { add_var_spec_list(&(yyval.varspeclist), &(yyvsp[(3) - (3)].varspec)); }
     break;
 
   case 23:
 /* Line 1792 of yacc.c  */
-#line 140 "xpl.y"
+#line 143 "xpl.y"
     { (yyval.varspec).name = (yyvsp[(1) - (3)].nameval); (yyval.varspec).displacement = (yyvsp[(3) - (3)].signedval); }
     break;
 
   case 24:
 /* Line 1792 of yacc.c  */
-#line 142 "xpl.y"
+#line 145 "xpl.y"
     { (yyval.signedval) = 0 - (yyvsp[(2) - (2)].unsignedval); }
     break;
 
   case 25:
 /* Line 1792 of yacc.c  */
-#line 143 "xpl.y"
+#line 146 "xpl.y"
     { (yyval.signedval) = (yyvsp[(1) - (1)].unsignedval); }
     break;
 
   case 26:
 /* Line 1792 of yacc.c  */
-#line 144 "xpl.y"
+#line 147 "xpl.y"
     { (yyval.signedval) = (yyvsp[(1) - (1)].unsignedval); }
     break;
 
   case 30:
 /* Line 1792 of yacc.c  */
-#line 151 "xpl.y"
+#line 154 "xpl.y"
     { process_instruction(1, (yyvsp[(1) - (2)].f), &(yyvsp[(2) - (2)].operand)); }
     break;
 
   case 31:
 /* Line 1792 of yacc.c  */
-#line 152 "xpl.y"
+#line 155 "xpl.y"
     { (yyval.f) = (yyvsp[(2) - (2)].f); }
     break;
 
   case 32:
 /* Line 1792 of yacc.c  */
-#line 154 "xpl.y"
+#line 157 "xpl.y"
     { (yyval.f) = 0; }
     break;
 
   case 33:
 /* Line 1792 of yacc.c  */
-#line 155 "xpl.y"
+#line 158 "xpl.y"
     { (yyval.f) = 1; }
     break;
 
   case 34:
 /* Line 1792 of yacc.c  */
-#line 156 "xpl.y"
+#line 159 "xpl.y"
     { (yyval.f) = 2; }
     break;
 
   case 35:
 /* Line 1792 of yacc.c  */
-#line 157 "xpl.y"
+#line 160 "xpl.y"
     { (yyval.f) = 3; }
     break;
 
   case 36:
 /* Line 1792 of yacc.c  */
-#line 158 "xpl.y"
+#line 161 "xpl.y"
     { (yyval.f) = 4; }
     break;
 
   case 37:
 /* Line 1792 of yacc.c  */
-#line 159 "xpl.y"
+#line 162 "xpl.y"
     { (yyval.f) = 5; }
     break;
 
   case 38:
 /* Line 1792 of yacc.c  */
-#line 160 "xpl.y"
+#line 163 "xpl.y"
     { (yyval.f) = 6; }
     break;
 
   case 39:
 /* Line 1792 of yacc.c  */
-#line 161 "xpl.y"
+#line 164 "xpl.y"
     { (yyval.f) = 7; }
     break;
 
   case 40:
 /* Line 1792 of yacc.c  */
-#line 162 "xpl.y"
+#line 165 "xpl.y"
     { (yyval.f) = 8; }
     break;
 
   case 41:
 /* Line 1792 of yacc.c  */
-#line 163 "xpl.y"
+#line 166 "xpl.y"
     { (yyval.f) = 9; }
     break;
 
   case 42:
 /* Line 1792 of yacc.c  */
-#line 164 "xpl.y"
+#line 167 "xpl.y"
     { (yyval.f) = 10; }
     break;
 
   case 43:
 /* Line 1792 of yacc.c  */
-#line 165 "xpl.y"
+#line 168 "xpl.y"
     { (yyval.f) = 11; }
     break;
 
   case 44:
 /* Line 1792 of yacc.c  */
-#line 166 "xpl.y"
+#line 169 "xpl.y"
     { (yyval.f) = 12; }
     break;
 
   case 45:
 /* Line 1792 of yacc.c  */
-#line 167 "xpl.y"
+#line 170 "xpl.y"
     { (yyval.f) = 13; }
     break;
 
   case 46:
 /* Line 1792 of yacc.c  */
-#line 168 "xpl.y"
+#line 171 "xpl.y"
     { (yyval.f) = 14; }
     break;
 
   case 47:
 /* Line 1792 of yacc.c  */
-#line 169 "xpl.y"
+#line 172 "xpl.y"
     { (yyval.f) = 15; }
     break;
 
   case 48:
 /* Line 1792 of yacc.c  */
-#line 172 "xpl.y"
+#line 175 "xpl.y"
     { process_instruction(0, (yyvsp[(1) - (2)].f), &(yyvsp[(2) - (2)].operand)); }
     break;
 
   case 49:
 /* Line 1792 of yacc.c  */
-#line 173 "xpl.y"
+#line 176 "xpl.y"
     { process_instruction(0, (yyvsp[(1) - (2)].f), &(yyvsp[(2) - (2)].operand)); }
     break;
 
   case 50:
 /* Line 1792 of yacc.c  */
-#line 176 "xpl.y"
+#line 179 "xpl.y"
     { (yyval.f) = 28; }
     break;
 
   case 51:
 /* Line 1792 of yacc.c  */
-#line 177 "xpl.y"
+#line 180 "xpl.y"
     { (yyval.f) = 29; }
     break;
 
   case 52:
 /* Line 1792 of yacc.c  */
-#line 178 "xpl.y"
+#line 181 "xpl.y"
     { (yyval.f) = 30; }
     break;
 
   case 53:
 /* Line 1792 of yacc.c  */
-#line 181 "xpl.y"
+#line 184 "xpl.y"
     { (yyval.f) = 24; }
     break;
 
   case 54:
 /* Line 1792 of yacc.c  */
-#line 182 "xpl.y"
+#line 185 "xpl.y"
     { (yyval.f) = 25; }
     break;
 
   case 55:
 /* Line 1792 of yacc.c  */
-#line 183 "xpl.y"
+#line 186 "xpl.y"
     { (yyval.f) = 26; }
     break;
 
   case 56:
 /* Line 1792 of yacc.c  */
-#line 186 "xpl.y"
+#line 189 "xpl.y"
     { process_instruction((yyvsp[(1) - (2)].instruction).cr, (yyvsp[(1) - (2)].instruction).f, &(yyvsp[(2) - (2)].operand)); }
     break;
 
   case 57:
 /* Line 1792 of yacc.c  */
-#line 187 "xpl.y"
+#line 190 "xpl.y"
     { process_instruction((yyvsp[(1) - (2)].instruction).cr, (yyvsp[(1) - (2)].instruction).f, &(yyvsp[(2) - (2)].operand)); }
     break;
 
   case 58:
 /* Line 1792 of yacc.c  */
-#line 190 "xpl.y"
+#line 193 "xpl.y"
     { (yyval.instruction).cr = 2; (yyval.instruction).f = 2; }
     break;
 
   case 59:
 /* Line 1792 of yacc.c  */
-#line 193 "xpl.y"
+#line 196 "xpl.y"
     { (yyval.instruction).cr = 3; (yyval.instruction).f = 3; }
     break;
 
   case 61:
 /* Line 1792 of yacc.c  */
-#line 197 "xpl.y"
+#line 200 "xpl.y"
     { (yyval.operand).operand_type = OPERAND_VARIABLE; (yyval.operand).var_decl = find_declaration((yyvsp[(1) - (2)].nameval)); }
     break;
 
   case 62:
 /* Line 1792 of yacc.c  */
-#line 198 "xpl.y"
+#line 201 "xpl.y"
     { (yyval.operand).operand_type = OPERAND_VARIABLE; (yyval.operand).var_decl = find_declaration((yyvsp[(1) - (2)].nameval)); }
     break;
 
   case 63:
 /* Line 1792 of yacc.c  */
-#line 201 "xpl.y"
+#line 204 "xpl.y"
     { (yyval.operand).operand_type = OPERAND_VARIABLE; (yyval.operand).var_decl = find_declaration((yyvsp[(1) - (1)].nameval)); }
     break;
 
   case 64:
 /* Line 1792 of yacc.c  */
-#line 202 "xpl.y"
-    { (yyval.operand).operand_type = OPERAND_LITERAL; (yyval.operand).unsignedLiteral = (yyvsp[(1) - (1)].unsignedval); }
+#line 205 "xpl.y"
+    { (yyval.operand).operand_type = OPERAND_LITERAL; (yyval.operand).literal = (yyvsp[(1) - (1)].literal); }
+    break;
+
+  case 66:
+/* Line 1792 of yacc.c  */
+#line 209 "xpl.y"
+    { (yyval.literal).literal_type = LITERAL_UNSIGNED; (yyval.literal).unsigned_val = (yyvsp[(1) - (1)].unsignedval); }
     break;
 
   case 67:
 /* Line 1792 of yacc.c  */
-#line 206 "xpl.y"
-    { (yyval.unsignedval) = (yyvsp[(2) - (2)].unsignedval); /* TODO: process sign */ }
+#line 212 "xpl.y"
+    { (yyval.literal).literal_type = LITERAL_SIGNED; (yyval.literal).signed_val = (yyvsp[(1) - (2)].sign) * (yyvsp[(2) - (2)].unsignedval); /* TODO: can't express largest negative number */ }
+    break;
+
+  case 68:
+/* Line 1792 of yacc.c  */
+#line 213 "xpl.y"
+    { (yyval.literal).literal_type = LITERAL_UNSIGNED; (yyval.literal).unsigned_val = (yyvsp[(1) - (1)].unsignedval); }
+    break;
+
+  case 69:
+/* Line 1792 of yacc.c  */
+#line 215 "xpl.y"
+    { (yyval.sign) = 1; }
+    break;
+
+  case 70:
+/* Line 1792 of yacc.c  */
+#line 215 "xpl.y"
+    { (yyval.sign) = -1; }
     break;
 
 
 /* Line 1792 of yacc.c  */
-#line 1811 "xpl.tab.cpp"
+#line 1837 "xpl.tab.cpp"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2039,7 +2065,7 @@ yyreturn:
 
 
 /* Line 2055 of yacc.c  */
-#line 211 "xpl.y"
+#line 218 "xpl.y"
 
 
 extern FILE *yyin;

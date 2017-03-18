@@ -73,8 +73,9 @@ in this Software without prior written authorization from Robert Jarratt.
 %type <varspeclist> var_spec_list
 %type <operand> operand
 %type <operand> simple_operand
-%type <unsignedval> literal
-%type <unsignedval> decimal
+%type <sign> sign
+%type <literal> literal
+%type <literal> decimal
 %type <f> b_operator
 %type <f> b_ord
 %type <f> sts
@@ -106,6 +107,8 @@ unsigned int instructionNum;
     t_var_relative_to varrelativeto;
     t_var_spec varspec;
     t_var_spec_list varspeclist;
+    t_int64 sign;
+	t_literal literal;
 	t_operand operand;
 	t_instruction instruction;
 }
@@ -199,13 +202,17 @@ operand:
 
 simple_operand:
   T_NAME                    { $$.operand_type = OPERAND_VARIABLE; $$.var_decl = find_declaration($1); }
-| literal                   { $$.operand_type = OPERAND_LITERAL; $$.unsignedLiteral = $1; }
+| literal                   { $$.operand_type = OPERAND_LITERAL; $$.literal = $1; }
 
-literal: decimal | T_HEX_DIGITS;
+literal:
+  decimal
+| T_HEX_DIGITS              { $$.literal_type = LITERAL_UNSIGNED; $$.unsigned_val = $1; }
+
 decimal:
-  sign T_INTEGER            { $$ = $2; /* TODO: process sign */ }
-| T_INTEGER;
-sign: T_PLUS | T_MINUS;
+  sign T_INTEGER            { $$.literal_type = LITERAL_SIGNED; $$.signed_val = $1 * $2; /* TODO: can't express largest negative number */ }
+| T_INTEGER                 { $$.literal_type = LITERAL_UNSIGNED; $$.unsigned_val = $1; }
+
+sign: T_PLUS { $$ = 1; } | T_MINUS { $$ = -1; } /* TODO: can't express largest negative number */
 
 sep: T_NL | T_COMMENT;
 %%

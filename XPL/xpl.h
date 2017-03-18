@@ -73,13 +73,29 @@ typedef enum
 	OPERAND_VARIABLE
 } t_operand_type;
 
+typedef enum
+{
+	LITERAL_UNSIGNED,
+	LITERAL_SIGNED
+} t_literal_type;
+
+typedef struct LITERAL
+{
+	t_literal_type literal_type;
+	union
+	{
+		t_uint64 unsigned_val;
+		t_int64 signed_val;
+	};
+} t_literal;
+
 typedef struct OPERAND
 {
 	t_operand_type operand_type;
 	union
 	{
 		t_var_decl *var_decl;
-		t_uint64 unsignedLiteral;
+		t_literal literal;
 	};
 } t_operand;
 

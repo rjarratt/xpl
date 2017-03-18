@@ -95,7 +95,7 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 100 "xpl.y"
+#line 101 "xpl.y"
 
     unsigned int f;
     t_uint64 unsignedval;
@@ -105,12 +105,14 @@ typedef union YYSTYPE
     t_var_relative_to varrelativeto;
     t_var_spec varspec;
     t_var_spec_list varspeclist;
+    t_int64 sign;
+	t_literal literal;
 	t_operand operand;
 	t_instruction instruction;
 
 
 /* Line 2058 of yacc.c  */
-#line 114 "xpl.tab.h"
+#line 116 "xpl.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

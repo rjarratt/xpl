@@ -111,12 +111,12 @@ void process_instruction(unsigned int cr, unsigned int f, t_operand *operand)
 {
 	unsigned int instruction;
 	unsigned int k = 0;
-	t_uint64 n = 0;
+	t_int64 n = 0;
 
 	if (operand->operand_type == OPERAND_LITERAL)
 	{
 		k = 0;
-		n = operand->unsignedLiteral;
+		n = operand->literal.signed_val;
 	}
 	else
 	{
@@ -175,9 +175,9 @@ void process_instruction(unsigned int cr, unsigned int f, t_operand *operand)
 	}
 
 
-	if (n < 0x40)
+	if (n > -65 && n < 64)
 	{
-		instruction |= n;
+		instruction |= (n & 0x3F);
 		emit(instruction);
 	}
 	else
