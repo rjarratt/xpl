@@ -31,8 +31,13 @@ in this Software without prior written authorization from Robert Jarratt.
 extern char *yytext;
 extern int yylineno;
 
+static unsigned int instructionNum;
+
 static t_var_decl symbol_table[MAX_SYMBOLS];
 static int numSymbols = 0;
+
+static label_entry_t label_table[MAX_LABELS];
+static int numLabels;
 
 static int is_extended_operand(unsigned int cr, unsigned int k);
 static void emit(unsigned int word);
@@ -106,6 +111,54 @@ t_var_decl *find_declaration(char *name)
 	}
 
 	return result;
+}
+
+void add_label(char *name)
+{
+	/* TODO: check decl does not already exist, use a structure that is sorted. Label scoping */
+	label_entry_t *entry = &label_table[numLabels++];
+	entry->name = _strdup(name);
+	entry->location = instructionNum;
+}
+
+int find_label(char *name, int distance, t_operand *operand)
+{
+	int i;
+	label_entry_t *entry = NULL;
+	for (i = 0; i < numLabels; i++)
+	{
+		if (strcmp(name, label_table[i].name) == 0)
+		{
+			entry = &label_table[i];
+			break;
+		}
+	}
+
+	operand->operand_type = OPERAND_LITERAL;
+
+	if (distance == 0)
+	{
+		operand->literal.literal_type = LITERAL_SIGNED_16_BIT;
+	}
+	else if (distance < 0)
+	{
+		operand->literal.literal_type = LITERAL_SIGNED_6_BIT;
+	}
+	else
+	{
+		operand->literal.literal_type = LITERAL_SIGNED_32_BIT;
+	}
+
+	if (entry == NULL)
+	{
+		yyerror("label not found, can't do forward labels yet");
+	}
+	else
+	{
+		operand->literal.signed_val = (t_int64)entry->location - (t_int64)instructionNum;
+	}
+
+	return 1;
 }
 
 void process_instruction(unsigned int cr, unsigned int f, t_operand *operand)
@@ -245,4 +298,5 @@ static int is_extended_operand(unsigned int cr, unsigned int k)
 static void emit(unsigned int word)
 {
 	printf("%04X\n", word);
+	instructionNum++;
 }

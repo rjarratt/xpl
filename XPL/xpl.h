@@ -27,6 +27,7 @@ in this Software without prior written authorization from Robert Jarratt.
 #pragma once
 
 #define MAX_SYMBOLS 100
+#define MAX_LABELS 100
 #define MAX_VAR_SPECS 16
 
 typedef signed __int64          t_int64;
@@ -51,7 +52,7 @@ typedef enum VAR_RELATIVE_TO
 typedef struct VAR_SPEC
 {
     char *name;
-    t_int64 displacement;
+    int displacement;
 } t_var_spec;
 
 typedef struct VAR_SPEC_LIST
@@ -67,6 +68,12 @@ typedef struct VAR_DECL
     t_var_spec varspec;
 } t_var_decl;
 
+typedef struct LABEL_ENTRY
+{
+	char *name;
+	unsigned int location;
+} label_entry_t;
+
 typedef enum
 {
 	OPERAND_LITERAL,
@@ -75,8 +82,13 @@ typedef enum
 
 typedef enum
 {
-	LITERAL_UNSIGNED,
-	LITERAL_SIGNED
+	LITERAL_SIGNED_6_BIT,
+	LITERAL_UNSIGNED_16_BIT,
+	LITERAL_SIGNED_16_BIT,
+	LITERAL_UNSIGNED_32_BIT,
+	LITERAL_SIGNED_32_BIT,
+	LITERAL_UNSIGNED_64_BIT,
+	LITERAL_SIGNED_64_BIT
 } t_literal_type;
 
 typedef struct LITERAL
@@ -110,4 +122,6 @@ void init_var_spec_list(t_var_spec_list *var_spec_list);
 void add_var_spec_list(t_var_spec_list *var_spec_list, t_var_spec *var_spec);
 void add_declaration(t_var_type var_type, t_var_relative_to relativeTo, t_var_spec_list *var_spec_list);
 t_var_decl *find_declaration(char *name);
+void add_label(char *name);
+int find_label(char *name, int distance, t_operand *operand);
 void process_instruction(unsigned int cr, unsigned int f, t_operand *operand);

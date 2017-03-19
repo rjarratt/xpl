@@ -98,7 +98,8 @@ extern int yydebug;
      T_RDIV = 307,
      T_B_REL = 308,
      T_0_REL = 309,
-     T_STACK = 310
+     T_STACK = 310,
+     T_RJUMP = 311
    };
 #endif
 
@@ -112,6 +113,7 @@ typedef union YYSTYPE
     unsigned int f;
     t_uint64 unsignedval;
     t_int64 signedval;
+	int distance;
     char * nameval;
     t_var_type vartype;
     t_var_relative_to varrelativeto;
@@ -124,7 +126,7 @@ typedef union YYSTYPE
 
 
 /* Line 2058 of yacc.c  */
-#line 128 "xpl.tab.h"
+#line 130 "xpl.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

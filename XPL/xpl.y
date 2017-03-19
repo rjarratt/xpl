@@ -77,6 +77,7 @@ in this Software without prior written authorization from Robert Jarratt.
 %token T_B_REL
 %token T_0_REL
 %token T_STACK
+%token T_RJUMP
 
 %type <signedval> displacement
 %type <vartype> var_type
@@ -99,6 +100,7 @@ in this Software without prior written authorization from Robert Jarratt.
 %type <f> sf_ord
 %type <instruction> fn_1
 %type <instruction> fn_2
+%type <distance> jump_spec
 
 %{
 #include <stdio.h>
@@ -108,8 +110,6 @@ extern int yylex();
 extern char *yytext;
 extern int yylineno;
 
-unsigned int instructionNum;
-
 %}
 
 %union
@@ -117,6 +117,7 @@ unsigned int instructionNum;
     unsigned int f;
     t_uint64 unsignedval;
     t_int64 signedval;
+	int distance;
     char * nameval;
     t_var_type vartype;
     t_var_relative_to varrelativeto;
@@ -138,10 +139,10 @@ statement:
   label
 | label sep
 | declarative sep
-| instruction sep { instructionNum++; }
+| instruction sep
 | sep;
 
-label: T_NAME T_COLON { printf("Label %s at instruction %d\n", $1, instructionNum); }
+label: T_NAME T_COLON { add_label($1); }
 
 declarative:
   var_dec;
@@ -155,7 +156,7 @@ var_rel:
 | T_INTEGER { if ($1 != 0) yyerror("invalid relative-to"); $$ = ZERO; }
 | T_STK { $$ = STK; }
 var_spec_list: var_spec { init_var_spec_list(&$$); add_var_spec_list(&$$, &$1); } | var_spec_list T_COMMA var_spec  { add_var_spec_list(&$$, &$3); }
-var_spec: T_NAME T_COLON displacement { $$.name = $1; $$.displacement = $3; }
+var_spec: T_NAME T_COLON displacement { $$.name = $1; $$.displacement = (int)$3; }
 displacement:
   T_MINUS T_INTEGER         { $$ = 0 - $2; }
 | T_INTEGER                 { $$ = $1; }
@@ -165,6 +166,7 @@ instruction:
   comput
 | sts
 | org
+| condit
 
 comput:
   b_ord operand       { process_instruction($1.cr, $1.f, &$2); }
@@ -258,6 +260,12 @@ fn_2:
 | T_DB T_STORE               { $$.cr = 3; $$.f = 4; }
 | T_MOD                      { $$.cr = 3; $$.f = 6; }
 
+condit: jump_spec T_NAME     { t_operand operand; find_label($2, $1, &operand); process_instruction(0, 0, &operand); }
+jump_spec:
+  T_PLUS T_RJUMP             { $$ = 1; }
+| T_MINUS T_RJUMP            { $$ = -1; }
+| T_RJUMP                    { $$ = 0; }
+
 operand:
   simple_operand
 | T_NAME T_B_REL { $$.operand_type = OPERAND_VARIABLE; $$.var_decl = find_declaration($1); }
@@ -269,11 +277,11 @@ simple_operand:
 
 literal:
   decimal
-| T_HEX_DIGITS              { $$.literal_type = LITERAL_UNSIGNED; $$.unsigned_val = $1; }
+| T_HEX_DIGITS              { $$.literal_type = LITERAL_UNSIGNED_16_BIT; $$.unsigned_val = $1; }
 
 decimal:
-  sign T_INTEGER            { $$.literal_type = LITERAL_SIGNED; $$.signed_val = $1 * $2; /* TODO: can't express largest negative number */ }
-| T_INTEGER                 { $$.literal_type = LITERAL_UNSIGNED; $$.unsigned_val = $1; }
+  sign T_INTEGER            { $$.literal_type = LITERAL_SIGNED_6_BIT; $$.signed_val = $1 * $2; /* TODO: can't express largest negative number */ }
+| T_INTEGER                 { $$.literal_type = LITERAL_UNSIGNED_16_BIT; $$.unsigned_val = $1; }
 
 sign: T_PLUS { $$ = 1; } | T_MINUS { $$ = -1; } /* TODO: can't express largest negative number */
 

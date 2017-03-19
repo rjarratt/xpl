@@ -89,6 +89,8 @@ CONV               { return T_CONV; }
 
 STACK              { return T_STACK; }
 
+\-\>               { return T_RJUMP; }
+
 {NAME}             { yylval.nameval = _strdup(yytext); return T_NAME; }
 {INTEGER}          { yylval.unsignedval = atoi(yytext); return T_INTEGER; }
 %[0-9A-F]+         { sscanf(yytext + 1, "%llX", &yylval.unsignedval); return T_HEX_DIGITS; }
