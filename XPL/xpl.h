@@ -38,7 +38,7 @@ typedef enum VAR_TYPE
     V32,
     V64,
     VV
-} t_var_type;
+} var_type_t;
 
 typedef enum VAR_RELATIVE_TO
 {
@@ -47,26 +47,26 @@ typedef enum VAR_RELATIVE_TO
     SF,
     ZERO,
     STK
-} t_var_relative_to;
+} var_relative_to_t;
 
 typedef struct VAR_SPEC
 {
     char *name;
     int displacement;
-} t_var_spec;
+} var_spec_t;
 
 typedef struct VAR_SPEC_LIST
 {
     int length;
-    t_var_spec var_specs[MAX_VAR_SPECS];
-} t_var_spec_list;
+    var_spec_t var_specs[MAX_VAR_SPECS];
+} var_spec_list_t;
 
 typedef struct VAR_DECL
 {
-    t_var_type vartype;
-    t_var_relative_to relativeTo;
-    t_var_spec varspec;
-} t_var_decl;
+    var_type_t vartype;
+    var_relative_to_t relativeTo;
+    var_spec_t varspec;
+} var_decl_t;
 
 typedef struct LABEL_ENTRY
 {
@@ -78,7 +78,7 @@ typedef enum
 {
 	OPERAND_LITERAL,
 	OPERAND_VARIABLE
-} t_operand_type;
+} operand_type_t;
 
 typedef enum
 {
@@ -89,39 +89,39 @@ typedef enum
 	LITERAL_SIGNED_32_BIT,
 	LITERAL_UNSIGNED_64_BIT,
 	LITERAL_SIGNED_64_BIT
-} t_literal_type;
+} literal_type_t;
 
 typedef struct LITERAL
 {
-	t_literal_type literal_type;
+	literal_type_t literal_type;
 	union
 	{
 		t_uint64 unsigned_val;
 		t_int64 signed_val;
 	};
-} t_literal;
+} literal_t;
 
 typedef struct OPERAND
 {
-	t_operand_type operand_type;
+	operand_type_t operand_type;
 	union
 	{
-		t_var_decl *var_decl;
-		t_literal literal;
+		var_decl_t *var_decl;
+		literal_t literal;
 	};
-} t_operand;
+} operand_t;
 
 typedef struct INSTRUCTION
 {
 	unsigned int cr;
 	unsigned int f;
-} t_instruction;
+} instruction_t;
 
 void yyerror(char *msg);
-void init_var_spec_list(t_var_spec_list *var_spec_list);
-void add_var_spec_list(t_var_spec_list *var_spec_list, t_var_spec *var_spec);
-void add_declaration(t_var_type var_type, t_var_relative_to relativeTo, t_var_spec_list *var_spec_list);
-t_var_decl *find_declaration(char *name);
+void init_var_spec_list(var_spec_list_t *var_spec_list);
+void add_var_spec_list(var_spec_list_t *var_spec_list, var_spec_t *var_spec);
+void add_declaration(var_type_t var_type, var_relative_to_t relativeTo, var_spec_list_t *var_spec_list);
+var_decl_t *find_declaration(char *name);
 void add_label(char *name);
-int find_label(char *name, int distance, t_operand *operand);
-void process_instruction(unsigned int cr, unsigned int f, t_operand *operand);
+int find_label(char *name, int distance, operand_t *operand);
+void process_instruction(unsigned int cr, unsigned int f, operand_t *operand);

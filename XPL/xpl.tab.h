@@ -115,14 +115,14 @@ typedef union YYSTYPE
     t_int64 signedval;
 	int distance;
     char * nameval;
-    t_var_type vartype;
-    t_var_relative_to varrelativeto;
-    t_var_spec varspec;
-    t_var_spec_list varspeclist;
+    var_type_t vartype;
+    var_relative_to_t varrelativeto;
+    var_spec_t varspec;
+    var_spec_list_t varspeclist;
     t_int64 sign;
-	t_literal literal;
-	t_operand operand;
-	t_instruction instruction;
+	literal_t literal;
+	operand_t operand;
+	instruction_t instruction;
 
 
 /* Line 2058 of yacc.c  */

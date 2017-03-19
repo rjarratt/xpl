@@ -33,7 +33,7 @@ extern int yylineno;
 
 static unsigned int instructionNum;
 
-static t_var_decl symbol_table[MAX_SYMBOLS];
+static var_decl_t symbol_table[MAX_SYMBOLS];
 static int numSymbols = 0;
 
 static label_entry_t label_table[MAX_LABELS];
@@ -47,12 +47,12 @@ void yyerror(char *msg)
     fprintf(stderr, "%d: %s at '%s'\n", yylineno, msg, yytext);
 }
 
-void init_var_spec_list(t_var_spec_list *var_spec_list)
+void init_var_spec_list(var_spec_list_t *var_spec_list)
 {
     var_spec_list->length = 0;
 }
 
-void add_var_spec_list(t_var_spec_list *var_spec_list, t_var_spec *var_spec)
+void add_var_spec_list(var_spec_list_t *var_spec_list, var_spec_t *var_spec)
 {
     if (var_spec_list->length >= MAX_VAR_SPECS)
     {
@@ -60,18 +60,18 @@ void add_var_spec_list(t_var_spec_list *var_spec_list, t_var_spec *var_spec)
     }
     else
     {
-        memcpy(&var_spec_list->var_specs[var_spec_list->length++], var_spec, sizeof(t_var_spec));
+        memcpy(&var_spec_list->var_specs[var_spec_list->length++], var_spec, sizeof(var_spec_t));
     }
 
 }
 
-void add_declaration(t_var_type var_type, t_var_relative_to relativeTo, t_var_spec_list *var_spec_list)
+void add_declaration(var_type_t var_type, var_relative_to_t relativeTo, var_spec_list_t *var_spec_list)
 {
 	/* TODO: check decl does not already exist, use a structure that is sorted */
     int i;
     for (i = 0; i < var_spec_list->length; i++)
     {
-        t_var_spec *varspec = &var_spec_list->var_specs[i];
+        var_spec_t *varspec = &var_spec_list->var_specs[i];
         if (relativeTo == STK && varspec->displacement != 0)
         {
             yyerror("displacement must be zero");
@@ -83,7 +83,7 @@ void add_declaration(t_var_type var_type, t_var_relative_to relativeTo, t_var_sp
         }
         else
         {
-            t_var_decl *entry = &symbol_table[numSymbols++];
+            var_decl_t *entry = &symbol_table[numSymbols++];
             entry->vartype = var_type;
             entry->relativeTo = relativeTo;
             entry->varspec.name = _strdup(varspec->name);
@@ -92,10 +92,10 @@ void add_declaration(t_var_type var_type, t_var_relative_to relativeTo, t_var_sp
     }
 }
 
-t_var_decl *find_declaration(char *name)
+var_decl_t *find_declaration(char *name)
 {
 	int i;
-	t_var_decl *result = NULL;
+	var_decl_t *result = NULL;
 	for (i = 0; i < numSymbols; i++)
 	{
 		if (strcmp(name, symbol_table[i].varspec.name) == 0)
@@ -121,7 +121,7 @@ void add_label(char *name)
 	entry->location = instructionNum;
 }
 
-int find_label(char *name, int distance, t_operand *operand)
+int find_label(char *name, int distance, operand_t *operand)
 {
 	int i;
 	label_entry_t *entry = NULL;
@@ -161,7 +161,7 @@ int find_label(char *name, int distance, t_operand *operand)
 	return 1;
 }
 
-void process_instruction(unsigned int cr, unsigned int f, t_operand *operand)
+void process_instruction(unsigned int cr, unsigned int f, operand_t *operand)
 {
 	unsigned int instruction;
 	unsigned int k = 0;
