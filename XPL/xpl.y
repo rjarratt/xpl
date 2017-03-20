@@ -119,14 +119,14 @@ extern int yylineno;
     t_int64 signedval;
 	int distance;
     char * nameval;
-    t_var_type vartype;
-    t_var_relative_to varrelativeto;
-    t_var_spec varspec;
-    t_var_spec_list varspeclist;
+    var_type_t vartype;
+    var_relative_to_t varrelativeto;
+    var_spec_t varspec;
+    var_spec_list_t varspeclist;
     t_int64 sign;
-	t_literal literal;
-	t_operand operand;
-	t_instruction instruction;
+	literal_t literal;
+	operand_t operand;
+	instruction_t instruction;
 }
 
 %%
@@ -260,7 +260,7 @@ fn_2:
 | T_DB T_STORE               { $$.cr = 3; $$.f = 4; }
 | T_MOD                      { $$.cr = 3; $$.f = 6; }
 
-condit: jump_spec T_NAME     { t_operand operand; find_label($2, $1, &operand); process_instruction(0, 0, &operand); }
+condit: jump_spec T_NAME     { operand_t operand; find_label($2, $1, &operand); process_instruction(0, 0, &operand); }
 jump_spec:
   T_PLUS T_RJUMP             { $$ = 1; }
 | T_MINUS T_RJUMP            { $$ = -1; }
