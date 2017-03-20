@@ -13,6 +13,7 @@ A => TELETYPE.CONTROL   :: Set teletype control
 A =' %40                 :: @ sign
 A => TELETYPE.DATA      :: Set teletype data
 A =' CONSOLE.INTERRUPT  :: Read Console Interrupt
+AOD COMP 0              :: Poll for interrupt
 STOP: - -> STOP
 END
 *END OF SEGMENT

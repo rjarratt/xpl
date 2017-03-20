@@ -51,6 +51,7 @@ in this Software without prior written authorization from Robert Jarratt.
 %token T_XMOD
 %token T_A
 %token T_AU
+%token T_AOD
 %token T_B
 %token T_NB
 %token T_XNB
@@ -100,6 +101,7 @@ in this Software without prior written authorization from Robert Jarratt.
 %type <f> sf_ord
 %type <instruction> fn_1
 %type <instruction> fn_2
+%type <instruction> aod_ord
 %type <distance> jump_spec
 
 %{
@@ -171,6 +173,7 @@ instruction:
 comput:
   b_ord operand       { process_instruction($1.cr, $1.f, &$2); }
 | a_ord operand       { process_instruction($1.cr, $1.f, &$2); }
+| aod_ord operand     { process_instruction($1.cr, $1.f, &$2); }
 
 b_ord: T_B b_operator       { $$.cr = 1; $$.f = $2; }
 b_operator:
@@ -225,6 +228,12 @@ au_operator:
 | T_RSUB	                { $$ = 12; }
 | T_COMP	                { $$ = 13; }
 | T_RDIV	                { $$ = 15; }
+
+aod_ord:
+  T_AOD T_LOAD              { $$.cr = 5; $$.f = 0; }
+| T_AOD T_STACK_LOAD        { $$.cr = 5; $$.f = 2; }
+| T_AOD T_STORE             { $$.cr = 5; $$.f = 3; }
+| T_AOD T_COMP              { $$.cr = 6; $$.f = 12; }
 
 org:
   nb_ord operand             { process_instruction(0, $1, &$2); }

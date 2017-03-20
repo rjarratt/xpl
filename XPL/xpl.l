@@ -50,6 +50,7 @@ VV                 { return T_VV; }
 AFL                { return T_A; }
 A                  { return T_A; }
 AU                 { return T_AU; }
+AOD                { return T_AOD; }
 D                  { return T_D; }
 DO                 { return T_DO; }
 XD                 { return T_XD; }
