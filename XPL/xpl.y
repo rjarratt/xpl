@@ -305,11 +305,23 @@ int main(int argc, char *argv[])
         }
         else
         {
+		    set_pass(1);
             do
             {
                 yyparse();
             }
             while (!feof(yyin));
+
+			if (!error_in_pass)
+			{
+			    rewind(yyin);
+			    set_pass(2);
+                do
+                {
+                    yyparse();
+                }
+                while (!feof(yyin));
+			}
         }
     }
 }

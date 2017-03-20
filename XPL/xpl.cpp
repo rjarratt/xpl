@@ -28,9 +28,12 @@ in this Software without prior written authorization from Robert Jarratt.
 #include <string.h>
 #include "xpl.h"
 
+int error_in_pass;
+
 extern char *yytext;
 extern int yylineno;
 
+static int pass;
 static unsigned int instructionNum;
 
 static var_decl_t symbol_table[MAX_SYMBOLS];
@@ -42,9 +45,18 @@ static int numLabels;
 static int is_extended_operand(unsigned int cr, unsigned int k);
 static void emit(unsigned int word);
 
+void set_pass(int new_pass)
+{
+	printf("starting pass %d\n", new_pass);
+	pass = new_pass;
+	instructionNum = 0;
+	yylineno = 1;
+}
+
 void yyerror(char *msg)
 {
     fprintf(stderr, "%d: %s at '%s'\n", yylineno, msg, yytext);
+	error_in_pass = 1;
 }
 
 void init_var_spec_list(var_spec_list_t *var_spec_list)
@@ -69,27 +81,30 @@ void add_declaration(var_type_t var_type, var_relative_to_t relativeTo, var_spec
 {
 	/* TODO: check decl does not already exist, use a structure that is sorted */
     int i;
-    for (i = 0; i < var_spec_list->length; i++)
-    {
-        var_spec_t *varspec = &var_spec_list->var_specs[i];
-        if (relativeTo == STK && varspec->displacement != 0)
-        {
-            yyerror("displacement must be zero");
-        }
+	if (pass == 1)
+	{
+		for (i = 0; i < var_spec_list->length; i++)
+		{
+			var_spec_t *varspec = &var_spec_list->var_specs[i];
+			if (relativeTo == STK && varspec->displacement != 0)
+			{
+				yyerror("displacement must be zero");
+			}
 
-        if (numSymbols >= MAX_SYMBOLS)
-        {
-            yyerror("symbol table full");
-        }
-        else
-        {
-            var_decl_t *entry = &symbol_table[numSymbols++];
-            entry->vartype = var_type;
-            entry->relativeTo = relativeTo;
-            entry->varspec.name = _strdup(varspec->name);
-            entry->varspec.displacement = varspec->displacement;
-        }
-    }
+			if (numSymbols >= MAX_SYMBOLS)
+			{
+				yyerror("symbol table full");
+			}
+			else
+			{
+				var_decl_t *entry = &symbol_table[numSymbols++];
+				entry->vartype = var_type;
+				entry->relativeTo = relativeTo;
+				entry->varspec.name = _strdup(varspec->name);
+				entry->varspec.displacement = varspec->displacement;
+			}
+		}
+	}
 }
 
 var_decl_t *find_declaration(char *name)
@@ -116,9 +131,12 @@ var_decl_t *find_declaration(char *name)
 void add_label(char *name)
 {
 	/* TODO: check decl does not already exist, use a structure that is sorted. Label scoping */
-	label_entry_t *entry = &label_table[numLabels++];
-	entry->name = _strdup(name);
-	entry->location = instructionNum;
+	if (pass == 1)
+	{
+		label_entry_t *entry = &label_table[numLabels++];
+		entry->name = _strdup(name);
+		entry->location = instructionNum;
+	}
 }
 
 int find_label(char *name, int distance, operand_t *operand)
@@ -151,7 +169,14 @@ int find_label(char *name, int distance, operand_t *operand)
 
 	if (entry == NULL)
 	{
-		yyerror("label not found, can't do forward labels yet");
+		if (pass > 1)
+		{
+			yyerror("label not found");
+		}
+		else
+		{
+			operand->literal.signed_val = 0; /* dummy value for now */
+		}
 	}
 	else
 	{
@@ -177,7 +202,7 @@ void process_instruction(unsigned int cr, unsigned int f, operand_t *operand)
 	}
 	else
 	{
-		
+
 		if (operand->var_decl != NULL)
 		{
 			switch (operand->var_decl->vartype)
@@ -297,6 +322,10 @@ static int is_extended_operand(unsigned int cr, unsigned int k)
 
 static void emit(unsigned int word)
 {
-	printf("%04X\n", word);
+	if (pass == 2)
+	{
+		printf("%3d:%04X\n", instructionNum, word);
+	}
+
 	instructionNum++;
 }

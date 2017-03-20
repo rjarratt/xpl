@@ -117,6 +117,9 @@ typedef struct INSTRUCTION
 	unsigned int f;
 } instruction_t;
 
+extern int error_in_pass;
+
+void set_pass(int new_pass);
 void yyerror(char *msg);
 void init_var_spec_list(var_spec_list_t *var_spec_list);
 void add_var_spec_list(var_spec_list_t *var_spec_list, var_spec_t *var_spec);
