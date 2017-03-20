@@ -2136,19 +2136,19 @@ yyreduce:
   case 112:
 /* Line 1792 of yacc.c  */
 #line 280 "xpl.y"
-    { (yyval.literal).literal_type = LITERAL_UNSIGNED_16_BIT; (yyval.literal).unsigned_val = (yyvsp[(1) - (1)].unsignedval); }
+    { make_int_literal(0, (yyvsp[(1) - (1)].unsignedval), &(yyval.literal)); }
     break;
 
   case 113:
 /* Line 1792 of yacc.c  */
 #line 283 "xpl.y"
-    { (yyval.literal).literal_type = LITERAL_SIGNED_6_BIT; (yyval.literal).signed_val = (yyvsp[(1) - (2)].sign) * (yyvsp[(2) - (2)].unsignedval); /* TODO: can't express largest negative number */ }
+    { make_int_literal((yyvsp[(1) - (2)].sign), (yyvsp[(2) - (2)].unsignedval), &(yyval.literal)); /* TODO: can't express largest negative number */ }
     break;
 
   case 114:
 /* Line 1792 of yacc.c  */
 #line 284 "xpl.y"
-    { (yyval.literal).literal_type = LITERAL_UNSIGNED_16_BIT; (yyval.literal).unsigned_val = (yyvsp[(1) - (1)].unsignedval); }
+    { make_int_literal(0, (yyvsp[(1) - (1)].unsignedval), &(yyval.literal)); }
     break;
 
   case 115:

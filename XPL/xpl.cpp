@@ -186,6 +186,74 @@ int find_label(char *name, int distance, operand_t *operand)
 	return 1;
 }
 
+void make_int_literal(int sign, t_uint64 value, literal_t *literal)
+{
+	if (sign != 0)
+	{
+		if (sign < 0)
+		{
+			literal->signed_val = -(t_int64)value;
+			if (value < 0x20)
+			{
+				literal->literal_type = LITERAL_SIGNED_6_BIT;
+			}
+			else if (value < 0x8000)
+			{
+				literal->literal_type = LITERAL_SIGNED_16_BIT;
+			}
+			else if (value < 0x80000000)
+			{
+				literal->literal_type = LITERAL_SIGNED_32_BIT;
+			}
+			else
+			{
+				literal->literal_type = LITERAL_SIGNED_64_BIT;
+			}
+		}
+		else
+		{
+			literal->signed_val = value;
+			if (value < 0x1F)
+			{
+				literal->literal_type = LITERAL_SIGNED_6_BIT;
+			}
+			else if (value < 0x7FFF)
+			{
+				literal->literal_type = LITERAL_SIGNED_16_BIT;
+			}
+			else if (value < 0x7FFFFFFF)
+			{
+				literal->literal_type = LITERAL_SIGNED_32_BIT;
+			}
+			else
+			{
+				literal->literal_type = LITERAL_SIGNED_64_BIT;
+			}
+		}
+	}
+	else
+	{
+		literal->unsigned_val = value;
+		if (value < 0x1F)
+		{
+			literal->literal_type = LITERAL_SIGNED_6_BIT;
+			literal->signed_val = value;
+		}
+		else if (value < 0xFFFF)
+		{
+			literal->literal_type = LITERAL_UNSIGNED_16_BIT;
+		}
+		else if (value < 0xFFFFFFFF)
+		{
+			literal->literal_type = LITERAL_UNSIGNED_32_BIT;
+		}
+		else
+		{
+			literal->literal_type = LITERAL_UNSIGNED_64_BIT;
+		}
+	}
+}
+
 void process_instruction(unsigned int cr, unsigned int f, operand_t *operand)
 {
 	unsigned int instruction;
@@ -197,7 +265,17 @@ void process_instruction(unsigned int cr, unsigned int f, operand_t *operand)
 
 	if (operand->operand_type == OPERAND_LITERAL)
 	{
-		k = 0;
+		if (operand->literal.literal_type == LITERAL_SIGNED_6_BIT)
+		{
+			k = 0;
+		}
+		else
+		{
+			k = (cr == 0) ? 1 : 7;
+			kp = 0;
+			np = operand->literal.literal_type;
+		}
+
 		n = operand->literal.signed_val;
 	}
 	else
@@ -259,6 +337,30 @@ void process_instruction(unsigned int cr, unsigned int f, operand_t *operand)
 					}
 					break;
 				}
+				case VV:
+				{
+					k = (cr == 0) ? 1 : 7;
+					kp = 7;
+					if (operand->var_decl->relativeTo == NB)
+					{
+						np = 2;
+						offset = operand->var_decl->varspec.displacement;
+					}
+					else if (operand->var_decl->relativeTo == STK)
+					{
+						np = 4;
+					}
+					else if (operand->var_decl->relativeTo == ZERO)
+					{
+						np = 1;
+						offset = operand->var_decl->varspec.displacement;
+					}
+					else
+					{
+						yyerror("non-NB relative not handled yet");
+					}
+					break;
+				}
 				default:
 				{
 					yyerror("unhandled vartype");
@@ -291,16 +393,17 @@ void process_instruction(unsigned int cr, unsigned int f, operand_t *operand)
 	{
 		instruction |= (n & 0x3F);
 	}
-	else
-	{
-		yyerror("can't do big operands yet");
-	}
 
 	emit(instruction);
 
 	if (is_extended_operand(cr, k) && kp > 1 && np < 4)
 	{
 		emit(offset);
+	}
+	else if (n > -65536 && n < 65535)
+	{
+		emit(n & 0xFFFF);
+		//do the rest of opereand literals
 	}
 
 	//printf("cr=%u f=%u ", cr, f);

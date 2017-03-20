@@ -82,13 +82,13 @@ typedef enum
 
 typedef enum
 {
-	LITERAL_SIGNED_6_BIT,
-	LITERAL_UNSIGNED_16_BIT,
-	LITERAL_SIGNED_16_BIT,
-	LITERAL_UNSIGNED_32_BIT,
-	LITERAL_SIGNED_32_BIT,
-	LITERAL_UNSIGNED_64_BIT,
-	LITERAL_SIGNED_64_BIT
+	LITERAL_SIGNED_6_BIT = -1,
+	LITERAL_SIGNED_16_BIT = 0,
+	LITERAL_SIGNED_32_BIT = 1,
+	LITERAL_SIGNED_64_BIT = 2,
+	LITERAL_UNSIGNED_16_BIT = 4,
+	LITERAL_UNSIGNED_32_BIT = 5,
+	LITERAL_UNSIGNED_64_BIT = 6,
 } literal_type_t;
 
 typedef struct LITERAL
@@ -127,4 +127,5 @@ void add_declaration(var_type_t var_type, var_relative_to_t relativeTo, var_spec
 var_decl_t *find_declaration(char *name);
 void add_label(char *name);
 int find_label(char *name, int distance, operand_t *operand);
+void make_int_literal(int sign, t_uint64 value, literal_t *literal);
 void process_instruction(unsigned int cr, unsigned int f, operand_t *operand);

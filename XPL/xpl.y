@@ -277,11 +277,11 @@ simple_operand:
 
 literal:
   decimal
-| T_HEX_DIGITS              { $$.literal_type = LITERAL_UNSIGNED_16_BIT; $$.unsigned_val = $1; }
+| T_HEX_DIGITS              { make_int_literal(0, $1, &$$); }
 
 decimal:
-  sign T_INTEGER            { $$.literal_type = LITERAL_SIGNED_6_BIT; $$.signed_val = $1 * $2; /* TODO: can't express largest negative number */ }
-| T_INTEGER                 { $$.literal_type = LITERAL_UNSIGNED_16_BIT; $$.unsigned_val = $1; }
+  sign T_INTEGER            { make_int_literal($1, $2, &$$); /* TODO: can't express largest negative number */ }
+| T_INTEGER                 { make_int_literal(0, $1, &$$); }
 
 sign: T_PLUS { $$ = 1; } | T_MINUS { $$ = -1; } /* TODO: can't express largest negative number */
 
