@@ -28,6 +28,7 @@ in this Software without prior written authorization from Robert Jarratt.
 #include <string.h>
 #include "xpl.h"
 
+FILE *binary;
 int error_in_pass;
 
 extern char *yytext;
@@ -389,7 +390,7 @@ void process_instruction(unsigned int cr, unsigned int f, operand_t *operand)
 		instruction |= kp << 3;
 		instruction |= np;
 	}
-	else if (n > -65 && n < 64)
+	else if (n > -33 && n < 32)
 	{
 		instruction |= (n & 0x3F);
 	}
@@ -400,10 +401,13 @@ void process_instruction(unsigned int cr, unsigned int f, operand_t *operand)
 	{
 		emit(offset);
 	}
-	else if (n > -65536 && n < 65535)
+	else if (n <= -33 || n >= 32)
 	{
-		emit(n & 0xFFFF);
-		//do the rest of opereand literals
+		if (n > -65536 && n < 65535)
+		{
+			emit(n & 0xFFFF);
+			//do the rest of opereand literals
+		}
 	}
 
 	//printf("cr=%u f=%u ", cr, f);
@@ -425,9 +429,14 @@ static int is_extended_operand(unsigned int cr, unsigned int k)
 
 static void emit(unsigned int word)
 {
+	unsigned char byte;
 	if (pass == 2)
 	{
 		printf("%3d:%04X\n", instructionNum, word);
+		byte = (word >> 8) & 0xFF;
+		fwrite(&byte, 1, 1, binary);
+		byte = word & 0xFF;
+		fwrite(&byte, 1, 1, binary);
 	}
 
 	instructionNum++;

@@ -78,6 +78,15 @@ in this Software without prior written authorization from Robert Jarratt.
 %token T_B_REL
 %token T_0_REL
 %token T_STACK
+%token T_IF
+%token T_EQ
+%token T_NE
+%token T_LT
+%token T_LE
+%token T_GT
+%token T_GE
+%token T_OV
+%token T_BN
 %token T_RJUMP
 
 %type <signedval> displacement
@@ -103,6 +112,7 @@ in this Software without prior written authorization from Robert Jarratt.
 %type <instruction> fn_2
 %type <instruction> aod_ord
 %type <distance> jump_spec
+%type <f> cond
 
 %{
 #include <stdio.h>
@@ -269,11 +279,24 @@ fn_2:
 | T_DB T_STORE               { $$.cr = 3; $$.f = 4; }
 | T_MOD                      { $$.cr = 3; $$.f = 6; }
 
-condit: jump_spec T_NAME     { operand_t operand; find_label($2, $1, &operand); process_instruction(0, 0, &operand); }
+condit:
+  jump_spec T_NAME           { operand_t operand; find_label($2, $1, &operand); process_instruction(0, 0, &operand); }
+| T_IF cond T_COMMA jump_spec T_NAME { operand_t operand; find_label($5, $4, &operand); process_instruction(0, $2, &operand); }
+
 jump_spec:
   T_PLUS T_RJUMP             { $$ = 1; }
 | T_MINUS T_RJUMP            { $$ = -1; }
 | T_RJUMP                    { $$ = 0; }
+
+cond:
+  T_EQ                       { $$ = 32; }
+| T_NE                       { $$ = 33; }
+| T_GE                       { $$ = 34; }
+| T_LT                       { $$ = 35; }
+| T_LE                       { $$ = 36; }
+| T_GT                       { $$ = 37; }
+| T_OV                       { $$ = 38; }
+| T_BN                       { $$ = 39; }
 
 operand:
   simple_operand
@@ -289,7 +312,7 @@ literal:
 | T_HEX_DIGITS              { make_int_literal(0, $1, &$$); }
 
 decimal:
-  sign T_INTEGER            { make_int_literal($1, $2, &$$); /* TODO: can't express largest negative number */ }
+  sign T_INTEGER            { make_int_literal((int)$1, $2, &$$); /* TODO: can't express largest negative number */ }
 | T_INTEGER                 { make_int_literal(0, $1, &$$); }
 
 sign: T_PLUS { $$ = 1; } | T_MINUS { $$ = -1; } /* TODO: can't express largest negative number */
@@ -297,13 +320,14 @@ sign: T_PLUS { $$ = 1; } | T_MINUS { $$ = -1; } /* TODO: can't express largest n
 sep: T_NL | T_COMMENT;
 %%
 
+extern FILE *binary;
 extern FILE *yyin;
 
 int main(int argc, char *argv[])
 {
-    if (argc != 2)
+    if (argc != 3)
     {
-        fprintf(stderr, "usage: xpl [infile]\n");
+        fprintf(stderr, "usage: xpl [infile] [outfile]\n");
     }
     else
     {
@@ -312,7 +336,14 @@ int main(int argc, char *argv[])
         {
             fprintf(stderr, "cannot open %s\n", argv[1]);
         }
-        else
+
+		binary = fopen(argv[2], "wb");
+        if (yyin == NULL)
+        {
+            fprintf(stderr, "cannot open %s\n", argv[2]);
+        }
+
+        if (yyin != NULL && binary != NULL)
         {
 		    set_pass(1);
             do
@@ -331,6 +362,8 @@ int main(int argc, char *argv[])
                 }
                 while (!feof(yyin));
 			}
+
+			fclose(binary);
         }
     }
 }

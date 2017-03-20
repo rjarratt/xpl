@@ -118,6 +118,7 @@ typedef struct INSTRUCTION
 } instruction_t;
 
 extern int error_in_pass;
+extern FILE *binary;
 
 void set_pass(int new_pass);
 void yyerror(char *msg);

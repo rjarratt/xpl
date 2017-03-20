@@ -90,6 +90,15 @@ CONV               { return T_CONV; }
 
 STACK              { return T_STACK; }
 
+IF                 { return T_IF; }
+=0                 { return T_EQ; }
+\/=0               { return T_NE; }
+\<0                { return T_LT; }
+=\<                { return T_LE; }
+\>                 { return T_GT; }
+\>=                { return T_GE; }
+OV                 { return T_OV; }
+BN                 { return T_BN; }
 \-\>               { return T_RJUMP; }
 
 {NAME}             { yylval.nameval = _strdup(yytext); return T_NAME; }

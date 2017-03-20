@@ -100,7 +100,16 @@ extern int yydebug;
      T_B_REL = 309,
      T_0_REL = 310,
      T_STACK = 311,
-     T_RJUMP = 312
+     T_IF = 312,
+     T_EQ = 313,
+     T_NE = 314,
+     T_LT = 315,
+     T_LE = 316,
+     T_GT = 317,
+     T_GE = 318,
+     T_OV = 319,
+     T_BN = 320,
+     T_RJUMP = 321
    };
 #endif
 
@@ -109,7 +118,7 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 118 "xpl.y"
+#line 128 "xpl.y"
 
     unsigned int f;
     t_uint64 unsignedval;
@@ -127,7 +136,7 @@ typedef union YYSTYPE
 
 
 /* Line 2058 of yacc.c  */
-#line 131 "xpl.tab.h"
+#line 140 "xpl.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
