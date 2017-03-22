@@ -19,25 +19,25 @@ V32/NB V32NB16:16
 V32/NB V32NB17:17
 V32/NB V32NB18:18
 V32/NB V32NB20:20
-V32/STK DUMMY:0
+V32/STK STACK.TOP:0
 V64/NB V64NB0:0
 V64/NB V64NB1:1
 V64/NB V64NB2:2
 V64/NB V64NB3:3
-
+ 
 NB = 16
-SF =NB+ -22
+SF =NB+ 22
 B = V32NB0
 B + V32NB1
 B * V32NB2
 B => V32NB3
 B - V32NB4
-B / V32NB6
+B / V32NB6	:: should probably omit this as it's treated as a dummy order
 B -/= V32NB8
 B V V32NB10
 B <= 3
 B & V32NB12
-B /: V32NB18
+B /: V32NB18	:: should probably omit this as it's treated as a dummy order
 B -: V32NB17
 B => V32NB11
 B = V32NB10
@@ -64,7 +64,7 @@ A =' V32NB14
 AU + V32NB20
 A => V32NB13
 A *= V32NB9
-B = DUMMY
+B = STACK.TOP
 B => V32NB10
 NB = V32ZERO
 SF =NB+ 6
