@@ -293,6 +293,19 @@ fn_2:
 | T_D T_STORE                { $$.cr = 3; $$.f = 3; }
 | T_DB T_STORE               { $$.cr = 3; $$.f = 4; }
 | T_MOD                      { $$.cr = 3; $$.f = 6; }
+| T_MDR                      { $$.cr = 3; $$.f = 5; }
+| T_XCHK                     { $$.cr = 2; $$.f = 5; }
+| T_BMVE                     { $$.cr = 3; $$.f = 10; }
+| T_BMVB                     { $$.cr = 3; $$.f = 9; }
+| T_BCMP                     { $$.cr = 3; $$.f = 14; }
+| T_BLGC                     { $$.cr = 3; $$.f = 8; }
+| T_BSCN                     { $$.cr = 3; $$.f = 13; }
+| T_SMVE                     { $$.cr = 2; $$.f = 10; } /* for HASE not real in MU5 */
+| T_SMVB                     { $$.cr = 2; $$.f = 9; }
+| T_SCMP                     { $$.cr = 2; $$.f = 14; }
+| T_SLGC                     { $$.cr = 2; $$.f = 8; }
+| T_SMVF                     { $$.cr = 2; $$.f = 11; }
+| T_TALU                     { $$.cr = 2; $$.f = 12; }
 
 condit:
   jump_spec T_NAME           { operand_t operand; find_label($2, $1, &operand); process_instruction(0, 0, &operand); }
