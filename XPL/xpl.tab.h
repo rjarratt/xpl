@@ -71,45 +71,60 @@ extern int yydebug;
      T_RMOD = 280,
      T_SMOD = 281,
      T_XMOD = 282,
-     T_A = 283,
-     T_AU = 284,
-     T_AOD = 285,
-     T_B = 286,
-     T_NB = 287,
-     T_XNB = 288,
-     T_SF = 289,
-     T_STK = 290,
-     T_LOAD_NB_ADD = 291,
-     T_LOAD_SF_ADD = 292,
-     T_LOAD = 293,
-     T_LOAD_DEC = 294,
-     T_STACK_LOAD = 295,
-     T_STORE = 296,
-     T_PLUS = 297,
-     T_MINUS = 298,
-     T_MUL = 299,
-     T_NEQV = 300,
-     T_OR = 301,
-     T_AND = 302,
-     T_SHIFT = 303,
-     T_RSUB = 304,
-     T_COMP = 305,
-     T_CINC = 306,
-     T_CONV = 307,
-     T_RDIV = 308,
-     T_B_REL = 309,
-     T_0_REL = 310,
-     T_STACK = 311,
-     T_IF = 312,
-     T_EQ = 313,
-     T_NE = 314,
-     T_LT = 315,
-     T_LE = 316,
-     T_GT = 317,
-     T_GE = 318,
-     T_OV = 319,
-     T_BN = 320,
-     T_RJUMP = 321
+     T_MDR = 283,
+     T_XCHK = 284,
+     T_BMVE = 285,
+     T_BMVB = 286,
+     T_BCMP = 287,
+     T_BLGC = 288,
+     T_BSCN = 289,
+     T_SMVE = 290,
+     T_SMVB = 291,
+     T_SCMP = 292,
+     T_SLGC = 293,
+     T_SMVF = 294,
+     T_TALU = 295,
+     T_TCHK = 296,
+     T_TRNS = 297,
+     T_A = 298,
+     T_AU = 299,
+     T_AOD = 300,
+     T_B = 301,
+     T_NB = 302,
+     T_XNB = 303,
+     T_SF = 304,
+     T_STK = 305,
+     T_LOAD_NB_ADD = 306,
+     T_LOAD_SF_ADD = 307,
+     T_LOAD = 308,
+     T_LOAD_DEC = 309,
+     T_STACK_LOAD = 310,
+     T_STORE = 311,
+     T_PLUS = 312,
+     T_MINUS = 313,
+     T_MUL = 314,
+     T_NEQV = 315,
+     T_OR = 316,
+     T_AND = 317,
+     T_SHIFT = 318,
+     T_RSUB = 319,
+     T_COMP = 320,
+     T_CINC = 321,
+     T_CONV = 322,
+     T_RDIV = 323,
+     T_B_REL = 324,
+     T_0_REL = 325,
+     T_STACK = 326,
+     T_IF = 327,
+     T_EQ = 328,
+     T_NE = 329,
+     T_LT = 330,
+     T_LE = 331,
+     T_GT = 332,
+     T_GE = 333,
+     T_OV = 334,
+     T_BN = 335,
+     T_RJUMP = 336
    };
 #endif
 
@@ -118,7 +133,7 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 128 "xpl.y"
+#line 143 "xpl.y"
 
     unsigned int f;
     t_uint64 unsignedval;
@@ -136,7 +151,7 @@ typedef union YYSTYPE
 
 
 /* Line 2058 of yacc.c  */
-#line 140 "xpl.tab.h"
+#line 155 "xpl.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
