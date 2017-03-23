@@ -7,19 +7,19 @@ BEGIN
 V32/0 BASE:0
 V64/NB X:0
 V64/NB Y:1
+V32/NB RESULT:4
 V64/STK STACK.TOP:0
 
 NB = BASE
 SF =NB+ 6
 B = 0
 A =' 0
-A *= X[B]
+LOOP:A *= X[B]
 AU * Y[B]
 B CINC 9
 AU + STACK.TOP
-::65543   54724   A9D4    ACC ADD stack Z 0
-::65544           10BC    Org BRne lit Z -4
-::65545   7324    E684    ACC ST V32 NB 4
-::STOP: - -> STOP
+IF /=0, - -> LOOP
+A => RESULT
+STOP: - -> STOP
 END
 *END OF SEGMENT
