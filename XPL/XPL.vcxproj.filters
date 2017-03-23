@@ -44,6 +44,10 @@
     </Flex>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="sample.txt" />
+    <None Include="ScalarProduct.xpl" />
+    <None Include="StringProcessing.xpl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="sample.xpl" />
   </ItemGroup>
 </Project>
