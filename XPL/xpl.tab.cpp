@@ -2230,13 +2230,13 @@ yyreduce:
   case 121:
 /* Line 1792 of yacc.c  */
 #line 303 "xpl.y"
-    { (yyval.operand).operand_type = OPERAND_VARIABLE; (yyval.operand).var_decl = find_declaration((yyvsp[(1) - (2)].nameval)); }
+    { (yyval.operand).operand_type = OPERAND_VARIABLE_B_REL; (yyval.operand).var_decl = find_declaration((yyvsp[(1) - (2)].nameval)); }
     break;
 
   case 122:
 /* Line 1792 of yacc.c  */
 #line 304 "xpl.y"
-    { (yyval.operand).operand_type = OPERAND_VARIABLE; (yyval.operand).var_decl = find_declaration((yyvsp[(1) - (2)].nameval)); }
+    { (yyval.operand).operand_type = OPERAND_VARIABLE_0_REL; (yyval.operand).var_decl = find_declaration((yyvsp[(1) - (2)].nameval)); }
     break;
 
   case 123:

@@ -284,90 +284,103 @@ void process_instruction(unsigned int cr, unsigned int f, operand_t *operand)
 
 		if (operand->var_decl != NULL)
 		{
-			switch (operand->var_decl->vartype)
-			{
-				case V32:
-				{
-					if (operand->var_decl->relativeTo == NB)
-					{
-						k = 2;
-						n = operand->var_decl->varspec.displacement;
-					}
-					else if (operand->var_decl->relativeTo == STK)
-					{
-						k = (cr == 0) ? 1 : 7;
-						kp = 2;
-						np = 4;
-					}
-					else if (operand->var_decl->relativeTo == ZERO)
-					{
-						k = (cr == 0) ? 1 : 7;
-						kp = 2;
-						np = 1;
-						offset = operand->var_decl->varspec.displacement;
-					}
-					else
-					{
-						yyerror("non-NB relative not handled yet");
-					}
-					break;
-				}
-				case V64:
-				{
-					if (operand->var_decl->relativeTo == NB)
-					{
-						k = 3;
-						n = operand->var_decl->varspec.displacement;
-					}
-					else if (operand->var_decl->relativeTo == STK)
-					{
-						k = (cr == 0) ? 1 : 7;
-						kp = 3;
-						np = 4;
-					}
-					else if (operand->var_decl->relativeTo == ZERO)
-					{
-						k = (cr == 0) ? 1 : 7;
-						kp = 3;
-						np = 1;
-						offset = operand->var_decl->varspec.displacement;
-					}
-					else
-					{
-						yyerror("non-NB relative not handled yet");
-					}
-					break;
-				}
-				case VV:
-				{
-					k = (cr == 0) ? 1 : 7;
-					kp = 7;
-					if (operand->var_decl->relativeTo == NB)
-					{
-						np = 2;
-						offset = operand->var_decl->varspec.displacement;
-					}
-					else if (operand->var_decl->relativeTo == STK)
-					{
-						np = 4;
-					}
-					else if (operand->var_decl->relativeTo == ZERO)
-					{
-						np = 1;
-						offset = operand->var_decl->varspec.displacement;
-					}
-					else
-					{
-						yyerror("non-NB relative not handled yet");
-					}
-					break;
-				}
-				default:
-				{
-					yyerror("unhandled vartype");
-					break;
-				}
-			}
+            if (operand->operand_type == OPERAND_VARIABLE_B_REL)
+            {
+                k = 4;
+                n = operand->var_decl->varspec.displacement; /* TODO: N>32 */
+            }
+            else if (operand->operand_type == OPERAND_VARIABLE_0_REL)
+            {
+                k = 6;
+                n = operand->var_decl->varspec.displacement;  /* TODO: N>32 */
+            }
+            else
+            {
+                switch (operand->var_decl->vartype)
+                {
+                    case V32:
+                    {
+                        if (operand->var_decl->relativeTo == NB)
+                        {
+                            k = 2;
+                            n = operand->var_decl->varspec.displacement;
+                        }
+                        else if (operand->var_decl->relativeTo == STK)
+                        {
+                            k = (cr == 0) ? 1 : 7;
+                            kp = 2;
+                            np = 4;
+                        }
+                        else if (operand->var_decl->relativeTo == ZERO)
+                        {
+                            k = (cr == 0) ? 1 : 7;
+                            kp = 2;
+                            np = 1;
+                            offset = operand->var_decl->varspec.displacement;
+                        }
+                        else
+                        {
+                            yyerror("non-NB relative not handled yet");
+                        }
+                        break;
+                    }
+                    case V64:
+                    {
+                        if (operand->var_decl->relativeTo == NB)
+                        {
+                            k = 3;
+                            n = operand->var_decl->varspec.displacement;
+                        }
+                        else if (operand->var_decl->relativeTo == STK)
+                        {
+                            k = (cr == 0) ? 1 : 7;
+                            kp = 3;
+                            np = 4;
+                        }
+                        else if (operand->var_decl->relativeTo == ZERO)
+                        {
+                            k = (cr == 0) ? 1 : 7;
+                            kp = 3;
+                            np = 1;
+                            offset = operand->var_decl->varspec.displacement;
+                        }
+                        else
+                        {
+                            yyerror("non-NB relative not handled yet");
+                        }
+                        break;
+                    }
+                    case VV:
+                    {
+                        k = (cr == 0) ? 1 : 7;
+                        kp = 7;
+                        if (operand->var_decl->relativeTo == NB)
+                        {
+                            np = 2;
+                            offset = operand->var_decl->varspec.displacement;
+                        }
+                        else if (operand->var_decl->relativeTo == STK)
+                        {
+                            np = 4;
+                        }
+                        else if (operand->var_decl->relativeTo == ZERO)
+                        {
+                            np = 1;
+                            offset = operand->var_decl->varspec.displacement;
+                        }
+                        else
+                        {
+                            yyerror("non-NB relative not handled yet");
+                        }
+                        break;
+                    }
+                    default:
+                    {
+                        yyerror("unhandled vartype");
+                        break;
+                    }
+                }
+            }
 		}
 
 	}

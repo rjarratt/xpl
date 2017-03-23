@@ -245,3 +245,4 @@ ModelManifest.xml
 .fake/
 /XPL/console.bin
 /XPL/sample.bin
+/XPL/scalarproduct.bin

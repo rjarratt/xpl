@@ -300,8 +300,8 @@ cond:
 
 operand:
   simple_operand
-| T_NAME T_B_REL { $$.operand_type = OPERAND_VARIABLE; $$.var_decl = find_declaration($1); }
-| T_NAME T_0_REL { $$.operand_type = OPERAND_VARIABLE; $$.var_decl = find_declaration($1); }
+| T_NAME T_B_REL { $$.operand_type = OPERAND_VARIABLE_B_REL; $$.var_decl = find_declaration($1); }
+| T_NAME T_0_REL { $$.operand_type = OPERAND_VARIABLE_0_REL; $$.var_decl = find_declaration($1); }
 
 simple_operand:
   T_NAME                    { $$.operand_type = OPERAND_VARIABLE; $$.var_decl = find_declaration($1); }

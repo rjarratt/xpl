@@ -77,7 +77,9 @@ typedef struct LABEL_ENTRY
 typedef enum
 {
 	OPERAND_LITERAL,
-	OPERAND_VARIABLE
+    OPERAND_VARIABLE,
+    OPERAND_VARIABLE_B_REL,
+    OPERAND_VARIABLE_0_REL
 } operand_type_t;
 
 typedef enum
