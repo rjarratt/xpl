@@ -132,3 +132,4 @@ void add_label(char *name);
 int find_label(char *name, int distance, operand_t *operand);
 void make_int_literal(int sign, t_uint64 value, literal_t *literal);
 void process_instruction(unsigned int cr, unsigned int f, operand_t *operand);
+void process_text(char *name, char *string);

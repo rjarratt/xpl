@@ -39,6 +39,7 @@ in this Software without prior written authorization from Robert Jarratt.
 %token T_VV
 %token <nameval> T_NAME
 %token <unsignedval> T_INTEGER
+%token <stringval> T_CHARACTER_STRING
 %token T_D
 %token T_DO
 %token T_XD
@@ -103,6 +104,7 @@ in this Software without prior written authorization from Robert Jarratt.
 %token T_OV
 %token T_BN
 %token T_RJUMP
+%token T_DATASTR
 
 %type <signedval> displacement
 %type <vartype> var_type
@@ -146,6 +148,7 @@ extern int yylineno;
     t_int64 signedval;
 	int distance;
     char * nameval;
+	char *stringval;
     var_type_t vartype;
     var_relative_to_t varrelativeto;
     var_spec_t varspec;
@@ -167,6 +170,7 @@ statement:
 | label sep
 | declarative sep
 | instruction sep
+| text sep
 | sep;
 
 label: T_NAME T_COLON { add_label($1); }
@@ -344,6 +348,8 @@ decimal:
 | T_INTEGER                 { make_int_literal(0, $1, &$$); }
 
 sign: T_PLUS { $$ = 1; } | T_MINUS { $$ = -1; } /* TODO: can't express largest negative number */
+
+text: T_DATASTR T_NAME T_CHARACTER_STRING { process_text($2, $3); }
 
 sep: T_NL | T_COMMENT;
 %%

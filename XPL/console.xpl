@@ -17,5 +17,6 @@ AU COMP 0                     :: Poll for interrupt
 POLL:IF =0, - -> POLL
 - -> START
 STOP: - -> STOP
+DATASTR HELLO.WORLD "Hello World|0A||0D|"
 END
 *END OF SEGMENT

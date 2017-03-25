@@ -26,6 +26,7 @@ in this Software without prior written authorization from Robert Jarratt.
 
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 #include "xpl.h"
 
 FILE *binary;
@@ -44,7 +45,7 @@ static label_entry_t label_table[MAX_LABELS];
 static int numLabels;
 
 static int is_extended_operand(unsigned int cr, unsigned int k);
-static void emit(unsigned int word);
+static void emit_16_bit_word(unsigned int word);
 
 void set_pass(int new_pass)
 {
@@ -408,17 +409,17 @@ void process_instruction(unsigned int cr, unsigned int f, operand_t *operand)
 		instruction |= (n & 0x3F);
 	}
 
-	emit(instruction);
+	emit_16_bit_word(instruction);
 
 	if (is_extended_operand(cr, k) && kp > 1 && np < 4)
 	{
-		emit(offset);
+		emit_16_bit_word(offset);
 	}
 	else if (n <= -33 || n >= 32)
 	{
 		if (n > -65536 && n < 65535)
 		{
-			emit(n & 0xFFFF);
+			emit_16_bit_word(n & 0xFFFF);
 			//do the rest of opereand literals
 		}
 	}
@@ -435,12 +436,78 @@ void process_instruction(unsigned int cr, unsigned int f, operand_t *operand)
 
 }
 
+void process_text(char *name, char *string)
+{
+	int i;
+	int n = 0;
+	unsigned int word;
+	char c;
+	unsigned int byte;
+	int valid_byte = 1;
+	int started_hex = 0;
+	printf("%s=%s\n", name, string);
+	for (i = 0; i < strlen(string); i++)
+	{
+		c = string[i];
+		if (c != '|')
+		{
+			if (!started_hex)
+			{
+				byte = c & 0xFF;
+				valid_byte = 1;
+			}
+			else
+			{
+				byte = byte << 4;
+				if (isdigit(c))
+				{
+					byte |= c - '0';
+				}
+				else
+				{
+					byte |= (tolower(c) - 'a' + 10) & 0xF;
+				}
+			}
+		}
+		else if (!started_hex)
+		{
+			valid_byte = 0;
+			started_hex = 1;
+			byte = 0;
+		}
+		else
+		{
+			started_hex = 0;
+			valid_byte = 1;
+		}
+
+		if (valid_byte)
+		{
+			if ((n % 2) == 0)
+			{
+				word = byte << 8;
+			}
+			else
+			{
+				word |= byte;
+				emit_16_bit_word(word);
+			}
+			n++;
+		}
+	}
+
+	if ((n % 2) != 0)
+	{
+		emit_16_bit_word(word);
+	}
+}
+
 static int is_extended_operand(unsigned int cr, unsigned int k)
 {
 	return (cr != 0 && k == 7) || (cr == 0 && k == 1);
 }
 
-static void emit(unsigned int word)
+static void emit_16_bit_word(unsigned int word)
 {
 	unsigned char byte;
 	if (pass == 2)

@@ -116,6 +116,9 @@ OV                 { return T_OV; }
 BN                 { return T_BN; }
 \-\>               { return T_RJUMP; }
 
+DATASTR            { return T_DATASTR; }
+
+\".*\"             { yylval.stringval = _strdup(yytext); return T_CHARACTER_STRING; }
 {NAME}             { yylval.nameval = _strdup(yytext); return T_NAME; }
 {INTEGER}          { yylval.unsignedval = atoi(yytext); return T_INTEGER; }
 %[0-9A-F]+         { sscanf(yytext + 1, "%llX", &yylval.unsignedval); return T_HEX_DIGITS; }
