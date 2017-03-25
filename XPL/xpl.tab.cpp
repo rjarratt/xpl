@@ -1646,7 +1646,13 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-        case 11:
+        case 2:
+/* Line 1792 of yacc.c  */
+#line 163 "xpl.y"
+    { segment = (yyvsp[(2) - (10)].unsignedval); }
+    break;
+
+  case 11:
 /* Line 1792 of yacc.c  */
 #line 176 "xpl.y"
     { add_label((yyvsp[(1) - (2)].nameval)); }
@@ -2410,7 +2416,7 @@ yyreduce:
 
 
 /* Line 1792 of yacc.c  */
-#line 2414 "xpl.tab.cpp"
+#line 2420 "xpl.tab.cpp"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires

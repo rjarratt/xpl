@@ -110,8 +110,8 @@ IF                 { return T_IF; }
 \/=0               { return T_NE; }
 \<0                { return T_LT; }
 =\<                { return T_LE; }
-\>                 { return T_GT; }
-\>=                { return T_GE; }
+\>0                { return T_GT; }
+\>=0               { return T_GE; }
 OV                 { return T_OV; }
 BN                 { return T_BN; }
 \-\>               { return T_RJUMP; }
