@@ -154,6 +154,7 @@ void yyerror(char *msg);
 void init_var_spec_list(var_spec_list_t *var_spec_list);
 void add_var_spec_list(var_spec_list_t *var_spec_list, var_spec_t *var_spec);
 void add_declaration(var_type_t var_type, var_relative_to_t relativeTo, var_spec_list_t *var_spec_list);
+void add_symbol(var_type_t var_type, var_relative_to_t relativeTo, char *name, t_uint64 value);
 symbol_t *find_symbol(char *name);
 void add_label(char *name);
 int find_label(char *name, int distance, operand_t *operand);

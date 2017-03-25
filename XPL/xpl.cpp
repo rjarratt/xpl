@@ -93,21 +93,27 @@ void add_declaration(var_type_t var_type, var_relative_to_t relativeTo, var_spec
 				yyerror("displacement must be zero");
 			}
 
-			if (numSymbols >= MAX_SYMBOLS)
-			{
-				yyerror("symbol table full");
-			}
-			else
-			{
-				symbol_t *entry = &symbol_table[numSymbols++];
-				entry->vartype = var_type;
-				entry->relativeTo = relativeTo;
-				entry->name = _strdup(varspec->name);
-				entry->value = varspec->displacement;
-			}
+			add_symbol(var_type, relativeTo, varspec->name, varspec->displacement);
 		}
 	}
 }
+
+void add_symbol(var_type_t var_type, var_relative_to_t relativeTo, char *name, t_uint64 value)
+{
+	if (numSymbols >= MAX_SYMBOLS)
+	{
+		yyerror("symbol table full");
+	}
+	else
+	{
+		symbol_t *entry = &symbol_table[numSymbols++];
+		entry->vartype = var_type;
+		entry->relativeTo = relativeTo;
+		entry->name = _strdup(name);
+		entry->value = value;
+	}
+}
+
 
 symbol_t *find_symbol(char *name)
 {
