@@ -349,7 +349,7 @@ decimal:
 
 sign: T_PLUS { $$ = 1; } | T_MINUS { $$ = -1; } /* TODO: can't express largest negative number */
 
-text: T_DATASTR T_NAME T_CHARACTER_STRING { t_uint64 d = process_text($2, $3); }
+text: T_DATASTR T_NAME T_CHARACTER_STRING { t_uint64 d = process_text($2, $3); add_symbol(DESCRIPTOR, NOT_REL, $2, d); }
 
 sep: T_NL | T_COMMENT;
 %%

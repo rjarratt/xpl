@@ -61,6 +61,7 @@ typedef enum DESCRIPTOR_SIZE
 
 typedef enum VAR_RELATIVE_TO
 {
+	NOT_REL,
     NB,
     XNB,
     SF,
