@@ -256,6 +256,18 @@ void make_int_literal(int sign, t_uint64 value, literal_t *literal)
 	}
 }
 
+t_uint64 make_descriptor(descriptor_type_t type, descriptor_size_t size, unsigned char unscaled, unsigned char noboundcheck, unsigned int bound, unsigned int origin)
+{
+	t_uint64 result;
+
+	result |= ((t_uint64)type & 0x3) << 62;
+	result |= ((t_uint64)size & 0x7) << 59;
+	result |= ((t_uint64)bound & 0xFFFFFF) << 32;
+	result |= ((t_uint64)origin & 0xFFFFFFFF);
+
+	return result;
+}
+
 void process_instruction(unsigned int cr, unsigned int f, operand_t *operand)
 {
 	unsigned int instruction;
@@ -436,7 +448,7 @@ void process_instruction(unsigned int cr, unsigned int f, operand_t *operand)
 
 }
 
-void process_text(char *name, char *string)
+t_uint64 process_text(char *name, char *string)
 {
 	int i;
 	int n = 0;
@@ -445,8 +457,10 @@ void process_text(char *name, char *string)
 	unsigned int byte;
 	int valid_byte = 1;
 	int started_hex = 0;
+	unsigned int origin = instructionNum * 2;
+
 	printf("%s=%s\n", name, string);
-	for (i = 0; i < strlen(string); i++)
+	for (i = 0; i < (int)strlen(string); i++)
 	{
 		c = string[i];
 		if (c != '|')
@@ -500,6 +514,8 @@ void process_text(char *name, char *string)
 	{
 		emit_16_bit_word(word);
 	}
+
+	return make_descriptor(STRING_VECTOR, SIZE_8_BIT, 0, 0, n, origin);
 }
 
 static int is_extended_operand(unsigned int cr, unsigned int k)

@@ -2405,7 +2405,7 @@ yyreduce:
   case 145:
 /* Line 1792 of yacc.c  */
 #line 352 "xpl.y"
-    { process_text((yyvsp[(2) - (3)].nameval), (yyvsp[(3) - (3)].stringval)); }
+    { t_uint64 d = process_text((yyvsp[(2) - (3)].nameval), (yyvsp[(3) - (3)].stringval)); }
     break;
 
 

@@ -37,8 +37,27 @@ typedef enum VAR_TYPE
 {
     V32,
     V64,
-    VV
+    VV,
+	DESCRIPTOR
 } var_type_t;
+
+typedef enum DESCRIPTOR_TYPE
+{
+	GENERAL_VECTOR = 0,
+	STRING_VECTOR = 1,
+	ADDRESS_VECTOR = 2,
+	MISC_VECTOR = 3
+} descriptor_type_t;
+
+typedef enum DESCRIPTOR_SIZE
+{
+	SIZE_1_BIT = 0,
+	SIZE_4_BIT = 2,
+	SIZE_8_BIT = 3,
+	SIZE_16_BIT = 4,
+	SIZE_32_BIT = 5,
+	SIZE_64_BIT = 6,
+} descriptor_size_t;
 
 typedef enum VAR_RELATIVE_TO
 {
@@ -131,5 +150,6 @@ var_decl_t *find_declaration(char *name);
 void add_label(char *name);
 int find_label(char *name, int distance, operand_t *operand);
 void make_int_literal(int sign, t_uint64 value, literal_t *literal);
+t_uint64 make_descriptor(descriptor_type_t type, descriptor_size_t size, unsigned char unscaled, unsigned char noboundcheck, unsigned int bound, unsigned int origin);
 void process_instruction(unsigned int cr, unsigned int f, operand_t *operand);
-void process_text(char *name, char *string);
+t_uint64 process_text(char *name, char *string);
