@@ -122,12 +122,20 @@ typedef struct LITERAL
 	};
 } literal_t;
 
+typedef struct SYMBOL
+{
+	var_type_t vartype;
+	var_relative_to_t relativeTo;
+	char *name;
+	t_uint64 value;
+} symbol_t;
+
 typedef struct OPERAND
 {
 	operand_type_t operand_type;
 	union
 	{
-		var_decl_t *var_decl;
+		symbol_t *symbol;
 		literal_t literal;
 	};
 } operand_t;
@@ -146,7 +154,7 @@ void yyerror(char *msg);
 void init_var_spec_list(var_spec_list_t *var_spec_list);
 void add_var_spec_list(var_spec_list_t *var_spec_list, var_spec_t *var_spec);
 void add_declaration(var_type_t var_type, var_relative_to_t relativeTo, var_spec_list_t *var_spec_list);
-var_decl_t *find_declaration(char *name);
+symbol_t *find_symbol(char *name);
 void add_label(char *name);
 int find_label(char *name, int distance, operand_t *operand);
 void make_int_literal(int sign, t_uint64 value, literal_t *literal);

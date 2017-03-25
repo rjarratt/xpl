@@ -2351,19 +2351,19 @@ yyreduce:
   case 135:
 /* Line 1792 of yacc.c  */
 #line 335 "xpl.y"
-    { (yyval.operand).operand_type = OPERAND_VARIABLE_B_REL; (yyval.operand).var_decl = find_declaration((yyvsp[(1) - (2)].nameval)); }
+    { (yyval.operand).operand_type = OPERAND_VARIABLE_B_REL; (yyval.operand).symbol = find_symbol((yyvsp[(1) - (2)].nameval)); }
     break;
 
   case 136:
 /* Line 1792 of yacc.c  */
 #line 336 "xpl.y"
-    { (yyval.operand).operand_type = OPERAND_VARIABLE_0_REL; (yyval.operand).var_decl = find_declaration((yyvsp[(1) - (2)].nameval)); }
+    { (yyval.operand).operand_type = OPERAND_VARIABLE_0_REL; (yyval.operand).symbol = find_symbol((yyvsp[(1) - (2)].nameval)); }
     break;
 
   case 137:
 /* Line 1792 of yacc.c  */
 #line 339 "xpl.y"
-    { (yyval.operand).operand_type = OPERAND_VARIABLE; (yyval.operand).var_decl = find_declaration((yyvsp[(1) - (1)].nameval)); }
+    { (yyval.operand).operand_type = OPERAND_VARIABLE; (yyval.operand).symbol = find_symbol((yyvsp[(1) - (1)].nameval)); }
     break;
 
   case 138:

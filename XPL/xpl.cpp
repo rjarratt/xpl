@@ -38,7 +38,7 @@ extern int yylineno;
 static int pass;
 static unsigned int instructionNum;
 
-static var_decl_t symbol_table[MAX_SYMBOLS];
+static symbol_t symbol_table[MAX_SYMBOLS];
 static int numSymbols = 0;
 
 static label_entry_t label_table[MAX_LABELS];
@@ -99,23 +99,23 @@ void add_declaration(var_type_t var_type, var_relative_to_t relativeTo, var_spec
 			}
 			else
 			{
-				var_decl_t *entry = &symbol_table[numSymbols++];
+				symbol_t *entry = &symbol_table[numSymbols++];
 				entry->vartype = var_type;
 				entry->relativeTo = relativeTo;
-				entry->varspec.name = _strdup(varspec->name);
-				entry->varspec.displacement = varspec->displacement;
+				entry->name = _strdup(varspec->name);
+				entry->value = varspec->displacement;
 			}
 		}
 	}
 }
 
-var_decl_t *find_declaration(char *name)
+symbol_t *find_symbol(char *name)
 {
 	int i;
-	var_decl_t *result = NULL;
+	symbol_t *result = NULL;
 	for (i = 0; i < numSymbols; i++)
 	{
-		if (strcmp(name, symbol_table[i].varspec.name) == 0)
+		if (strcmp(name, symbol_table[i].name) == 0)
 		{
 			result = &symbol_table[i];
 			break;
@@ -124,7 +124,7 @@ var_decl_t *find_declaration(char *name)
 
 	if (result == NULL)
 	{
-		yyerror("variable not declared");
+		yyerror("symbol not declared");
 	}
 
 	return result;
@@ -275,7 +275,7 @@ void process_instruction(unsigned int cr, unsigned int f, operand_t *operand)
 	t_int64 n = 0;
 	unsigned int kp = 0;
 	unsigned int np = 0;
-	unsigned int offset = 0;
+	t_int64 offset = 0;
 
 	if (operand->operand_type == OPERAND_LITERAL)
 	{
@@ -295,41 +295,41 @@ void process_instruction(unsigned int cr, unsigned int f, operand_t *operand)
 	else
 	{
 
-		if (operand->var_decl != NULL)
+		if (operand->symbol != NULL)
 		{
             if (operand->operand_type == OPERAND_VARIABLE_B_REL)
             {
                 k = 4;
-                n = operand->var_decl->varspec.displacement; /* TODO: N>32 */
+                n = operand->symbol->value; /* TODO: N>32 */
             }
             else if (operand->operand_type == OPERAND_VARIABLE_0_REL)
             {
                 k = 6;
-                n = operand->var_decl->varspec.displacement;  /* TODO: N>32 */
+                n = operand->symbol->value;  /* TODO: N>32 */
             }
             else
             {
-                switch (operand->var_decl->vartype)
+                switch (operand->symbol->vartype)
                 {
                     case V32:
                     {
-                        if (operand->var_decl->relativeTo == NB)
+                        if (operand->symbol->relativeTo == NB)
                         {
                             k = 2;
-                            n = operand->var_decl->varspec.displacement;
+                            n = operand->symbol->value;
                         }
-                        else if (operand->var_decl->relativeTo == STK)
+                        else if (operand->symbol->relativeTo == STK)
                         {
                             k = (cr == 0) ? 1 : 7;
                             kp = 2;
                             np = 4;
                         }
-                        else if (operand->var_decl->relativeTo == ZERO)
+                        else if (operand->symbol->relativeTo == ZERO)
                         {
                             k = (cr == 0) ? 1 : 7;
                             kp = 2;
                             np = 1;
-                            offset = operand->var_decl->varspec.displacement;
+                            offset = (t_int64)operand->symbol->value;
                         }
                         else
                         {
@@ -339,23 +339,23 @@ void process_instruction(unsigned int cr, unsigned int f, operand_t *operand)
                     }
                     case V64:
                     {
-                        if (operand->var_decl->relativeTo == NB)
+                        if (operand->symbol->relativeTo == NB)
                         {
                             k = 3;
-                            n = operand->var_decl->varspec.displacement;
+                            n = operand->symbol->value;
                         }
-                        else if (operand->var_decl->relativeTo == STK)
+                        else if (operand->symbol->relativeTo == STK)
                         {
                             k = (cr == 0) ? 1 : 7;
                             kp = 3;
                             np = 4;
                         }
-                        else if (operand->var_decl->relativeTo == ZERO)
+                        else if (operand->symbol->relativeTo == ZERO)
                         {
                             k = (cr == 0) ? 1 : 7;
                             kp = 3;
                             np = 1;
-                            offset = operand->var_decl->varspec.displacement;
+                            offset = operand->symbol->value;
                         }
                         else
                         {
@@ -367,19 +367,19 @@ void process_instruction(unsigned int cr, unsigned int f, operand_t *operand)
                     {
                         k = (cr == 0) ? 1 : 7;
                         kp = 7;
-                        if (operand->var_decl->relativeTo == NB)
+                        if (operand->symbol->relativeTo == NB)
                         {
                             np = 2;
-                            offset = operand->var_decl->varspec.displacement;
+                            offset = operand->symbol->value;
                         }
-                        else if (operand->var_decl->relativeTo == STK)
+                        else if (operand->symbol->relativeTo == STK)
                         {
                             np = 4;
                         }
-                        else if (operand->var_decl->relativeTo == ZERO)
+                        else if (operand->symbol->relativeTo == ZERO)
                         {
                             np = 1;
-                            offset = operand->var_decl->varspec.displacement;
+                            offset = operand->symbol->value;
                         }
                         else
                         {
@@ -425,7 +425,7 @@ void process_instruction(unsigned int cr, unsigned int f, operand_t *operand)
 
 	if (is_extended_operand(cr, k) && kp > 1 && np < 4)
 	{
-		emit_16_bit_word(offset);
+		emit_16_bit_word(offset & 0xFFFF);
 	}
 	else if (n <= -33 || n >= 32)
 	{
