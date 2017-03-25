@@ -16,7 +16,7 @@ AU & %FFFFFF
 A => LENGTH
 
 REPEAT:B = 0
-NEXTCHAR: A =' %F                 :: Value that resets console interrupt bits
+NEXTCHAR: A =' %F             :: Value that resets console interrupt bits
 A => CONSOLE.INTERRUPT        :: Set Console Interrupt in Console V-Store
 A =' %00                      :: TTY output mode
 A => TELETYPE.CONTROL         :: Set teletype control
