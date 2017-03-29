@@ -160,7 +160,7 @@ extern int yylineno;
 }
 
 %%
-program_of_a_segment: T_SEGMENT T_INTEGER T_NL T_BEGIN  T_NL program T_END T_NL T_ENDOFSEGMENT T_NL { segment = $2; }
+program_of_a_segment: T_SEGMENT T_INTEGER  { start_segment($2); } T_NL T_BEGIN  T_NL program T_END T_NL T_ENDOFSEGMENT T_NL
 program:
   statement
 | program statement;

@@ -153,6 +153,7 @@ extern FILE *binary;
 
 void set_pass(int new_pass);
 void yyerror(char *msg);
+void start_segment(unsigned int segment_number);
 void init_var_spec_list(var_spec_list_t *var_spec_list);
 void add_var_spec_list(var_spec_list_t *var_spec_list, var_spec_t *var_spec);
 void add_declaration(var_type_t var_type, var_relative_to_t relativeTo, var_spec_list_t *var_spec_list);

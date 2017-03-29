@@ -66,6 +66,11 @@ void yyerror(char *msg)
     error_in_pass = 1;
 }
 
+void start_segment(unsigned int segment_number)
+{
+    segment = segment_number;
+}
+
 void init_var_spec_list(var_spec_list_t *var_spec_list)
 {
     var_spec_list->length = 0;
