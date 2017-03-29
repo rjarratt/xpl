@@ -46,6 +46,7 @@
   <ItemGroup>
     <None Include="ScalarProduct.xpl" />
     <None Include="StringProcessing.xpl" />
+    <None Include="console.xpl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="sample.xpl" />

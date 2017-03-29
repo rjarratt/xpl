@@ -133,6 +133,7 @@
     <Text Include="sample.xpl" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="console.xpl" />
     <None Include="ScalarProduct.xpl" />
     <None Include="StringProcessing.xpl" />
   </ItemGroup>
