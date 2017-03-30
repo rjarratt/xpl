@@ -6,9 +6,7 @@ VV/0 CONSOLE.INTERRUPT:%300
 VV/0 TELETYPE.DATA:%306
 VV/0 TELETYPE.CONTROL:%307
 
-- -> START
-DATASTR HELLO.WORLD "Hello MU5 World|0D||0A|"
-START:NB = %10
+NB = %10
 :: Extract length of string              
 A =' HELLO.WORLD
 AU <= -32
@@ -25,11 +23,12 @@ A => TELETYPE.DATA            :: Set teletype data
 
 POLL: A =' CONSOLE.INTERRUPT  :: Read Console Interrupt
 AU COMP 0                     :: Poll for interrupt
-POLL:IF =0, - -> POLL
+IF =0, - -> POLL
 B CINC LENGTH
 IF <0, - -> NEXTCHAR
 - -> REPEAT
 
 STOP: - -> STOP
+DATASTR HELLO.WORLD "Hello MU5 World|0D||0A|"
 END
 *END OF SEGMENT

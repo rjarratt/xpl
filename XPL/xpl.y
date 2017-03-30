@@ -312,8 +312,8 @@ fn_2:
 | T_TALU                     { $$.cr = 2; $$.f = 12; }
 
 condit:
-  jump_spec T_NAME           { operand_t operand; find_label($2, $1, &operand); process_instruction(0, 0, &operand); }
-| T_IF cond T_COMMA jump_spec T_NAME { operand_t operand; find_label($5, $4, &operand); process_instruction(0, $2, &operand); }
+  jump_spec T_NAME           { operand_t operand; set_operand_label($2, $1, &operand); process_instruction(0, 0, &operand); }
+| T_IF cond T_COMMA jump_spec T_NAME { operand_t operand; set_operand_label($5, $4, &operand); process_instruction(0, $2, &operand); }
 
 jump_spec:
   T_PLUS T_RJUMP             { $$ = 1; }
@@ -379,6 +379,7 @@ int main(int argc, char *argv[])
 
         if (yyin != NULL && binary != NULL)
         {
+            /* first pass picks up the forward declarations, but the operand sizes are unknown for forward declarations, so instruction locations will be incorrect */
 		    set_pass(1);
             do
             {
@@ -386,10 +387,26 @@ int main(int argc, char *argv[])
             }
             while (!feof(yyin));
 
+            /* Second pass generates the right instructions as all the data types of forward declared items are now known, but byte origins of any forward declared
+               descriptors will be unknown, so they will be incorrect in the symbol table at this point
+            */
 			if (!error_in_pass)
 			{
 			    rewind(yyin);
 			    set_pass(2);
+                do
+                {
+                    yyparse();
+                }
+                while (!feof(yyin));
+			}
+
+            /* Third pass will run with forward declared descriptors having the right byte origin values.
+            */
+			if (!error_in_pass)
+			{
+			    rewind(yyin);
+			    set_pass(3);
                 do
                 {
                     yyparse();

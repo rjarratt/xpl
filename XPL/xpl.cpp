@@ -91,20 +91,16 @@ void add_var_spec_list(var_spec_list_t *var_spec_list, var_spec_t *var_spec)
 
 void add_declaration(var_type_t var_type, var_relative_to_t relativeTo, var_spec_list_t *var_spec_list)
 {
-    /* TODO: check decl does not already exist, use a structure that is sorted */
     int i;
-    if (pass == 1)
+    for (i = 0; i < var_spec_list->length; i++)
     {
-        for (i = 0; i < var_spec_list->length; i++)
+        var_spec_t *varspec = &var_spec_list->var_specs[i];
+        if (relativeTo == STK && varspec->displacement != 0)
         {
-            var_spec_t *varspec = &var_spec_list->var_specs[i];
-            if (relativeTo == STK && varspec->displacement != 0)
-            {
-                yyerror("displacement must be zero");
-            }
-
-            add_symbol(var_type, relativeTo, varspec->name, varspec->displacement);
+            yyerror("displacement must be zero");
         }
+
+        add_symbol(var_type, relativeTo, varspec->name, varspec->displacement);
     }
 }
 
@@ -113,7 +109,8 @@ void add_symbol(var_type_t var_type, var_relative_to_t relativeTo, char *name, t
 	symbol_t *entry;
 	if (pass == 1)
 	{
-		if (numSymbols >= MAX_SYMBOLS)
+        /* TODO: check decl does not already exist, use a structure that is sorted */
+        if (numSymbols >= MAX_SYMBOLS)
 		{
 			yyerror("symbol table full");
 		}
@@ -157,16 +154,27 @@ symbol_t *find_symbol(char *name)
 
 void add_label(char *name)
 {
+    label_entry_t *entry;
     /* TODO: check decl does not already exist, use a structure that is sorted. Label scoping */
     if (pass == 1)
     {
-        label_entry_t *entry = &label_table[numLabels++];
+        if (find_label(name))
+        {
+            yyerror("label already defined");
+        }
+
+        entry = &label_table[numLabels++];
         entry->name = _strdup(name);
+        entry->location = instructionNum;
+    }
+    else
+    {
+        entry = find_label(name);
         entry->location = instructionNum;
     }
 }
 
-int find_label(char *name, int distance, operand_t *operand)
+label_entry_t *find_label(char *name)
 {
     int i;
     label_entry_t *entry = NULL;
@@ -178,6 +186,13 @@ int find_label(char *name, int distance, operand_t *operand)
             break;
         }
     }
+
+    return entry;
+}
+
+int set_operand_label(char *name, int distance, operand_t *operand)
+{
+    label_entry_t *entry = find_label(name);
 
     operand->operand_type = OPERAND_LITERAL;
 
@@ -616,7 +631,7 @@ static void emit_extended_instruction(unsigned char cr, unsigned char f, unsigne
 static void emit_16_bit_word(unsigned int word)
 {
     unsigned char byte;
-	if (pass == 2)
+	if (pass == 3)
     {
         printf("%3d:%04X\n", instructionNum, word);
         byte = (word >> 8) & 0xFF;

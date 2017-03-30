@@ -160,7 +160,8 @@ void add_declaration(var_type_t var_type, var_relative_to_t relativeTo, var_spec
 void add_symbol(var_type_t var_type, var_relative_to_t relativeTo, char *name, t_uint64 value);
 symbol_t *find_symbol(char *name);
 void add_label(char *name);
-int find_label(char *name, int distance, operand_t *operand);
+label_entry_t *find_label(char *name);
+int set_operand_label(char *name, int distance, operand_t *operand);
 literal_type_t get_literal_type(int sign, t_uint64 value);
 void make_int_literal(int sign, t_uint64 value, literal_t *literal);
 t_uint64 make_descriptor(descriptor_type_t type, descriptor_size_t size, unsigned char unscaled, unsigned char noboundcheck, unsigned int bound, unsigned int origin);
