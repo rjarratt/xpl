@@ -45,18 +45,20 @@ static int numSymbols = 0;
 static label_entry_t label_table[MAX_LABELS];
 static int numLabels;
 
+static segment_t segment_table[MAX_SEGMENTS];
+static int numSegments;
+
 static int is_extended_operand(unsigned int cr, unsigned int k);
 static void emit_instruction(unsigned char cr, unsigned char f, unsigned char k, unsigned char n);
 static void emit_extended_instruction(unsigned char cr, unsigned char f, unsigned char kp, unsigned char np);
 static void emit_16_bit_word(unsigned int word);
 static void emit_32_bit_word(unsigned int word);
 static void emit_64_bit_word(t_uint64 word);
+static void write_16_bit_word(unsigned int word);
 
 void set_pass(int new_pass)
 {
-    printf("starting pass %d\n", new_pass);
     pass = new_pass;
-    instructionNum = 0;
     yylineno = 1;
 }
 
@@ -68,7 +70,65 @@ void yyerror(char *msg)
 
 void start_segment(unsigned int segment_number)
 {
+    segment_t *seg;
+    if (pass == PASS_CODE_GEN)
+    {
+        seg = get_segment(segment_number);
+        write_16_bit_word(segment_number);
+        write_16_bit_word(seg->length);
+    }
+
     segment = segment_number;
+    instructionNum = 0;
+}
+
+void end_segment(void)
+{
+    set_segment(segment, instructionNum);
+}
+
+segment_t *get_segment(unsigned int segment_number)
+{
+    int i;
+    segment_t *entry = NULL;
+
+    for (i = 0; i < numSegments; i++)
+    {
+        if (segment_table[i].segment == segment_number)
+        {
+            entry = &segment_table[i];
+            break;
+        }
+    }
+
+    return entry;
+}
+
+void set_segment(unsigned int segment_number, unsigned int length)
+{
+    segment_t *entry;
+    if (pass == PASS_GET_FORWARDS)
+    {
+        if (get_segment(segment_number) != NULL)
+        {
+            yyerror("cannot define same segment more than once");
+        }
+        else if (numSegments >= MAX_SEGMENTS)
+        {
+            yyerror("too many segments");
+        }
+        else
+        {
+            entry = &segment_table[numSegments++];
+            entry->segment = segment_number;
+            entry->length = length;
+        }
+    }
+    else
+    {
+        entry = get_segment(segment_number);
+        entry->length = length;
+    }
 }
 
 void init_var_spec_list(var_spec_list_t *var_spec_list)
@@ -107,7 +167,7 @@ void add_declaration(var_type_t var_type, var_relative_to_t relativeTo, var_spec
 void add_symbol(var_type_t var_type, var_relative_to_t relativeTo, char *name, t_uint64 value)
 {
 	symbol_t *entry;
-	if (pass == 1)
+	if (pass == PASS_GET_FORWARDS)
 	{
         /* TODO: check decl does not already exist, use a structure that is sorted */
         if (numSymbols >= MAX_SYMBOLS)
@@ -144,7 +204,7 @@ symbol_t *find_symbol(char *name)
         }
     }
 
-    if (result == NULL && pass != 1)
+    if (result == NULL && pass != PASS_GET_FORWARDS)
     {
         yyerror("symbol not declared");
     }
@@ -156,7 +216,7 @@ void add_label(char *name)
 {
     label_entry_t *entry;
     /* TODO: check decl does not already exist, use a structure that is sorted. Label scoping */
-    if (pass == 1)
+    if (pass == PASS_GET_FORWARDS)
     {
         if (find_label(name))
         {
@@ -211,7 +271,7 @@ int set_operand_label(char *name, int distance, operand_t *operand)
 
     if (entry == NULL)
     {
-        if (pass > 1)
+        if (pass > PASS_GET_FORWARDS)
         {
             yyerror("label not found");
         }
@@ -630,14 +690,10 @@ static void emit_extended_instruction(unsigned char cr, unsigned char f, unsigne
 
 static void emit_16_bit_word(unsigned int word)
 {
-    unsigned char byte;
-	if (pass == 3)
+	if (pass == PASS_CODE_GEN)
     {
-        printf("%3d:%04X\n", instructionNum, word);
-        byte = (word >> 8) & 0xFF;
-        fwrite(&byte, 1, 1, binary);
-        byte = word & 0xFF;
-        fwrite(&byte, 1, 1, binary);
+        printf("%05d.%05d:%04X\n", segment, instructionNum, word);
+        write_16_bit_word(word);
     }
 
     instructionNum++;
@@ -657,3 +713,11 @@ static void emit_64_bit_word(t_uint64 word)
     emit_16_bit_word(word & 0xFFFF);
 }
 
+static void write_16_bit_word(unsigned int word)
+{
+    unsigned char byte;
+    byte = (word >> 8) & 0xFF;
+    fwrite(&byte, 1, 1, binary);
+    byte = word & 0xFF;
+    fwrite(&byte, 1, 1, binary);
+}

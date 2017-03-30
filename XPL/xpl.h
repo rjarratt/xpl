@@ -28,7 +28,12 @@ in this Software without prior written authorization from Robert Jarratt.
 
 #define MAX_SYMBOLS 100
 #define MAX_LABELS 100
+#define MAX_SEGMENTS 100
 #define MAX_VAR_SPECS 16
+
+#define PASS_GET_FORWARDS 1
+#define PASS_CALC_SIZES 2
+#define PASS_CODE_GEN 3
 
 typedef signed __int64          t_int64;
 typedef unsigned __int64        t_uint64;
@@ -87,6 +92,12 @@ typedef struct VAR_DECL
     var_relative_to_t relativeTo;
     var_spec_t varspec;
 } var_decl_t;
+
+typedef struct SEGMENT
+{
+    unsigned int segment;
+    unsigned int length;
+} segment_t;
 
 typedef struct LABEL_ENTRY
 {
@@ -154,6 +165,9 @@ extern FILE *binary;
 void set_pass(int new_pass);
 void yyerror(char *msg);
 void start_segment(unsigned int segment_number);
+void end_segment(void);
+segment_t *get_segment(unsigned int segment_number);
+void set_segment(unsigned int segment_number, unsigned int length);
 void init_var_spec_list(var_spec_list_t *var_spec_list);
 void add_var_spec_list(var_spec_list_t *var_spec_list, var_spec_t *var_spec);
 void add_declaration(var_type_t var_type, var_relative_to_t relativeTo, var_spec_list_t *var_spec_list);

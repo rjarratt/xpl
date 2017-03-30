@@ -160,7 +160,8 @@ extern int yylineno;
 }
 
 %%
-program_of_a_segment: T_SEGMENT T_INTEGER  { start_segment($2); } T_NL T_BEGIN  T_NL program T_END T_NL T_ENDOFSEGMENT T_NL
+xpl_program: program_of_a_segment | program_of_a_segment xpl_program
+program_of_a_segment: T_SEGMENT T_INTEGER  { start_segment($2); } T_NL T_BEGIN  T_NL program T_END T_NL T_ENDOFSEGMENT T_NL { end_segment(); }
 program:
   statement
 | program statement;
@@ -380,7 +381,7 @@ int main(int argc, char *argv[])
         if (yyin != NULL && binary != NULL)
         {
             /* first pass picks up the forward declarations, but the operand sizes are unknown for forward declarations, so instruction locations will be incorrect */
-		    set_pass(1);
+		    set_pass(PASS_GET_FORWARDS);
             do
             {
                 yyparse();
@@ -393,7 +394,7 @@ int main(int argc, char *argv[])
 			if (!error_in_pass)
 			{
 			    rewind(yyin);
-			    set_pass(2);
+			    set_pass(PASS_CALC_SIZES);
                 do
                 {
                     yyparse();
@@ -406,7 +407,7 @@ int main(int argc, char *argv[])
 			if (!error_in_pass)
 			{
 			    rewind(yyin);
-			    set_pass(3);
+			    set_pass(PASS_CODE_GEN);
                 do
                 {
                     yyparse();
