@@ -44,6 +44,10 @@ END                { return T_END; }
 ,                  { return T_COMMA; }
 :                  { return T_COLON; }
 \/                 { return T_SLASH; }
+\(                 { return T_L_BR; }
+\)                 { return T_R_BR; }
+\[                 { return T_L_SQ; }
+\]                 { return T_R_SQ; }
 V32                { return T_V32; }
 V64                { return T_V64; }
 VV                 { return T_VV; }
@@ -116,6 +120,7 @@ OV                 { return T_OV; }
 BN                 { return T_BN; }
 \-\>               { return T_RJUMP; }
 
+DATAVEC            { return T_DATAVEC; }
 DATASTR            { return T_DATASTR; }
 
 \".*\"             { yylval.stringval = _strdup(yytext); return T_CHARACTER_STRING; }

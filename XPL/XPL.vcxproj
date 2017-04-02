@@ -127,10 +127,15 @@
     <ClInclude Include="xpl.tab.h" />
   </ItemGroup>
   <ItemGroup>
-    <Bison Include="xpl.y" />
+    <Bison Include="xpl.y">
+      <Debug Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Debug>
+      <Debug Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </Debug>
+    </Bison>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="sample.xpl" />
+    <Text Include="demonstration.xpl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="console.xpl" />

@@ -28,6 +28,10 @@ in this Software without prior written authorization from Robert Jarratt.
 %token T_COMMA
 %token T_COLON
 %token T_SLASH
+%token T_L_BR
+%token T_R_BR
+%token T_L_SQ
+%token T_R_SQ
 %token <unsignedval> T_HEX_DIGITS
 %token T_SEGMENT
 %token T_ENDOFSEGMENT
@@ -104,6 +108,7 @@ in this Software without prior written authorization from Robert Jarratt.
 %token T_OV
 %token T_BN
 %token T_RJUMP
+%token T_DATAVEC
 %token T_DATASTR
 
 %type <signedval> displacement
@@ -161,7 +166,7 @@ extern int yylineno;
 
 %%
 xpl_program: program_of_a_segment | program_of_a_segment xpl_program
-program_of_a_segment: T_SEGMENT T_INTEGER  { start_segment($2); } T_NL T_BEGIN  T_NL program T_END T_NL T_ENDOFSEGMENT T_NL { end_segment(); }
+program_of_a_segment: T_SEGMENT T_INTEGER  { start_segment((unsigned int)$2); } T_NL T_BEGIN  T_NL program T_END T_NL T_ENDOFSEGMENT T_NL { end_segment(); }
 program:
   statement
 | program statement;
@@ -171,6 +176,7 @@ statement:
 | label sep
 | declarative sep
 | instruction sep
+| table sep
 | text sep
 | sep;
 
@@ -350,6 +356,10 @@ decimal:
 
 sign: T_PLUS { $$ = 1; } | T_MINUS { $$ = -1; } /* TODO: can't express largest negative number */
 
+table: T_DATAVEC T_NAME T_L_BR T_INTEGER T_R_BR T_NL lit_list T_END
+lit_list: lit_line T_NL | lit_line T_NL lit_list
+lit_line: lit_items | lit_items T_L_SQ T_INTEGER T_R_SQ
+lit_items: literal T_COMMA lit_items | literal
 text: T_DATASTR T_NAME T_CHARACTER_STRING { t_uint64 d = process_text($2, $3); add_symbol(DESCRIPTOR, NOT_REL, $2, d); }
 
 sep: T_NL | T_COMMENT;

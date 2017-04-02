@@ -49,6 +49,6 @@
     <None Include="console.xpl" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="sample.xpl" />
+    <Text Include="demonstration.xpl" />
   </ItemGroup>
 </Project>
