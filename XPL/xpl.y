@@ -356,10 +356,10 @@ decimal:
 
 sign: T_PLUS { $$ = 1; } | T_MINUS { $$ = -1; } /* TODO: can't express largest negative number */
 
-table: T_DATAVEC T_NAME T_L_BR T_INTEGER T_R_BR T_NL lit_list T_END
+table: T_DATAVEC T_NAME T_L_BR T_INTEGER T_R_BR T_NL { set_datavec_size($4); } lit_list T_END { set_datavec_size(0); }
 lit_list: lit_line T_NL | lit_line T_NL lit_list
 lit_line: lit_items | lit_items T_L_SQ T_INTEGER T_R_SQ
-lit_items: literal T_COMMA lit_items | literal
+lit_items: literal { process_datavec_literal(&$1); } T_COMMA lit_items | literal { process_datavec_literal(&$1); }
 text: T_DATASTR T_NAME T_CHARACTER_STRING { t_uint64 d = process_text($2, $3); add_symbol(DESCRIPTOR, NOT_REL, $2, d); }
 
 sep: T_NL | T_COMMENT;

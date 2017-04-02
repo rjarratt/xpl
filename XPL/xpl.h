@@ -181,3 +181,5 @@ void make_int_literal(int sign, t_uint64 value, literal_t *literal);
 t_uint64 make_descriptor(descriptor_type_t type, descriptor_size_t size, unsigned char unscaled, unsigned char noboundcheck, unsigned int bound, unsigned int origin);
 void process_instruction(unsigned int cr, unsigned int f, operand_t *operand);
 t_uint64 process_text(char *name, char *string);
+void set_datavec_size(t_uint64 size);
+void process_datavec_literal(literal_t *literal);

@@ -48,12 +48,15 @@ static int numLabels;
 static segment_t segment_table[MAX_SEGMENTS];
 static int numSegments;
 
+static int datavec_size;
+
 static int is_extended_operand(unsigned int cr, unsigned int k);
 static void emit_instruction(unsigned char cr, unsigned char f, unsigned char k, unsigned char n);
 static void emit_extended_instruction(unsigned char cr, unsigned char f, unsigned char kp, unsigned char np);
 static void emit_16_bit_word(unsigned int word);
 static void emit_32_bit_word(unsigned int word);
 static void emit_64_bit_word(t_uint64 word);
+static void emit_literal(literal_t *literal);
 static void write_16_bit_word(unsigned int word);
 
 void set_pass(int new_pass)
@@ -293,60 +296,90 @@ literal_type_t get_literal_type(int sign, t_uint64 value)
 	literal_type_t literal_type;
 	if (sign != 0)
 	{
-		if (sign < 0)
+		if (datavec_size == 0)
 		{
-			if (value < 0x20)
+			if (sign < 0)
 			{
-				literal_type = LITERAL_SIGNED_6_BIT;
-			}
-			else if (value < 0x8000)
-			{
-				literal_type = LITERAL_SIGNED_16_BIT;
-			}
-			else if (value < 0x80000000)
-			{
-				literal_type = LITERAL_SIGNED_32_BIT;
+				if (value < 0x20)
+				{
+					literal_type = LITERAL_SIGNED_6_BIT;
+				}
+				else if (value < 0x8000)
+				{
+					literal_type = LITERAL_SIGNED_16_BIT;
+				}
+				else if (value < 0x80000000)
+				{
+					literal_type = LITERAL_SIGNED_32_BIT;
+				}
+				else
+				{
+					literal_type = LITERAL_SIGNED_64_BIT;
+				}
 			}
 			else
 			{
-				literal_type = LITERAL_SIGNED_64_BIT;
+				if (value < 0x1F)
+				{
+					literal_type = LITERAL_SIGNED_6_BIT;
+				}
+				else if (value < 0x7FFF)
+				{
+					literal_type = LITERAL_SIGNED_16_BIT;
+				}
+				else if (value < 0x7FFFFFFF)
+				{
+					literal_type = LITERAL_SIGNED_32_BIT;
+				}
+				else
+				{
+					literal_type = LITERAL_SIGNED_64_BIT;
+				}
 			}
 		}
-		else
+		else if (datavec_size == 16)
+		{
+			literal_type = LITERAL_SIGNED_16_BIT;
+		}
+		else if (datavec_size == 32)
+		{
+			literal_type = LITERAL_SIGNED_32_BIT;
+		}
+		else if (datavec_size == 64)
+		{
+			literal_type = LITERAL_SIGNED_64_BIT;
+		}
+	}
+	else
+	{
+		if (datavec_size == 0)
 		{
 			if (value < 0x1F)
 			{
 				literal_type = LITERAL_SIGNED_6_BIT;
 			}
-			else if (value < 0x7FFF)
+			else if (value < 0xFFFF)
 			{
-				literal_type = LITERAL_SIGNED_16_BIT;
+				literal_type = LITERAL_UNSIGNED_16_BIT;
 			}
-			else if (value < 0x7FFFFFFF)
+			else if (value < 0xFFFFFFFF)
 			{
-				literal_type = LITERAL_SIGNED_32_BIT;
+				literal_type = LITERAL_UNSIGNED_32_BIT;
 			}
 			else
 			{
-				literal_type = LITERAL_SIGNED_64_BIT;
+				literal_type = LITERAL_UNSIGNED_64_BIT;
 			}
 		}
-	}
-	else
-	{
-		if (value < 0x1F)
-		{
-			literal_type = LITERAL_SIGNED_6_BIT;
-		}
-		else if (value < 0xFFFF)
+		else if (datavec_size == 16)
 		{
 			literal_type = LITERAL_UNSIGNED_16_BIT;
 		}
-		else if (value < 0xFFFFFFFF)
+		else if (datavec_size == 32)
 		{
 			literal_type = LITERAL_UNSIGNED_32_BIT;
 		}
-		else
+		else if (datavec_size == 64)
 		{
 			literal_type = LITERAL_UNSIGNED_64_BIT;
 		}
@@ -561,27 +594,7 @@ void process_instruction(unsigned int cr, unsigned int f, operand_t *operand)
     }
     else if (is_extended_operand(cr, k) && kp <= 1)
     {
-		switch (np)
-		{
-			case LITERAL_SIGNED_16_BIT:
-			case LITERAL_UNSIGNED_16_BIT:
-			{
-				emit_16_bit_word(n & 0xFFFF);
-				break;
-			}
-			case LITERAL_SIGNED_32_BIT:
-			case LITERAL_UNSIGNED_32_BIT:
-			{
-				emit_32_bit_word(n & 0xFFFFFFFF);
-				break;
-			}
-			case LITERAL_SIGNED_64_BIT:
-			case LITERAL_UNSIGNED_64_BIT:
-			{
-				emit_64_bit_word((t_uint64)n);
-				break;
-			}
-		}
+		emit_literal(&operand->literal);
     }
 }
 
@@ -654,6 +667,21 @@ t_uint64 process_text(char *name, char *string)
     return make_descriptor(STRING_VECTOR, SIZE_8_BIT, 0, 0, n, origin);
 }
 
+void set_datavec_size(t_uint64 size)
+{
+	if (size != 0 && size != 16 && size != 32 && size != 64)
+	{
+		yyerror("datavec size not supported");
+	}
+
+	datavec_size = (int)size;
+}
+
+void process_datavec_literal(literal_t *literal)
+{
+	emit_literal(literal);
+}
+
 static int is_extended_operand(unsigned int cr, unsigned int k)
 {
     return (cr != 0 && k == 7) || (cr == 0 && k == 1);
@@ -711,6 +739,32 @@ static void emit_64_bit_word(t_uint64 word)
     emit_16_bit_word((word >> 32) & 0xFFFF);
     emit_16_bit_word((word >> 16) & 0xFFFF);
     emit_16_bit_word(word & 0xFFFF);
+}
+
+static void emit_literal(literal_t *literal)
+{
+	switch (literal->literal_type)
+	{
+		case LITERAL_SIGNED_6_BIT:
+		case LITERAL_SIGNED_16_BIT:
+		case LITERAL_UNSIGNED_16_BIT:
+		{
+			emit_16_bit_word(literal->unsigned_val & 0xFFFF);
+			break;
+		}
+		case LITERAL_SIGNED_32_BIT:
+		case LITERAL_UNSIGNED_32_BIT:
+		{
+			emit_32_bit_word(literal->unsigned_val & 0xFFFFFFFF);
+			break;
+		}
+		case LITERAL_SIGNED_64_BIT:
+		case LITERAL_UNSIGNED_64_BIT:
+		{
+			emit_64_bit_word(literal->unsigned_val);
+			break;
+		}
+	}
 }
 
 static void write_16_bit_word(unsigned int word)
