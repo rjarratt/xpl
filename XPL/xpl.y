@@ -111,6 +111,7 @@ in this Software without prior written authorization from Robert Jarratt.
 %token T_DATAVEC
 %token T_DATASTR
 
+%type <signedval> execute_seg_no
 %type <signedval> displacement
 %type <vartype> var_type
 %type <varrelativeto> var_rel
@@ -166,7 +167,8 @@ extern int yylineno;
 
 %%
 xpl_program: program_of_a_segment | program_of_a_segment xpl_program
-program_of_a_segment: T_SEGMENT T_INTEGER  { start_segment((unsigned int)$2); } T_NL T_BEGIN  T_NL program T_END T_NL T_ENDOFSEGMENT T_NL { end_segment(); }
+program_of_a_segment: T_SEGMENT execute_seg_no  { start_segment($2); } T_NL T_BEGIN  T_NL program T_END T_NL T_ENDOFSEGMENT T_NL { end_segment(); }
+execute_seg_no: decimal { $$ = $1.signed_val; }
 program:
   statement
 | program statement;
