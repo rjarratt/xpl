@@ -133,6 +133,7 @@ in this Software without prior written authorization from Robert Jarratt.
 %type <f> ms_ord
 %type <f> sf_ord
 %type <f> nb_ord
+%type <f> xnb_ord
 %type <instruction> fn_1
 %type <instruction> fn_2
 %type <instruction> aod_ord
@@ -279,6 +280,7 @@ org:
   ms_ord operand             { process_instruction(0, $1, &$2); }
 | sf_ord operand             { process_instruction(0, $1, &$2); }
 | nb_ord operand             { process_instruction(0, $1, &$2); }
+| xnb_ord operand            { process_instruction(0, $1, &$2); }
 
 ms_ord: T_MS T_LOAD          { $$ = 16; }
 sf_ord:
@@ -290,6 +292,10 @@ nb_ord:
   T_NB T_LOAD                { $$ = 28; }
 | T_NB T_LOAD_SF_ADD         { $$ = 29; }
 | T_NB T_PLUS                { $$ = 30; }
+
+xnb_ord:
+  T_XNB T_LOAD                { $$ = 20; }
+| T_XNB T_PLUS                { $$ = 22; }
 
 sts:
   fn_1 operand               { process_instruction($1.cr, $1.f, &$2); }
