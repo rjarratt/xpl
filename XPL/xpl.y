@@ -50,6 +50,7 @@ in this Software without prior written authorization from Robert Jarratt.
 %token T_XDO
 %token T_DB
 %token T_XDB
+%token T_MS
 %token T_MOD
 %token T_RMOD
 %token T_SMOD
@@ -129,8 +130,9 @@ in this Software without prior written authorization from Robert Jarratt.
 %type <instruction> a_ord
 %type <f> sts
 %type <f> org
-%type <f> nb_ord
+%type <f> ms_ord
 %type <f> sf_ord
+%type <f> nb_ord
 %type <instruction> fn_1
 %type <instruction> fn_2
 %type <instruction> aod_ord
@@ -274,18 +276,20 @@ aod_ord:
 | T_AOD T_COMP              { $$.cr = 6; $$.f = 12; }
 
 org:
-  nb_ord operand             { process_instruction(0, $1, &$2); }
+  ms_ord operand             { process_instruction(0, $1, &$2); }
 | sf_ord operand             { process_instruction(0, $1, &$2); }
+| nb_ord operand             { process_instruction(0, $1, &$2); }
+
+ms_ord: T_MS T_LOAD          { $$ = 16; }
+sf_ord:
+  T_SF T_LOAD                { $$ = 24; }
+| T_SF T_PLUS                { $$ = 25; }
+| T_SF T_LOAD_NB_ADD         { $$ = 26; }
 
 nb_ord:
   T_NB T_LOAD                { $$ = 28; }
 | T_NB T_LOAD_SF_ADD         { $$ = 29; }
 | T_NB T_PLUS                { $$ = 30; }
-
-sf_ord:
-  T_SF T_LOAD                { $$ = 24; }
-| T_SF T_PLUS                { $$ = 25; }
-| T_SF T_LOAD_NB_ADD         { $$ = 26; }
 
 sts:
   fn_1 operand               { process_instruction($1.cr, $1.f, &$2); }

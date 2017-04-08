@@ -61,6 +61,7 @@ XD                 { return T_XD; }
 XDO                { return T_XDO; }
 DB                 { return T_DB; }
 XDB                { return T_XDB; }
+MS                 { return T_MS; }
 MOD                { return T_MOD; }
 RMOD               { return T_RMOD; }
 SMOD               { return T_SMOD; }
