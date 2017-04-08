@@ -48,7 +48,12 @@ static int numLabels;
 static segment_t segment_table[MAX_SEGMENTS];
 static int numSegments;
 
+static literal_t datavec_items[MAX_DATAVEC_ITEMS];
+static int numDatavecItems;
+
 static int datavec_size;
+static int datavec_element_num;
+static unsigned int datavec_partial_element;
 
 static int is_extended_operand(unsigned int cr, unsigned int k);
 static void emit_instruction(unsigned char cr, unsigned char f, unsigned char k, unsigned char n);
@@ -57,7 +62,11 @@ static void emit_16_bit_word(unsigned int word);
 static void emit_32_bit_word(unsigned int word);
 static void emit_64_bit_word(t_uint64 word);
 static void emit_literal(literal_t *literal);
+static void emit_datavec_line();
+static void emit_partial_literal(unsigned int value);
 static void write_16_bit_word(unsigned int word);
+static void set_datavec_size(t_uint64 size);
+static int get_datavec_partial_element_number();
 
 void set_pass(int new_pass)
 {
@@ -337,11 +346,23 @@ literal_type_t get_literal_type(int sign, t_uint64 value)
 				}
 			}
 		}
-		else if (datavec_size == 16)
-		{
-			literal_type = LITERAL_SIGNED_16_BIT;
-		}
-		else if (datavec_size == 32)
+        else if (datavec_size == 1)
+        {
+            literal_type = LITERAL_SIGNED_1_BIT;
+        }
+        else if (datavec_size == 4)
+        {
+            literal_type = LITERAL_SIGNED_4_BIT;
+        }
+        else if (datavec_size == 8)
+        {
+            literal_type = LITERAL_SIGNED_8_BIT;
+        }
+        else if (datavec_size == 16)
+        {
+            literal_type = LITERAL_SIGNED_16_BIT;
+        }
+        else if (datavec_size == 32)
 		{
 			literal_type = LITERAL_SIGNED_32_BIT;
 		}
@@ -371,7 +392,19 @@ literal_type_t get_literal_type(int sign, t_uint64 value)
 				literal_type = LITERAL_UNSIGNED_64_BIT;
 			}
 		}
-		else if (datavec_size == 16)
+        else if (datavec_size == 1)
+        {
+            literal_type = LITERAL_UNSIGNED_1_BIT;
+        }
+        else if (datavec_size == 4)
+        {
+            literal_type = LITERAL_UNSIGNED_4_BIT;
+        }
+        else if (datavec_size == 8)
+        {
+            literal_type = LITERAL_UNSIGNED_8_BIT;
+        }
+        else if (datavec_size == 16)
 		{
 			literal_type = LITERAL_UNSIGNED_16_BIT;
 		}
@@ -393,8 +426,11 @@ void make_int_literal(int sign, t_uint64 value, literal_t *literal)
 	literal->literal_type = get_literal_type(sign, value);
 	switch (literal->literal_type)
 	{
-		case LITERAL_SIGNED_6_BIT:
-		case LITERAL_SIGNED_16_BIT:
+        case LITERAL_SIGNED_1_BIT:
+        case LITERAL_SIGNED_4_BIT:
+        case LITERAL_SIGNED_6_BIT:
+        case LITERAL_SIGNED_8_BIT:
+        case LITERAL_SIGNED_16_BIT:
 		case LITERAL_SIGNED_32_BIT:
 		case LITERAL_SIGNED_64_BIT:
 		{
@@ -409,8 +445,11 @@ void make_int_literal(int sign, t_uint64 value, literal_t *literal)
 			break;
 		}
 
-		case LITERAL_UNSIGNED_16_BIT:
-		case LITERAL_UNSIGNED_32_BIT:
+        case LITERAL_UNSIGNED_1_BIT:
+        case LITERAL_UNSIGNED_4_BIT:
+        case LITERAL_UNSIGNED_8_BIT:
+        case LITERAL_UNSIGNED_16_BIT:
+        case LITERAL_UNSIGNED_32_BIT:
 		case LITERAL_UNSIGNED_64_BIT:
 		{
 			literal->unsigned_val = value;
@@ -667,9 +706,9 @@ t_uint64 process_text(char *name, char *string)
     return make_descriptor(STRING_VECTOR, SIZE_8_BIT, 0, 0, n, origin);
 }
 
-void set_datavec_size(t_uint64 size)
+static void set_datavec_size(t_uint64 size)
 {
-	if (size != 0 && size != 16 && size != 32 && size != 64)
+	if (size != 0 && size != 1 && size != 4 && size != 8 && size != 16 && size != 32 && size != 64)
 	{
 		yyerror("datavec size not supported");
 	}
@@ -677,9 +716,65 @@ void set_datavec_size(t_uint64 size)
 	datavec_size = (int)size;
 }
 
+void process_datavec_start(t_uint64 size)
+{
+    set_datavec_size(size);
+    datavec_element_num = 0;
+    datavec_partial_element = 0;
+}
+
 void process_datavec_literal(literal_t *literal)
 {
-	emit_literal(literal);
+    if (numDatavecItems >= MAX_DATAVEC_ITEMS)
+    {
+        yyerror("too many datavec items on one line");
+    }
+    else
+    {
+        memcpy(&datavec_items[numDatavecItems++], literal, sizeof(literal_t));
+    }
+}
+
+void process_datavec_line_end()
+{
+    emit_datavec_line();
+    numDatavecItems = 0;
+}
+
+static int get_datavec_partial_element_number()
+{
+    int elems_in_word = 16 / datavec_size;
+    int elem_in_word = elems_in_word - (datavec_element_num % elems_in_word) - 1;
+    return elem_in_word;
+
+}
+void process_datavec_end()
+{
+    if (get_datavec_partial_element_number() != ((16 / datavec_size) - 1))
+    {
+        emit_16_bit_word(datavec_partial_element);
+    }
+    set_datavec_size(0);
+}
+
+void process_datavec_line_repeat(unsigned int n)
+{
+    int i;
+    for (i = 0; i < n; i++)
+    {
+        emit_datavec_line();
+    }
+    numDatavecItems = 0;
+}
+
+static void emit_datavec_line()
+{
+    int i;
+    for (i = 0; i < numDatavecItems; i++)
+    {
+        emit_literal(&datavec_items[i]);
+        datavec_element_num++;
+    }
 }
 
 static int is_extended_operand(unsigned int cr, unsigned int k)
@@ -741,18 +836,47 @@ static void emit_64_bit_word(t_uint64 word)
     emit_16_bit_word(word & 0xFFFF);
 }
 
+static void emit_partial_literal(unsigned int value)
+{
+    int elem_in_word = get_datavec_partial_element_number();
+    datavec_partial_element |= value << (datavec_size * elem_in_word);
+    if (elem_in_word == 0)
+    {
+        emit_16_bit_word(datavec_partial_element);
+        datavec_partial_element = 0;
+    }
+}
+
 static void emit_literal(literal_t *literal)
 {
 	switch (literal->literal_type)
 	{
-		case LITERAL_SIGNED_6_BIT:
-		case LITERAL_SIGNED_16_BIT:
-		case LITERAL_UNSIGNED_16_BIT:
-		{
-			emit_16_bit_word(literal->unsigned_val & 0xFFFF);
-			break;
-		}
-		case LITERAL_SIGNED_32_BIT:
+        case LITERAL_SIGNED_1_BIT:
+        case LITERAL_UNSIGNED_1_BIT:
+        {
+            emit_partial_literal(literal->unsigned_val & 0x1);
+            break;
+        }
+        case LITERAL_SIGNED_4_BIT:
+        case LITERAL_UNSIGNED_4_BIT:
+        {
+            emit_partial_literal(literal->unsigned_val & 0xF);
+            break;
+        }
+        case LITERAL_SIGNED_8_BIT:
+        case LITERAL_UNSIGNED_8_BIT:
+        {
+            emit_partial_literal(literal->unsigned_val & 0xFF);
+            break;
+        }
+        case LITERAL_SIGNED_6_BIT:
+        case LITERAL_SIGNED_16_BIT:
+        case LITERAL_UNSIGNED_16_BIT:
+        {
+            emit_16_bit_word(literal->unsigned_val & 0xFFFF);
+            break;
+        }
+        case LITERAL_SIGNED_32_BIT:
 		case LITERAL_UNSIGNED_32_BIT:
 		{
 			emit_32_bit_word(literal->unsigned_val & 0xFFFFFFFF);

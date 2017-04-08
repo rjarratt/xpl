@@ -30,6 +30,7 @@ in this Software without prior written authorization from Robert Jarratt.
 #define MAX_LABELS 100
 #define MAX_SEGMENTS 100
 #define MAX_VAR_SPECS 16
+#define MAX_DATAVEC_ITEMS 50 /* max items on a line in a DATAVEC */
 
 #define PASS_GET_FORWARDS 1
 #define PASS_CALC_SIZES 2
@@ -113,13 +114,20 @@ typedef enum
     OPERAND_VARIABLE_0_REL
 } operand_type_t;
 
+/* the positive numbers relate directly to values of n' */
 typedef enum
 {
-	LITERAL_SIGNED_6_BIT = -1,
-	LITERAL_SIGNED_16_BIT = 0,
+    LITERAL_SIGNED_1_BIT = -4,
+    LITERAL_SIGNED_4_BIT = -3,
+    LITERAL_SIGNED_6_BIT = -2,
+    LITERAL_SIGNED_8_BIT = -1,
+    LITERAL_SIGNED_16_BIT = 0,
 	LITERAL_SIGNED_32_BIT = 1,
 	LITERAL_SIGNED_64_BIT = 2,
-	LITERAL_UNSIGNED_16_BIT = 4,
+    LITERAL_UNSIGNED_1_BIT = -8,
+    LITERAL_UNSIGNED_4_BIT = -7,
+    LITERAL_UNSIGNED_8_BIT = -6,
+    LITERAL_UNSIGNED_16_BIT = 4,
 	LITERAL_UNSIGNED_32_BIT = 5,
 	LITERAL_UNSIGNED_64_BIT = 6,
 } literal_type_t;
@@ -181,5 +189,8 @@ void make_int_literal(int sign, t_uint64 value, literal_t *literal);
 t_uint64 make_descriptor(descriptor_type_t type, descriptor_size_t size, unsigned char unscaled, unsigned char noboundcheck, unsigned int bound, unsigned int origin);
 void process_instruction(unsigned int cr, unsigned int f, operand_t *operand);
 t_uint64 process_text(char *name, char *string);
-void set_datavec_size(t_uint64 size);
+void process_datavec_start(t_uint64 size);
 void process_datavec_literal(literal_t *literal);
+void process_datavec_line_end();
+void process_datavec_end();
+void process_datavec_line_repeat(unsigned int n);

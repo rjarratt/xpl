@@ -139,6 +139,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="console.xpl" />
+    <None Include="IdleLoopMusic.xpl" />
     <None Include="ScalarProduct.xpl" />
     <None Include="StringProcessing.xpl" />
   </ItemGroup>
