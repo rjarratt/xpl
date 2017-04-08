@@ -32,6 +32,7 @@ in this Software without prior written authorization from Robert Jarratt.
 FILE *binary;
 int error_in_pass;
 unsigned int segment;
+symbol_t d_symbol = { DESCRIPTOR };
 
 extern char *yytext;
 extern int yylineno;
@@ -504,8 +505,11 @@ void process_instruction(unsigned int cr, unsigned int f, operand_t *operand)
                 {
                     if (operand->symbol->vartype == DESCRIPTOR)
                     {
-                        emit_extended_instruction(3, 1, 0, 6); /* D= 64-bit literal */
-                        emit_64_bit_word(operand->symbol->value);
+                        if (operand->symbol != &d_symbol)
+                        {
+                            emit_extended_instruction(3, 1, 0, 6); /* D= 64-bit literal */
+                            emit_64_bit_word(operand->symbol->value);
+                        }
                         k = (cr == 0) ? 1 : 7;
                         kp = (operand->operand_type == OPERAND_VARIABLE_B_REL) ? 4 : 6;
                         np = 5;

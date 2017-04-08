@@ -351,6 +351,7 @@ cond:
 
 operand:
   simple_operand
+| T_D T_B_REL    { $$.operand_type = OPERAND_VARIABLE_B_REL; $$.symbol = &d_symbol; }
 | T_NAME T_B_REL { $$.operand_type = OPERAND_VARIABLE_B_REL; $$.symbol = find_symbol($1); }
 | T_NAME T_0_REL { $$.operand_type = OPERAND_VARIABLE_0_REL; $$.symbol = find_symbol($1); }
 

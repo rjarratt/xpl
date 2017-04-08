@@ -169,6 +169,7 @@ typedef struct INSTRUCTION
 extern unsigned int segment;
 extern int error_in_pass;
 extern FILE *binary;
+extern symbol_t d_symbol;
 
 void set_pass(int new_pass);
 void yyerror(char *msg);
