@@ -527,53 +527,83 @@ void process_instruction(unsigned int cr, unsigned int f, operand_t *operand)
                     {
                         case V32:
                         {
-                            if (operand->symbol->relativeTo == NB)
+                            switch (operand->symbol->relativeTo)
                             {
-                                k = 2;
-                                n = operand->symbol->value;
-                            }
-                            else if (operand->symbol->relativeTo == STK)
-                            {
-                                k = (cr == 0) ? 1 : 7;
-                                kp = 2;
-                                np = 4;
-                            }
-                            else if (operand->symbol->relativeTo == ZERO)
-                            {
-                                k = (cr == 0) ? 1 : 7;
-                                kp = 2;
-                                np = 1;
-                                offset = (t_int64)operand->symbol->value;
-                            }
-                            else
-                            {
-                                yyerror("non-NB relative not handled yet");
+                                case NB:
+                                {
+                                    k = 2;
+                                    n = operand->symbol->value;
+                                    break;
+                                }
+                                case STK:
+                                {
+                                    k = (cr == 0) ? 1 : 7;
+                                    kp = 2;
+                                    np = 4;
+                                    break;
+                                }
+                                case ZERO:
+                                {
+                                    k = (cr == 0) ? 1 : 7;
+                                    kp = 2;
+                                    np = 1;
+                                    offset = (t_int64)operand->symbol->value;
+                                    break;
+                                }
+                                case XNB:
+                                {
+                                    k = (cr == 0) ? 1 : 7;
+                                    kp = 2;
+                                    np = 3;
+                                    offset = (t_int64)operand->symbol->value;
+                                    break;
+                                }
+                                default:
+                                {
+                                    yyerror("relative type not handled");
+                                    break;
+                                }
                             }
                             break;
                         }
                         case V64:
                         {
-                            if (operand->symbol->relativeTo == NB)
+                            switch (operand->symbol->relativeTo)
                             {
-                                k = 3;
-                                n = operand->symbol->value;
-                            }
-                            else if (operand->symbol->relativeTo == STK)
-                            {
-                                k = (cr == 0) ? 1 : 7;
-                                kp = 3;
-                                np = 4;
-                            }
-                            else if (operand->symbol->relativeTo == ZERO)
-                            {
-                                k = (cr == 0) ? 1 : 7;
-                                kp = 3;
-                                np = 1;
-                                offset = operand->symbol->value;
-                            }
-                            else
-                            {
-                                yyerror("non-NB relative not handled yet");
+                                case NB:
+                                {
+                                    k = 3;
+                                    n = operand->symbol->value;
+                                    break;
+                                }
+                                case STK:
+                                {
+                                    k = (cr == 0) ? 1 : 7;
+                                    kp = 3;
+                                    np = 4;
+                                    break;
+                                }
+                                case ZERO:
+                                {
+                                    k = (cr == 0) ? 1 : 7;
+                                    kp = 3;
+                                    np = 1;
+                                    offset = operand->symbol->value;
+                                    break;
+                                }
+                                case XNB:
+                                {
+                                    k = (cr == 0) ? 1 : 7;
+                                    kp = 3;
+                                    np = 3;
+                                    offset = operand->symbol->value;
+                                    break;
+                                }
+                                default:
+                                {
+                                    yyerror("relative type not handled");
+                                    break;
+                                }
                             }
                             break;
                         }
@@ -581,23 +611,36 @@ void process_instruction(unsigned int cr, unsigned int f, operand_t *operand)
                         {
                             k = (cr == 0) ? 1 : 7;
                             kp = 7;
-                            if (operand->symbol->relativeTo == NB)
+                            switch (operand->symbol->relativeTo)
                             {
-                                np = 2;
-                                offset = operand->symbol->value;
-                            }
-                            else if (operand->symbol->relativeTo == STK)
-                            {
-                                np = 4;
-                            }
-                            else if (operand->symbol->relativeTo == ZERO)
-                            {
-                                np = 1;
-                                offset = operand->symbol->value;
-                            }
-                            else
-                            {
-                                yyerror("non-NB relative not handled yet");
+                                case NB:
+                                {
+                                    np = 2;
+                                    offset = operand->symbol->value;
+                                    break;
+                                }
+                                case STK:
+                                {
+                                    np = 4;
+                                    break;
+                                }
+                                case ZERO:
+                                {
+                                    np = 1;
+                                    offset = operand->symbol->value;
+                                    break;
+                                }
+                                case XNB:
+                                {
+                                    np = 3;
+                                    offset = operand->symbol->value;
+                                    break;
+                                }
+                                default:
+                                {
+                                    yyerror("relative type not handled");
+                                    break;
+                                }
                             }
                             break;
                         }
