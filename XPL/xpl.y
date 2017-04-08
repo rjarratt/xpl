@@ -51,6 +51,9 @@ in this Software without prior written authorization from Robert Jarratt.
 %token T_DB
 %token T_XDB
 %token T_MS
+%token T_SN
+%token T_DL
+%token T_SPM
 %token T_MOD
 %token T_RMOD
 %token T_SMOD
@@ -134,6 +137,7 @@ in this Software without prior written authorization from Robert Jarratt.
 %type <f> sf_ord
 %type <f> nb_ord
 %type <f> xnb_ord
+%type <f> misc_ord
 %type <instruction> fn_1
 %type <instruction> fn_2
 %type <instruction> aod_ord
@@ -282,6 +286,7 @@ org:
 | sf_ord operand             { process_instruction(0, $1, &$2); }
 | nb_ord operand             { process_instruction(0, $1, &$2); }
 | xnb_ord operand            { process_instruction(0, $1, &$2); }
+| misc_ord operand           { process_instruction(0, $1, &$2); }
 
 ms_ord: T_MS T_LOAD          { $$ = 16; }
 sf_ord:
@@ -297,6 +302,11 @@ nb_ord:
 xnb_ord:
   T_XNB T_LOAD                { $$ = 20; }
 | T_XNB T_PLUS                { $$ = 22; }
+
+misc_ord:
+  T_SN T_LOAD                 { $$ = 21; }
+| T_DL T_LOAD                 { $$ = 17; }
+| T_SPM T_LOAD                { $$ = 18; }
 
 sts:
   fn_1 operand               { process_instruction($1.cr, $1.f, &$2); }
