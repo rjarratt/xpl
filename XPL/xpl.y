@@ -139,6 +139,7 @@ in this Software without prior written authorization from Robert Jarratt.
 %type <instruction> aod_ord
 %type <distance> jump_spec
 %type <f> cond
+%type <f> b_fn
 
 %{
 #include <stdio.h>
@@ -331,8 +332,9 @@ fn_2:
 | T_TALU                     { $$.cr = 2; $$.f = 12; }
 
 condit:
-  jump_spec T_NAME           { operand_t operand; set_operand_label($2, $1, &operand); process_instruction(0, 0, &operand); }
+  jump_spec T_NAME                   { operand_t operand; set_operand_label($2, $1, &operand); process_instruction(0, 0, &operand); }
 | T_IF cond T_COMMA jump_spec T_NAME { operand_t operand; set_operand_label($5, $4, &operand); process_instruction(0, $2, &operand); }
+| T_BN b_fn operand                  { process_instruction(0, 48 + $2, &$3); }
 
 jump_spec:
   T_PLUS T_RJUMP             { $$ = 1; }
@@ -348,6 +350,10 @@ cond:
 | T_GT                       { $$ = 37; }
 | T_OV                       { $$ = 38; }
 | T_BN                       { $$ = 39; }
+
+b_fn:
+  T_SLASH                    { $$ = 10; }
+| T_LOAD                     { $$ = 3; }
 
 operand:
   simple_operand
