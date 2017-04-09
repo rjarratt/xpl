@@ -412,7 +412,7 @@ decimal:
 
 sign: T_PLUS { $$ = 1; } | T_MINUS { $$ = -1; } /* TODO: can't express largest negative number */
 
-table: T_DATAVEC T_NAME T_L_BR T_INTEGER T_R_BR T_NL { process_datavec_start($4); } lit_list T_END { process_datavec_end(); }
+table: T_DATAVEC T_NAME T_L_BR T_INTEGER T_R_BR T_NL { process_datavec_start($4); } lit_list T_END { t_uint64 d = process_datavec_end(); add_symbol(DESCRIPTOR, NOT_REL, $2, d);}
 lit_list: lit_line T_NL | lit_line T_NL lit_list
 lit_line: lit_items { process_datavec_line_end(); }
 lit_items: literal { process_datavec_literal(&$1); } T_COMMA lit_repeat | literal { process_datavec_literal(&$1); }

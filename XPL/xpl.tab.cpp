@@ -2717,7 +2717,7 @@ yyreduce:
   case 183:
 /* Line 1792 of yacc.c  */
 #line 415 "xpl.y"
-    { process_datavec_end(); }
+    { t_uint64 d = process_datavec_end(); add_symbol(DESCRIPTOR, NOT_REL, (yyvsp[(2) - (9)].nameval), d);}
     break;
 
   case 186:

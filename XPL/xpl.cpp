@@ -52,7 +52,9 @@ static int numSegments;
 static literal_t datavec_items[MAX_DATAVEC_ITEMS];
 static int numDatavecItems;
 
-static int datavec_size;
+static unsigned int datavec_origin;
+static descriptor_size_t datavec_size;
+static int datavec_bits;
 static int datavec_element_num;
 static unsigned int datavec_partial_element;
 
@@ -68,6 +70,7 @@ static void emit_partial_literal(unsigned int value);
 static void write_16_bit_word(unsigned int word);
 static void set_datavec_size(t_uint64 size);
 static int get_datavec_partial_element_number();
+static unsigned int get_current_descriptor_origin();
 
 t_uint64 scan_hex_digits(char *hex_digits)
 {
@@ -351,7 +354,7 @@ literal_type_t get_literal_type(int sign, t_uint64 value)
 	literal_type_t literal_type;
 	if (sign != 0)
 	{
-		if (datavec_size == 0)
+		if (datavec_size == SIZE_0_BIT)
 		{
 			if (sign < 0)
 			{
@@ -392,34 +395,34 @@ literal_type_t get_literal_type(int sign, t_uint64 value)
 				}
 			}
 		}
-        else if (datavec_size == 1)
+        else if (datavec_size == SIZE_1_BIT)
         {
             literal_type = LITERAL_SIGNED_1_BIT;
         }
-        else if (datavec_size == 4)
+        else if (datavec_size == SIZE_4_BIT)
         {
             literal_type = LITERAL_SIGNED_4_BIT;
         }
-        else if (datavec_size == 8)
+        else if (datavec_size == SIZE_8_BIT)
         {
             literal_type = LITERAL_SIGNED_8_BIT;
         }
-        else if (datavec_size == 16)
+        else if (datavec_size == SIZE_16_BIT)
         {
             literal_type = LITERAL_SIGNED_16_BIT;
         }
-        else if (datavec_size == 32)
+        else if (datavec_size == SIZE_32_BIT)
 		{
 			literal_type = LITERAL_SIGNED_32_BIT;
 		}
-		else if (datavec_size == 64)
+		else if (datavec_size == SIZE_64_BIT)
 		{
 			literal_type = LITERAL_SIGNED_64_BIT;
 		}
 	}
 	else
 	{
-		if (datavec_size == 0)
+		if (datavec_size == SIZE_0_BIT)
 		{
 			if (value < 0x1F)
 			{
@@ -438,27 +441,27 @@ literal_type_t get_literal_type(int sign, t_uint64 value)
 				literal_type = LITERAL_UNSIGNED_64_BIT;
 			}
 		}
-        else if (datavec_size == 1)
+        else if (datavec_size == SIZE_1_BIT)
         {
             literal_type = LITERAL_UNSIGNED_1_BIT;
         }
-        else if (datavec_size == 4)
+        else if (datavec_size == SIZE_4_BIT)
         {
             literal_type = LITERAL_UNSIGNED_4_BIT;
         }
-        else if (datavec_size == 8)
+        else if (datavec_size == SIZE_8_BIT)
         {
             literal_type = LITERAL_UNSIGNED_8_BIT;
         }
-        else if (datavec_size == 16)
+        else if (datavec_size == SIZE_16_BIT)
 		{
 			literal_type = LITERAL_UNSIGNED_16_BIT;
 		}
-		else if (datavec_size == 32)
+		else if (datavec_size == SIZE_32_BIT)
 		{
 			literal_type = LITERAL_UNSIGNED_32_BIT;
 		}
-		else if (datavec_size == 64)
+		else if (datavec_size == SIZE_64_BIT)
 		{
 			literal_type = LITERAL_UNSIGNED_64_BIT;
 		}
@@ -729,6 +732,12 @@ void process_instruction(unsigned int cr, unsigned int f, operand_t *operand)
     }
 }
 
+static unsigned int get_current_descriptor_origin()
+{
+    unsigned int result = (segment << 18) + instructionNum * 2; /* segment has to be shifted 2 to the left because this is a byte origin */
+    return result;
+}
+
 t_uint64 process_text(char *name, char *string)
 {
     int i;
@@ -738,7 +747,7 @@ t_uint64 process_text(char *name, char *string)
     unsigned int byte;
     int valid_byte = 1;
     int started_hex = 0;
-    unsigned int origin = (segment << 18) + instructionNum * 2; /* segment has to be shifted 2 to the left because this is a byte origin */
+    unsigned int origin = get_current_descriptor_origin();
 
     for (i = 1; i < (int)strlen(string) - 1; i++) /* skip first and last chars as they are the quotes */
     {
@@ -800,17 +809,57 @@ t_uint64 process_text(char *name, char *string)
 
 static void set_datavec_size(t_uint64 size)
 {
-	if (size != 0 && size != 1 && size != 4 && size != 8 && size != 16 && size != 32 && size != 64)
-	{
-		yyerror("datavec size not supported");
-	}
+    switch (size)
+    {
+        case 0:
+        {
+            datavec_size = SIZE_0_BIT;
+            break;
+        }
+        case 1:
+        {
+            datavec_size = SIZE_1_BIT;
+            break;
+        }
+        case 4:
+        {
+            datavec_size = SIZE_4_BIT;
+            break;
+        }
+        case 8:
+        {
+            datavec_size = SIZE_8_BIT;
+            break;
+        }
+        case 16:
+        {
+            datavec_size = SIZE_16_BIT;
+            break;
+        }
+        case 32:
+        {
+            datavec_size = SIZE_32_BIT;
+            break;
+        }
+        case 64:
+        {
+            datavec_size = SIZE_64_BIT;
+            break;
+        }
+        default:
+        {
+            yyerror("datavec size not supported");
+            break;
+        }
+    }
 
-	datavec_size = (int)size;
+	datavec_bits = (int)size;
 }
 
 void process_datavec_start(t_uint64 size)
 {
     set_datavec_size(size);
+    datavec_origin = get_current_descriptor_origin();
     datavec_element_num = 0;
     datavec_partial_element = 0;
 }
@@ -835,18 +884,21 @@ void process_datavec_line_end()
 
 static int get_datavec_partial_element_number()
 {
-    int elems_in_word = 16 / datavec_size;
+    int elems_in_word = 16 / datavec_bits;
     int elem_in_word = elems_in_word - (datavec_element_num % elems_in_word) - 1;
     return elem_in_word;
 
 }
-void process_datavec_end()
+t_uint64 process_datavec_end()
 {
-    if (get_datavec_partial_element_number() != ((16 / datavec_size) - 1))
+    t_uint64 d;
+    if (get_datavec_partial_element_number() != ((16 / datavec_bits) - 1))
     {
         emit_16_bit_word(datavec_partial_element);
     }
+    d = make_descriptor(GENERAL_VECTOR, datavec_size, 0, 0, datavec_element_num, datavec_origin);
     set_datavec_size(0);
+    return d;
 }
 
 void process_datavec_line_repeat(unsigned int n)
@@ -931,7 +983,7 @@ static void emit_64_bit_word(t_uint64 word)
 static void emit_partial_literal(unsigned int value)
 {
     int elem_in_word = get_datavec_partial_element_number();
-    datavec_partial_element |= value << (datavec_size * elem_in_word);
+    datavec_partial_element |= value << (datavec_bits * elem_in_word);
     if (elem_in_word == 0)
     {
         emit_16_bit_word(datavec_partial_element);

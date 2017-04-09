@@ -57,6 +57,7 @@ typedef enum DESCRIPTOR_TYPE
 
 typedef enum DESCRIPTOR_SIZE
 {
+    SIZE_0_BIT = -1,
 	SIZE_1_BIT = 0,
 	SIZE_4_BIT = 2,
 	SIZE_8_BIT = 3,
@@ -194,5 +195,5 @@ t_uint64 process_text(char *name, char *string);
 void process_datavec_start(t_uint64 size);
 void process_datavec_literal(literal_t *literal);
 void process_datavec_line_end();
-void process_datavec_end();
+t_uint64 process_datavec_end();
 void process_datavec_line_repeat(unsigned int n);
