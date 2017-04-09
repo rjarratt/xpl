@@ -171,6 +171,7 @@ extern int error_in_pass;
 extern FILE *binary;
 extern symbol_t d_symbol;
 
+t_uint64 scan_hex_digits(char *hex_digits);
 void set_pass(int new_pass);
 void yyerror(char *msg);
 void start_segment(unsigned int segment_number);

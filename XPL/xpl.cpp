@@ -69,6 +69,51 @@ static void write_16_bit_word(unsigned int word);
 static void set_datavec_size(t_uint64 size);
 static int get_datavec_partial_element_number();
 
+t_uint64 scan_hex_digits(char *hex_digits)
+{
+    int i;
+    int j;
+    t_uint64 result = 0;
+    unsigned int hex_digit;
+    unsigned int dec_digit;
+    int in_repeat_seq = 0;
+    int repeat;
+    for (i = 0; i < strlen(hex_digits); i++)
+    {
+        if (!in_repeat_seq)
+        {
+            if (sscanf(hex_digits + i, "%1X", &hex_digit))
+            {
+                result <<= 4;
+                result |= hex_digit;
+            }
+            else
+            {
+                in_repeat_seq = 1;
+                repeat = 0;
+            }
+        }
+        else
+        {
+            if (sscanf(hex_digits + i, "%1u", &dec_digit))
+            {
+                repeat = repeat * 10 + dec_digit;
+            }
+            else
+            {
+                in_repeat_seq = 0;
+                for (j = 0; j < repeat - 1; j++)
+                {
+                    result <<= 4;
+                    result |= hex_digit;
+                }
+            }
+        }
+    }
+
+    return result;
+}
+
 void set_pass(int new_pass)
 {
     pass = new_pass;

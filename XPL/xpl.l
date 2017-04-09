@@ -130,7 +130,7 @@ DATASTR            { return T_DATASTR; }
 \".*\"             { yylval.stringval = _strdup(yytext); return T_CHARACTER_STRING; }
 {NAME}             { yylval.nameval = _strdup(yytext); return T_NAME; }
 {INTEGER}          { yylval.unsignedval = atoi(yytext); return T_INTEGER; }
-%[0-9A-F]+         { sscanf(yytext + 1, "%llX", &yylval.unsignedval); return T_HEX_DIGITS; }
+%[0-9A-F]+(\([0-9]+\)[0-9A-F]*)*  { yylval.unsignedval = scan_hex_digits(yytext + 1); return T_HEX_DIGITS; }
 \:\:.*\n           {  yylineno++; return T_COMMENT; }
 \n                 { yylineno++; return T_NL;}
 . ;
