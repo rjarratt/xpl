@@ -400,6 +400,7 @@ operand:
 
 simple_operand:
   T_NAME                    { $$.operand_type = OPERAND_VARIABLE; $$.symbol = find_symbol($1); }
+| T_B                       { $$.operand_type = OPERAND_VARIABLE; $$.symbol = &b_symbol; }
 | literal                   { $$.operand_type = OPERAND_LITERAL; $$.literal = $1; }
 
 literal:

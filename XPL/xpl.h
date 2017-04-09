@@ -44,7 +44,8 @@ typedef enum VAR_TYPE
     V32,
     V64,
     VV,
-	DESCRIPTOR
+	DESCRIPTOR,
+    IR
 } var_type_t;
 
 typedef enum DESCRIPTOR_TYPE
@@ -170,6 +171,7 @@ typedef struct INSTRUCTION
 extern unsigned int segment;
 extern int error_in_pass;
 extern FILE *binary;
+extern symbol_t b_symbol;
 extern symbol_t d_symbol;
 
 t_uint64 scan_hex_digits(char *hex_digits);

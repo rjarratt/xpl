@@ -32,6 +32,7 @@ in this Software without prior written authorization from Robert Jarratt.
 FILE *binary;
 int error_in_pass;
 unsigned int segment;
+symbol_t b_symbol = { IR, NOT_REL, "B", 32 };
 symbol_t d_symbol = { DESCRIPTOR };
 
 extern char *yytext;
@@ -700,6 +701,17 @@ void process_instruction(unsigned int cr, unsigned int f, operand_t *operand)
 							n = operand->symbol->value;
 							break;
 						}
+                        case IR:
+                        {
+                            if (cr == 0)
+                            {
+                                yyerror("cannot use IR operand for org order");
+                            }
+
+                            k = 1;
+                            n = operand->symbol->value;
+                            break;
+                        }
                         default:
                         {
                             yyerror("unhandled vartype");
