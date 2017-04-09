@@ -99,43 +99,45 @@ extern int yydebug;
      T_AU = 308,
      T_AOD = 309,
      T_B = 310,
-     T_NB = 311,
-     T_XNB = 312,
-     T_SF = 313,
-     T_STK = 314,
-     T_LOAD_NB_ADD = 315,
-     T_LOAD_SF_ADD = 316,
-     T_LOAD = 317,
-     T_LOAD_DEC = 318,
-     T_STACK_LOAD = 319,
-     T_STORE = 320,
-     T_PLUS = 321,
-     T_MINUS = 322,
-     T_MUL = 323,
-     T_NEQV = 324,
-     T_OR = 325,
-     T_AND = 326,
-     T_SHIFT = 327,
-     T_RSUB = 328,
-     T_COMP = 329,
-     T_CINC = 330,
-     T_CONV = 331,
-     T_RDIV = 332,
-     T_B_REL = 333,
-     T_0_REL = 334,
-     T_STACK = 335,
-     T_IF = 336,
-     T_EQ = 337,
-     T_NE = 338,
-     T_LT = 339,
-     T_LE = 340,
-     T_GT = 341,
-     T_GE = 342,
-     T_OV = 343,
-     T_BN = 344,
-     T_RJUMP = 345,
-     T_DATAVEC = 346,
-     T_DATASTR = 347
+     T_X = 311,
+     T_XS = 312,
+     T_NB = 313,
+     T_XNB = 314,
+     T_SF = 315,
+     T_STK = 316,
+     T_LOAD_NB_ADD = 317,
+     T_LOAD_SF_ADD = 318,
+     T_LOAD = 319,
+     T_LOAD_DEC = 320,
+     T_STACK_LOAD = 321,
+     T_STORE = 322,
+     T_PLUS = 323,
+     T_MINUS = 324,
+     T_MUL = 325,
+     T_NEQV = 326,
+     T_OR = 327,
+     T_AND = 328,
+     T_SHIFT = 329,
+     T_RSUB = 330,
+     T_COMP = 331,
+     T_CINC = 332,
+     T_CONV = 333,
+     T_RDIV = 334,
+     T_B_REL = 335,
+     T_0_REL = 336,
+     T_STACK = 337,
+     T_IF = 338,
+     T_EQ = 339,
+     T_NE = 340,
+     T_LT = 341,
+     T_LE = 342,
+     T_GT = 343,
+     T_GE = 344,
+     T_OV = 345,
+     T_BN = 346,
+     T_RJUMP = 347,
+     T_DATAVEC = 348,
+     T_DATASTR = 349
    };
 #endif
 
@@ -144,7 +146,7 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 159 "xpl.y"
+#line 163 "xpl.y"
 
     unsigned int f;
     t_uint64 unsignedval;
@@ -163,7 +165,7 @@ typedef union YYSTYPE
 
 
 /* Line 2058 of yacc.c  */
-#line 167 "xpl.tab.h"
+#line 169 "xpl.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

@@ -85,6 +85,8 @@ TALU               { return T_TALU; }
 TCHK               { return T_TCHK; }
 TRNS               { return T_TRNS; }
 B                  { return T_B; }
+X                  { return T_X; }
+XS                 { return T_XS; }
 NB                 { return T_NB; }
 XNB                { return T_XNB; }
 SF                 { return T_SF; }

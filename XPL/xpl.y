@@ -77,6 +77,8 @@ in this Software without prior written authorization from Robert Jarratt.
 %token T_AU
 %token T_AOD
 %token T_B
+%token T_X
+%token T_XS
 %token T_NB
 %token T_XNB
 %token T_SF
@@ -128,6 +130,8 @@ in this Software without prior written authorization from Robert Jarratt.
 %type <literal> decimal
 %type <f> b_operator
 %type <instruction> b_ord
+%type <f> x_operator
+%type <instruction> x_ord
 %type <f> a_operator
 %type <f> au_operator
 %type <instruction> a_ord
@@ -218,6 +222,7 @@ instruction:
 
 comput:
   b_ord operand       { process_instruction($1.cr, $1.f, &$2); }
+| x_ord operand       { process_instruction($1.cr, $1.f, &$2); }
 | a_ord operand       { process_instruction($1.cr, $1.f, &$2); }
 | aod_ord operand     { process_instruction($1.cr, $1.f, &$2); }
 
@@ -238,6 +243,27 @@ b_operator:
 | T_RSUB	                { $$ = 12; }
 | T_COMP	                { $$ = 13; }
 | T_CINC	                { $$ = 14; }
+| T_RDIV	                { $$ = 15; }
+
+x_ord:
+  T_X x_operator       { $$.cr = 4; $$.f = $2; }
+| T_XS x_operator      { $$.cr = 4; $$.f = $2; }
+
+x_operator:
+  T_LOAD                    { $$ = 0; }
+| T_STACK_LOAD              { $$ = 2; }
+| T_STORE	                { $$ = 3; }
+| T_PLUS	                { $$ = 4; }
+| T_MINUS	                { $$ = 5; }
+| T_MUL		                { $$ = 6; }
+| T_SLASH                   { $$ = 7; }
+| T_NEQV	                { $$ = 8; }
+| T_OR		                { $$ = 9; }
+| T_SHIFT	                { $$ = 10; }
+| T_AND		                { $$ = 11; }
+| T_RSUB	                { $$ = 12; }
+| T_COMP	                { $$ = 13; }
+| T_CONV	                { $$ = 14; }
 | T_RDIV	                { $$ = 15; }
 
 a_ord:
