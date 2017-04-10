@@ -94,32 +94,59 @@ B = N15
 B <= -15
 B => N15
 B = XB1
- B & %FF00FF
- B => N8
- B = XB1
- B <= -8
- B & %FF00FF
- B => N6
- B = 2
- B => N3
- XNB + 2
- B = N20
- B & %F000
- B COMP %9000
- IF /=0, -> L3A
+B & %FF00FF
+B => N8
+B = XB1
+B <= -8
+B & %FF00FF
+B => N6
+B = 2
+B => N3
+XNB + 2
+B = N20
+B & %F000
+B COMP %9000
+IF /=0, -> L3A
 
 
- DL = N1
- L3A: B = %80(7)
- B => N1
- B = %80008000
- B => N2
+DL = N1
+L3A: B = %80(7)
+B => N1
+B = %80008000
+B => N2
 
- L3: B  = N7
- B + N6
- B => N7
- B & N1
- :: PAGE MISSING line 125 to 152  inclusive
+L3: B  = N7
+B + N6
+B => N7
+B & N1
+B & N4
+B => N5
+B = N9
+B + N8
+B => N9
+B -/= -1
+B V N4
+B -/= -1
+B & N1
+B V N5
+B COMP 0
+B = N1
+B -/= N2
+B => N1
+BN= IF/=0
+B =' N0
+B COMP -1
+B => N0
+B =' N3
+B & 3
+B => N3
+SPM = 0
+B -2
+B => N4
+IF /=0, ->L3
+XNB => N9
+::XENTER EE(0)
+B = 0
 B => INSC
 MS = %20
 B = EHK
