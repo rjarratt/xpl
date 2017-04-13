@@ -139,9 +139,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="console.xpl" />
-    <None Include="IdleLoopMusic.xpl" />
+    <None Include="Idle.xpl" />
     <None Include="ScalarProduct.xpl" />
     <None Include="StringProcessing.xpl" />
+    <None Include="Tune.xpl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

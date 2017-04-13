@@ -47,7 +47,8 @@
     <None Include="ScalarProduct.xpl" />
     <None Include="StringProcessing.xpl" />
     <None Include="console.xpl" />
-    <None Include="IdleLoopMusic.xpl" />
+    <None Include="Idle.xpl" />
+    <None Include="Tune.xpl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="demonstration.xpl" />
