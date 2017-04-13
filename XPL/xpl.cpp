@@ -54,7 +54,7 @@ static literal_t datavec_items[MAX_DATAVEC_ITEMS];
 static int numDatavecItems;
 
 static unsigned int datavec_origin;
-static descriptor_size_t datavec_size;
+static descriptor_size_t datavec_size = SIZE_0_BIT;
 static int datavec_bits;
 static int datavec_element_num;
 static unsigned int datavec_partial_element;
@@ -899,15 +899,18 @@ static int get_datavec_partial_element_number()
     int elems_in_word = 16 / datavec_bits;
     int elem_in_word = elems_in_word - (datavec_element_num % elems_in_word) - 1;
     return elem_in_word;
-
 }
+
 t_uint64 process_datavec_end()
 {
     t_uint64 d;
-    if (get_datavec_partial_element_number() != ((16 / datavec_bits) - 1))
-    {
-        emit_16_bit_word(datavec_partial_element);
-    }
+	if (datavec_bits < 16)
+	{
+		if (get_datavec_partial_element_number() != ((16 / datavec_bits) - 1))
+		{
+			emit_16_bit_word(datavec_partial_element);
+		}
+	}
     d = make_descriptor(GENERAL_VECTOR, datavec_size, 0, 0, datavec_element_num, datavec_origin);
     set_datavec_size(0);
     return d;
