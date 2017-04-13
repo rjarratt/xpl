@@ -1,5 +1,6 @@
 *SEGMENT 1
 BEGIN
+:: Editor's Note: Listing identifies this as "IDLE" printed 11.58.52 12.05.78.  Listing marekd as "MU5 IDLE LOOP MUSIC PROGRAM ES", ES presumably standing for Eric Sunderland
 :: Editor's TODO note. Segment number above should be -1
 :: Editor's note. The original had a blank line between *SEGMENT and BEGIN, but the manual does not allow for it, so it has been removed because the correct grammar is unclear
 VV/0 EHK:%30B,INSC:%103
