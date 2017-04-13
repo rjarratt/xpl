@@ -179,7 +179,7 @@ extern int yylineno;
 
 %%
 xpl_program: program_of_a_segment | program_of_a_segment xpl_program
-program_of_a_segment: T_SEGMENT execute_seg_no  { start_segment($2); } T_NL T_BEGIN  T_NL program T_END T_NL T_ENDOFSEGMENT T_NL { end_segment(); }
+program_of_a_segment: T_SEGMENT execute_seg_no  { start_segment((unsigned int)$2); } T_NL T_BEGIN  T_NL program T_END T_NL T_ENDOFSEGMENT T_NL { end_segment(); }
 execute_seg_no: decimal { $$ = $1.signed_val; }
 program:
   statement
@@ -402,6 +402,7 @@ operand:
 simple_operand:
   T_NAME                    { $$.operand_type = OPERAND_VARIABLE; $$.symbol = find_symbol($1); }
 | T_B                       { $$.operand_type = OPERAND_VARIABLE; $$.symbol = &b_symbol; }
+| T_BN                      { $$.operand_type = OPERAND_VARIABLE; $$.symbol = &bn_symbol; }
 | literal                   { $$.operand_type = OPERAND_LITERAL; $$.literal = $1; }
 
 literal:
@@ -418,7 +419,7 @@ table: T_DATAVEC T_NAME T_L_BR T_INTEGER T_R_BR T_NL { process_datavec_start($4)
 lit_list: lit_line T_NL | lit_line T_NL lit_list
 lit_line: lit_items { process_datavec_line_end(); }
 lit_items: literal { process_datavec_literal(&$1); } T_COMMA lit_repeat | literal { process_datavec_literal(&$1); }
-lit_repeat: lit_items | T_L_SQ T_INTEGER T_R_SQ { process_datavec_line_repeat($2);}
+lit_repeat: lit_items | T_L_SQ T_INTEGER T_R_SQ { process_datavec_line_repeat((unsigned int)$2);}
 text: T_DATASTR T_NAME T_CHARACTER_STRING { t_uint64 d = process_text($2, $3); add_symbol(DESCRIPTOR, NOT_REL, $2, d); }
 
 sep: T_NL | T_COMMENT;

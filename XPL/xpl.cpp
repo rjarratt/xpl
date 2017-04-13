@@ -33,6 +33,7 @@ FILE *binary;
 int error_in_pass;
 unsigned int segment;
 symbol_t b_symbol = { IR, NOT_REL, "B", 32 };
+symbol_t bn_symbol = { IR, NOT_REL, "BN", 4 };
 symbol_t d_symbol = { DESCRIPTOR };
 
 extern char *yytext;
@@ -75,7 +76,7 @@ static unsigned int get_current_descriptor_origin();
 
 t_uint64 scan_hex_digits(char *hex_digits)
 {
-    int i;
+    unsigned int i;
     int j;
     t_uint64 result = 0;
     unsigned int hex_digit;
@@ -918,7 +919,7 @@ t_uint64 process_datavec_end()
 
 void process_datavec_line_repeat(unsigned int n)
 {
-    int i;
+    unsigned int i;
     for (i = 0; i < n; i++)
     {
         emit_datavec_line();
