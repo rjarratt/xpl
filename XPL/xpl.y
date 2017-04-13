@@ -369,7 +369,8 @@ fn_2:
 
 condit:
   jump_spec T_NAME                   { operand_t operand; set_operand_label($2, $1, &operand); process_instruction(0, 0, &operand); }
-| T_IF cond T_COMMA jump_spec T_NAME { operand_t operand; set_operand_label($5, $4, &operand); process_instruction(0, $2, &operand); }
+| T_IF cond T_COMMA jump_spec T_NAME { operand_t operand; set_operand_label($5, $4, &operand); process_instruction(0, 32 + $2, &operand); }
+| T_BN b_fn T_IF cond                { operand_t operand; operand.operand_type = OPERAND_LITERAL; make_int_literal(0, $2, &operand.literal);;process_instruction(0, 40 + $4, &operand); }
 | T_BN b_fn operand                  { process_instruction(0, 48 + $2, &$3); }
 
 jump_spec:
@@ -378,14 +379,14 @@ jump_spec:
 | T_RJUMP                    { $$ = 0; }
 
 cond:
-  T_EQ                       { $$ = 32; }
-| T_NE                       { $$ = 33; }
-| T_GE                       { $$ = 34; }
-| T_LT                       { $$ = 35; }
-| T_LE                       { $$ = 36; }
-| T_GT                       { $$ = 37; }
-| T_OV                       { $$ = 38; }
-| T_BN                       { $$ = 39; }
+  T_EQ                       { $$ = 0; }
+| T_NE                       { $$ = 1; }
+| T_GE                       { $$ = 2; }
+| T_LT                       { $$ = 3; }
+| T_LE                       { $$ = 4; }
+| T_GT                       { $$ = 5; }
+| T_OV                       { $$ = 6; }
+| T_BN                       { $$ = 7; }
 
 b_fn:
   T_SLASH                    { $$ = 10; }
