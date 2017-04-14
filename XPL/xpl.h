@@ -185,7 +185,7 @@ extern symbol_t d_symbol;
 
 t_uint64 scan_hex_digits(char *hex_digits);
 void set_pass(int new_pass);
-void yyerror(char *msg);
+void yyerror(char *msg, ...);
 void start_segment(unsigned int segment_number);
 void end_segment(void);
 segment_t *get_segment(unsigned int segment_number);

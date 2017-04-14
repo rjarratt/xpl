@@ -25,6 +25,7 @@ in this Software without prior written authorization from Robert Jarratt.
 */
 
 #include <stdio.h>
+#include <stdarg.h>
 #include <string.h>
 #include <ctype.h>
 #include "xpl.h"
@@ -124,10 +125,15 @@ void set_pass(int new_pass)
     yylineno = 1;
 }
 
-void yyerror(char *msg)
+void yyerror(char *msg, ...)
 {
-    fprintf(stderr, "%d: %s at '%s'\n", yylineno, msg, yytext);
+	va_list ap;
+	va_start(ap, msg);
+    fprintf(stderr, "%d: ", yylineno);
+	vfprintf(stderr, msg, ap);
+	fprintf(stderr, " at '%s'\n", yytext);
     error_in_pass = 1;
+	va_end(ap);
 }
 
 void start_segment(unsigned int segment_number)
@@ -268,7 +274,7 @@ symbol_t *find_symbol(char *name)
 
     if (result == NULL && pass != PASS_GET_FORWARDS)
     {
-        yyerror("symbol not declared");
+        yyerror("symbol %s not declared", name);
     }
 
     return result;
@@ -282,7 +288,7 @@ void add_label(char *name)
     {
         if (find_label(name))
         {
-            yyerror("label already defined");
+            yyerror("label %s already defined", name);
         }
 
         entry = &label_table[numLabels++];
@@ -344,7 +350,7 @@ int set_operand_label(char *name, jump_type_t jump_type, operand_t *operand)
     {
         if (pass > PASS_GET_FORWARDS)
         {
-            yyerror("label not found");
+            yyerror("label %s not found", name);
         }
         else
         {
