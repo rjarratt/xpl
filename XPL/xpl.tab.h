@@ -143,8 +143,10 @@ extern int yydebug;
      T_XJUMP = 352,
      T_STKLINK = 353,
      T_SETLINK = 354,
-     T_DATAVEC = 355,
-     T_DATASTR = 356
+     T_CALL = 355,
+     T_ACALL = 356,
+     T_DATAVEC = 357,
+     T_DATASTR = 358
    };
 #endif
 
@@ -153,7 +155,7 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 172 "xpl.y"
+#line 174 "xpl.y"
 
     unsigned int f;
     t_uint64 unsignedval;
@@ -172,7 +174,7 @@ typedef union YYSTYPE
 
 
 /* Line 2058 of yacc.c  */
-#line 176 "xpl.tab.h"
+#line 178 "xpl.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

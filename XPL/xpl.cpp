@@ -1029,6 +1029,18 @@ void end_proc(char *name)
 	add_label(proc_end_label(name));
 }
 
+void stack_call_link(char *name)
+{
+	operand_t operand;
+	set_operand_label(name, JUMP_RELATIVE_LONG, &operand);
+	process_instruction(0, 15, &operand);
+}
+
+void stack_call_parameter(operand_t *operand)
+{
+	process_instruction(2, 2, operand);
+}
+
 static void emit_16_bit_word(unsigned int word)
 {
 	if (pass == PASS_CODE_GEN)

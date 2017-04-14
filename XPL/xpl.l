@@ -132,6 +132,8 @@ JUMP               { return T_JUMP; }
 XJUMP              { return T_XJUMP; }
 STKLINK            { return T_STKLINK; }
 SETLINK            { return T_SETLINK; }
+CALL               { return T_CALL; }
+ACALL              { return T_ACALL; }
 
 DATAVEC            { return T_DATAVEC; }
 DATASTR            { return T_DATASTR; }

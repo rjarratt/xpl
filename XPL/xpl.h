@@ -215,3 +215,5 @@ void emit_instruction(unsigned char cr, unsigned char f, unsigned char k, unsign
 void emit_extended_instruction(unsigned char cr, unsigned char f, unsigned char kp, unsigned char np);
 void start_proc(char *name);
 void end_proc(char *name);
+void stack_call_link(char *name);
+void stack_call_parameter(operand_t *operand);

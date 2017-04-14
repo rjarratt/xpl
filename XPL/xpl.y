@@ -121,6 +121,8 @@ in this Software without prior written authorization from Robert Jarratt.
 %token T_XJUMP
 %token T_STKLINK
 %token T_SETLINK
+%token T_CALL
+%token T_ACALL
 %token T_DATAVEC
 %token T_DATASTR
 
@@ -202,11 +204,8 @@ statement:
 | table sep
 | text sep
 | block sep
+| call sep
 | sep;
-
-block:
-  T_BEGIN T_NL program T_END
-| T_PROC T_NAME { start_proc($2); } T_NL program { end_proc($2); } T_END
 
 label: T_NAME T_COLON { add_label($1); }
 
@@ -444,6 +443,22 @@ lit_line: lit_items { process_datavec_line_end(); }
 lit_items: literal { process_datavec_literal(&$1); } T_COMMA lit_repeat | literal { process_datavec_literal(&$1); }
 lit_repeat: lit_items | T_L_SQ T_INTEGER T_R_SQ { process_datavec_line_repeat((unsigned int)$2);}
 text: T_DATASTR T_NAME T_CHARACTER_STRING { t_uint64 d = process_text($2, $3); add_symbol(DESCRIPTOR, NOT_REL, $2, d); }
+
+block:
+  T_BEGIN T_NL program T_END
+| T_PROC T_NAME { start_proc($2); } T_NL program { end_proc($2); } T_END
+
+call:
+  T_CALL T_NAME T_L_BR parameters T_R_BR   { operand_t operand; set_operand_label($2, JUMP_RELATIVE_LONG, &operand); process_instruction(0, 0, &operand)}
+| T_ACALL T_NAME T_L_BR parameters T_R_BR  { operand_t operand; set_operand_label($2, JUMP_ABSOLUTE, &operand); process_instruction(0, 4, &operand)}
+
+parameters:
+  T_NAME                        { stack_call_link($1); }
+| T_NAME { stack_call_link($1); } T_COMMA operand_list
+
+operand_list:
+  operand                       { stack_call_parameter(&$1); }
+| operand_list T_COMMA operand  { stack_call_parameter(&$3); }
 
 sep: T_NL | T_COMMENT;
 %%
