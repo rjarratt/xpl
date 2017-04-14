@@ -134,6 +134,14 @@ typedef enum
 	LITERAL_UNSIGNED_64_BIT = 6,
 } literal_type_t;
 
+typedef enum
+{
+	JUMP_RELATIVE_SHORT,
+	JUMP_RELATIVE_DEFAULT,
+	JUMP_RELATIVE_LONG,
+	JUMP_ABSOLUTE
+} jump_type_t;
+
 typedef struct LITERAL
 {
 	literal_type_t literal_type;
@@ -189,7 +197,9 @@ void add_symbol(var_type_t var_type, var_relative_to_t relativeTo, char *name, t
 symbol_t *find_symbol(char *name);
 void add_label(char *name);
 label_entry_t *find_label(char *name);
-int set_operand_label(char *name, int distance, operand_t *operand);
+void set_operand_label_context(jump_type_t jump_type);
+int set_operand_label(char *name, jump_type_t jump_type, operand_t *operand);
+void set_operand(char *name, operand_t *operand);
 literal_type_t get_literal_type(int sign, t_uint64 value);
 void make_int_literal(int sign, t_uint64 value, literal_t *literal);
 t_uint64 make_descriptor(descriptor_type_t type, descriptor_size_t size, unsigned char unscaled, unsigned char noboundcheck, unsigned int bound, unsigned int origin);

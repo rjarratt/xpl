@@ -153,12 +153,12 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 170 "xpl.y"
+#line 171 "xpl.y"
 
     unsigned int f;
     t_uint64 unsignedval;
     t_int64 signedval;
-	int distance;
+	jump_type_t jumptype;
     char * nameval;
 	char *stringval;
     var_type_t vartype;

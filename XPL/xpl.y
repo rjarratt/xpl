@@ -144,6 +144,7 @@ in this Software without prior written authorization from Robert Jarratt.
 %type <instruction> a_ord
 %type <f> sts
 %type <f> org
+%type <f> misc_org_ord
 %type <f> ms_ord
 %type <f> sf_ord
 %type <f> nb_ord
@@ -152,7 +153,7 @@ in this Software without prior written authorization from Robert Jarratt.
 %type <instruction> fn_1
 %type <instruction> fn_2
 %type <instruction> aod_ord
-%type <distance> jump_spec
+%type <jumptype> jump_spec
 %type <f> cond
 %type <f> b_fn
 
@@ -171,7 +172,7 @@ extern int yylineno;
     unsigned int f;
     t_uint64 unsignedval;
     t_int64 signedval;
-	int distance;
+	jump_type_t jumptype;
     char * nameval;
 	char *stringval;
     var_type_t vartype;
@@ -321,16 +322,19 @@ aod_ord:
 
 org:
   T_RETURN                   { emit_extended_instruction(0, 5, 2, 4); }
-| T_EXIT operand             { process_instruction(0, 1, &$2); }
-| T_JUMP operand             { process_instruction(0, 4, &$2); }
-| T_XJUMP operand            { process_instruction(0, 4, &$2); } /* TODO */
-| T_STKLINK operand          { process_instruction(0, 15, &$2); }
-| T_SETLINK simple_operand   { process_instruction(0, 19, &$2); }
+| misc_org_ord operand       { process_instruction(0, $1, &$2); }
 | ms_ord operand             { process_instruction(0, $1, &$2); }
 | sf_ord operand             { process_instruction(0, $1, &$2); }
 | nb_ord operand             { process_instruction(0, $1, &$2); }
 | xnb_ord operand            { process_instruction(0, $1, &$2); }
 | misc_ord operand           { process_instruction(0, $1, &$2); }
+
+misc_org_ord:
+  T_EXIT                     { $$ = 1; }
+| T_JUMP                     { set_operand_label_context(JUMP_ABSOLUTE); $$ = 4; }
+| T_XJUMP                    { set_operand_label_context(JUMP_ABSOLUTE); $$ = 4; }  /* TODO */
+| T_STKLINK                  { set_operand_label_context(JUMP_RELATIVE_LONG); $$ = 15; }
+| T_SETLINK                  { $$ = 19; }
 
 ms_ord: T_MS T_LOAD          { $$ = 16; }
 sf_ord:
@@ -392,9 +396,9 @@ condit:
 | T_BN b_fn operand                  { process_instruction(0, 48 + $2, &$3); }
 
 jump_spec:
-  T_PLUS T_RJUMP             { $$ = 1; }
-| T_MINUS T_RJUMP            { $$ = -1; }
-| T_RJUMP                    { $$ = 0; }
+  T_PLUS T_RJUMP             { $$ = JUMP_RELATIVE_LONG; }
+| T_MINUS T_RJUMP            { $$ = JUMP_RELATIVE_SHORT; }
+| T_RJUMP                    { $$ = JUMP_RELATIVE_DEFAULT; }
 
 cond:
   T_EQ                       { $$ = 0; }
@@ -418,7 +422,7 @@ operand:
 | T_NAME T_0_REL { $$.operand_type = OPERAND_VARIABLE_0_REL; $$.symbol = find_symbol($1); }
 
 simple_operand:
-  T_NAME                    { $$.operand_type = OPERAND_VARIABLE; $$.symbol = find_symbol($1); }
+  T_NAME                    { set_operand($1, &$$); }
 | T_B                       { $$.operand_type = OPERAND_VARIABLE; $$.symbol = &b_symbol; }
 | T_BN                      { $$.operand_type = OPERAND_VARIABLE; $$.symbol = &bn_symbol; }
 | literal                   { $$.operand_type = OPERAND_LITERAL; $$.literal = $1; }

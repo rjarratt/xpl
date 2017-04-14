@@ -59,6 +59,7 @@ static descriptor_size_t datavec_size = SIZE_0_BIT;
 static int datavec_bits;
 static int datavec_element_num;
 static unsigned int datavec_partial_element;
+static jump_type_t jump_type_context;
 
 static int is_extended_operand(unsigned int cr, unsigned int k);
 static void emit_16_bit_word(unsigned int word);
@@ -311,24 +312,33 @@ label_entry_t *find_label(char *name)
     return entry;
 }
 
-int set_operand_label(char *name, int distance, operand_t *operand)
+void set_operand_label_context(jump_type_t jump_type)
+{
+	jump_type_context = jump_type;
+}
+
+int set_operand_label(char *name, jump_type_t jump_type, operand_t *operand)
 {
     label_entry_t *entry = find_label(name);
 
     operand->operand_type = OPERAND_LITERAL;
 
-    if (distance == 0)
+    if (jump_type == JUMP_RELATIVE_DEFAULT)
     {
         operand->literal.literal_type = LITERAL_SIGNED_16_BIT;
     }
-    else if (distance < 0)
+    else if (jump_type == JUMP_RELATIVE_SHORT)
     {
         operand->literal.literal_type = LITERAL_SIGNED_6_BIT;
     }
-    else
-    {
-        operand->literal.literal_type = LITERAL_SIGNED_32_BIT;
-    }
+	else if (jump_type == JUMP_RELATIVE_LONG)
+	{
+		operand->literal.literal_type = LITERAL_SIGNED_32_BIT;
+	}
+	else
+	{
+		operand->literal.literal_type = LITERAL_UNSIGNED_32_BIT;
+	}
 
     if (entry == NULL)
     {
@@ -343,10 +353,31 @@ int set_operand_label(char *name, int distance, operand_t *operand)
     }
     else
     {
-        operand->literal.signed_val = (t_int64)entry->location - (t_int64)instructionNum;
-    }
+		if (jump_type != JUMP_ABSOLUTE)
+		{
+			operand->literal.signed_val = (t_int64)entry->location - (t_int64)instructionNum;
+		}
+		else
+		{
+			operand->literal.unsigned_val = (segment << 17) + (t_int64)entry->location;
+		}
+	}
 
     return 1;
+}
+
+void set_operand(char *name, operand_t *operand)
+{
+	label_entry_t *label = find_label(name);
+	if (label != NULL)
+	{
+		set_operand_label(name, jump_type_context, operand);
+	}
+	else
+	{
+		operand->operand_type = OPERAND_VARIABLE;
+		operand->symbol = find_symbol(name);
+	}
 }
 
 literal_type_t get_literal_type(int sign, t_uint64 value)
@@ -698,6 +729,8 @@ void process_instruction(unsigned int cr, unsigned int f, operand_t *operand)
 							kp = 0;
 							np = LITERAL_UNSIGNED_64_BIT;
 							n = operand->symbol->value;
+							operand->literal.literal_type = LITERAL_UNSIGNED_64_BIT;
+							operand->literal.unsigned_val = n;
 							break;
 						}
                         case IR:
