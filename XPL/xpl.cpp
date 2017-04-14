@@ -318,6 +318,14 @@ label_entry_t *find_label(char *name)
     return entry;
 }
 
+char *proc_end_label(char *name)
+{
+	static char label[80];
+	strcpy(label, "_");
+	strcat(label, name);
+	return label;
+}
+
 void set_operand_label_context(jump_type_t jump_type)
 {
 	jump_type_context = jump_type;
@@ -1006,6 +1014,19 @@ void emit_extended_instruction(unsigned char cr, unsigned char f, unsigned char 
     n = (kp & 0x7) << 3;
     n |= np & 0x7;
     emit_instruction(cr, f, 7, n);
+}
+
+void start_proc(char *name)
+{
+	operand_t operand;
+	set_operand_label(proc_end_label(name), JUMP_ABSOLUTE, &operand);
+	process_instruction(0, 4, &operand);
+	add_label(name);
+}
+
+void end_proc(char *name)
+{
+	add_label(proc_end_label(name));
 }
 
 static void emit_16_bit_word(unsigned int word)

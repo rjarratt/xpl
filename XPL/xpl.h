@@ -197,6 +197,7 @@ void add_symbol(var_type_t var_type, var_relative_to_t relativeTo, char *name, t
 symbol_t *find_symbol(char *name);
 void add_label(char *name);
 label_entry_t *find_label(char *name);
+char *proc_end_label(char *name);
 void set_operand_label_context(jump_type_t jump_type);
 int set_operand_label(char *name, jump_type_t jump_type, operand_t *operand);
 void set_operand(char *name, operand_t *operand);
@@ -212,3 +213,5 @@ t_uint64 process_datavec_end();
 void process_datavec_line_repeat(unsigned int n);
 void emit_instruction(unsigned char cr, unsigned char f, unsigned char k, unsigned char n);
 void emit_extended_instruction(unsigned char cr, unsigned char f, unsigned char kp, unsigned char np);
+void start_proc(char *name);
+void end_proc(char *name);

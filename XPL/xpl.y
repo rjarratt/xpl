@@ -159,6 +159,7 @@ in this Software without prior written authorization from Robert Jarratt.
 
 %{
 #include <stdio.h>
+#include <string.h>
 #include "xpl.h"
 
 extern int yylex();
@@ -205,7 +206,7 @@ statement:
 
 block:
   T_BEGIN T_NL program T_END
-| T_PROC T_NAME { add_label($2); } T_NL program T_END
+| T_PROC T_NAME { start_proc($2); } T_NL program { end_proc($2); } T_END
 
 label: T_NAME T_COLON { add_label($1); }
 
