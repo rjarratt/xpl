@@ -200,3 +200,5 @@ void process_datavec_literal(literal_t *literal);
 void process_datavec_line_end();
 t_uint64 process_datavec_end();
 void process_datavec_line_repeat(unsigned int n);
+void emit_instruction(unsigned char cr, unsigned char f, unsigned char k, unsigned char n);
+void emit_extended_instruction(unsigned char cr, unsigned char f, unsigned char kp, unsigned char np);

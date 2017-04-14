@@ -35,6 +35,7 @@ in this Software without prior written authorization from Robert Jarratt.
 %token <unsignedval> T_HEX_DIGITS
 %token T_SEGMENT
 %token T_ENDOFSEGMENT
+%token T_PROC
 %token T_BEGIN
 %token T_END
 %token T_COMMENT
@@ -114,6 +115,12 @@ in this Software without prior written authorization from Robert Jarratt.
 %token T_OV
 %token T_BN
 %token T_RJUMP
+%token T_RETURN
+%token T_EXIT
+%token T_JUMP
+%token T_XJUMP
+%token T_STKLINK
+%token T_SETLINK
 %token T_DATAVEC
 %token T_DATASTR
 
@@ -192,7 +199,12 @@ statement:
 | instruction sep
 | table sep
 | text sep
+| block sep
 | sep;
+
+block:
+  T_BEGIN T_NL program T_END
+| T_PROC T_NAME T_NL program T_END
 
 label: T_NAME T_COLON { add_label($1); }
 
@@ -308,7 +320,13 @@ aod_ord:
 | T_AOD T_COMP              { $$.cr = 6; $$.f = 12; }
 
 org:
-  ms_ord operand             { process_instruction(0, $1, &$2); }
+  T_RETURN                   { emit_extended_instruction(0, 5, 2, 4); }
+| T_EXIT operand             { process_instruction(0, 1, &$2); }
+| T_JUMP operand             { process_instruction(0, 4, &$2); }
+| T_XJUMP operand            { process_instruction(0, 4, &$2); } /* TODO */
+| T_STKLINK operand          { process_instruction(0, 15, &$2); }
+| T_SETLINK simple_operand   { process_instruction(0, 19, &$2); }
+| ms_ord operand             { process_instruction(0, $1, &$2); }
 | sf_ord operand             { process_instruction(0, $1, &$2); }
 | nb_ord operand             { process_instruction(0, $1, &$2); }
 | xnb_ord operand            { process_instruction(0, $1, &$2); }

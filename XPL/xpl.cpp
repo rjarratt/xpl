@@ -61,8 +61,6 @@ static int datavec_element_num;
 static unsigned int datavec_partial_element;
 
 static int is_extended_operand(unsigned int cr, unsigned int k);
-static void emit_instruction(unsigned char cr, unsigned char f, unsigned char k, unsigned char n);
-static void emit_extended_instruction(unsigned char cr, unsigned char f, unsigned char kp, unsigned char np);
 static void emit_16_bit_word(unsigned int word);
 static void emit_32_bit_word(unsigned int word);
 static void emit_64_bit_word(t_uint64 word);
@@ -942,7 +940,7 @@ static int is_extended_operand(unsigned int cr, unsigned int k)
     return (cr != 0 && k == 7) || (cr == 0 && k == 1);
 }
 
-static void emit_instruction(unsigned char cr, unsigned char f, unsigned char k, unsigned char n)
+void emit_instruction(unsigned char cr, unsigned char f, unsigned char k, unsigned char n)
 {
     unsigned int instruction = 0;
 
@@ -963,7 +961,7 @@ static void emit_instruction(unsigned char cr, unsigned char f, unsigned char k,
     emit_16_bit_word(instruction);
 }
 
-static void emit_extended_instruction(unsigned char cr, unsigned char f, unsigned char kp, unsigned char np)
+void emit_extended_instruction(unsigned char cr, unsigned char f, unsigned char kp, unsigned char np)
 {
     unsigned int n;
     n = (kp & 0x7) << 3;

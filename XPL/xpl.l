@@ -38,6 +38,7 @@ INTEGER [0-9]+
 %%
 \*SEGMENT          { return T_SEGMENT; }
 \*END\ OF\ SEGMENT { return T_ENDOFSEGMENT; }
+PROC               { return T_PROC; }
 BEGIN              { return T_BEGIN; }
 END                { return T_END; }
 
@@ -125,6 +126,12 @@ IF                 { return T_IF; }
 OV                 { return T_OV; }
 BN                 { return T_BN; }
 \-\>               { return T_RJUMP; }
+RETURN             { return T_RETURN; }
+EXIT               { return T_EXIT; }
+JUMP               { return T_JUMP; }
+XJUMP              { return T_XJUMP; }
+STKLINK            { return T_STKLINK; }
+SETLINK            { return T_SETLINK; }
 
 DATAVEC            { return T_DATAVEC; }
 DATASTR            { return T_DATASTR; }
