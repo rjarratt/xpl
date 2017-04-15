@@ -423,8 +423,10 @@ operand:
 
 simple_operand:
   T_NAME                    { set_operand($1, &$$); }
-| T_B                       { $$.operand_type = OPERAND_VARIABLE; $$.symbol = &b_symbol; }
-| T_BN                      { $$.operand_type = OPERAND_VARIABLE; $$.symbol = &bn_symbol; }
+| T_A                       { $$.operand_type = OPERAND_VARIABLE; $$.symbol = &a_ir_symbol; }
+| T_B                       { $$.operand_type = OPERAND_VARIABLE; $$.symbol = &b_ir_symbol; }
+| T_BN                      { $$.operand_type = OPERAND_VARIABLE; $$.symbol = &bn_ir_symbol; }
+| T_D                       { $$.operand_type = OPERAND_VARIABLE; $$.symbol = &d_ir_symbol; }
 | literal                   { $$.operand_type = OPERAND_LITERAL; $$.literal = $1; }
 
 literal:

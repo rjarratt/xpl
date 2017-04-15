@@ -33,8 +33,10 @@ in this Software without prior written authorization from Robert Jarratt.
 FILE *binary;
 int error_in_pass;
 unsigned int segment;
-symbol_t b_symbol = { IR, NOT_REL, "B", 32 };
-symbol_t bn_symbol = { IR, NOT_REL, "BN", 4 };
+symbol_t a_ir_symbol = { IR, NOT_REL, "A", 48 };
+symbol_t b_ir_symbol = { IR, NOT_REL, "B", 32 };
+symbol_t bn_ir_symbol = { IR, NOT_REL, "BN", 4 };
+symbol_t d_ir_symbol = { IR, NOT_REL, "D", 16 };
 symbol_t d_symbol = { DESCRIPTOR };
 
 extern char *yytext;

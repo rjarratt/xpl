@@ -179,8 +179,10 @@ typedef struct INSTRUCTION
 extern unsigned int segment;
 extern int error_in_pass;
 extern FILE *binary;
-extern symbol_t b_symbol;
-extern symbol_t bn_symbol;
+extern symbol_t a_ir_symbol;
+extern symbol_t b_ir_symbol;
+extern symbol_t bn_ir_symbol;
+extern symbol_t d_ir_symbol;
 extern symbol_t d_symbol;
 
 t_uint64 scan_hex_digits(char *hex_digits);
