@@ -15,9 +15,14 @@ V32/NB LENGTH:4
 VV/0 CONSOLE.INTERRUPT:%300
 VV/0 TELETYPE.DATA:%306
 VV/0 TELETYPE.CONTROL:%307
+V32/STK STACK.TOP:0
 
 NB =SF+ - 2 :: Go back 2 for each parameter
 SF + 1
+
+STACK B
+STACK D
+STACK A
 
 :: Extract length of string              
 A =' STRING
@@ -39,6 +44,11 @@ AU COMP 0                     :: Poll for interrupt
 IF =0, - -> POLL
 B CINC LENGTH
 IF <0, - -> NEXTCHAR
+
+A = STACK.TOP
+D = STACK.TOP
+B = STACK.TOP
+
 RETURN
 END
 
