@@ -1047,7 +1047,7 @@ static void emit_16_bit_word(unsigned int word)
 {
 	if (pass == PASS_CODE_GEN)
     {
-        printf("%05d.%05d:%04X\n", segment, instructionNum, word);
+        printf("(%d)%04X.%04X:%04X\n", yylineno, segment, instructionNum, word);
         write_16_bit_word(word);
     }
 
