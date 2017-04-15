@@ -4,7 +4,7 @@ BEGIN
 NB = %10
 SF = %10
 
-REPEAT: CALL PRINT.STRING(R2, HELLO.WORLD)
+REPEAT: CALL PRINT.STRING(REPEAT, HELLO.WORLD)
 
 STOP: - -> STOP
 
@@ -32,7 +32,10 @@ A => LENGTH
 
 B = 0
 D = STRING
-NEXTCHAR: A =' %F             :: Value that resets console interrupt bits
+NEXTCHAR:
+B COMP LENGTH
+IF >=0, - -> DONE
+A =' %F             :: Value that resets console interrupt bits
 A => CONSOLE.INTERRUPT        :: Set Console Interrupt in Console V-Store
 A =' %00                      :: TTY output mode
 A => TELETYPE.CONTROL         :: Set teletype control
@@ -42,9 +45,10 @@ A => TELETYPE.DATA            :: Set teletype data
 POLL: A =' CONSOLE.INTERRUPT  :: Read Console Interrupt
 AU COMP 0                     :: Poll for interrupt
 IF =0, - -> POLL
-B CINC LENGTH
-IF <0, - -> NEXTCHAR
+B + 1
+- -> NEXTCHAR
 
+DONE:
 A = STACK.TOP
 D = STACK.TOP
 B = STACK.TOP
