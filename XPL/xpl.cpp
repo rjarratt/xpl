@@ -69,12 +69,13 @@ static void emit_16_bit_word(unsigned int word);
 static void emit_32_bit_word(unsigned int word);
 static void emit_64_bit_word(t_uint64 word);
 static void emit_literal(literal_t *literal);
-static void emit_datavec_line();
+static void emit_datavec_line(void);
 static void emit_partial_literal(unsigned int value);
 static void write_16_bit_word(unsigned int word);
 static void set_datavec_size(t_uint64 size);
-static int get_datavec_partial_element_number();
-static unsigned int get_current_descriptor_origin();
+static int get_datavec_partial_element_number(void);
+static unsigned int get_current_descriptor_origin(void);
+static unsigned int get_current_address(void);
 
 t_uint64 scan_hex_digits(char *hex_digits)
 {
@@ -295,12 +296,12 @@ void add_label(char *name)
 
         entry = &label_table[numLabels++];
         entry->name = _strdup(name);
-        entry->location = instructionNum;
+        entry->location = get_current_address();
     }
     else
     {
         entry = find_label(name);
-        entry->location = instructionNum;
+        entry->location = get_current_address();
     }
 }
 
@@ -371,7 +372,7 @@ int set_operand_label(char *name, jump_type_t jump_type, operand_t *operand)
     {
 		if (jump_type != JUMP_ABSOLUTE)
 		{
-			operand->literal.signed_val = (t_int64)entry->location - (t_int64)instructionNum;
+			operand->literal.signed_val = (t_int64)entry->location - (t_int64)get_current_address();
 		}
 		else
 		{
@@ -796,6 +797,12 @@ static unsigned int get_current_descriptor_origin()
 {
     unsigned int result = (segment << 18) + instructionNum * 2; /* segment has to be shifted 2 to the left because this is a byte origin */
     return result;
+}
+
+static unsigned int get_current_address()
+{
+	unsigned int result = (segment << 16) + instructionNum;
+	return result;
 }
 
 t_uint64 process_text(char *name, char *string)
