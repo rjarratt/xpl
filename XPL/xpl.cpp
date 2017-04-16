@@ -75,7 +75,7 @@ static void write_16_bit_word(unsigned int word);
 static void set_datavec_size(t_uint64 size);
 static int get_datavec_partial_element_number(void);
 static unsigned int get_current_descriptor_origin(void);
-static unsigned int get_current_address(void);
+static unsigned int get_current_instruction_address(void);
 
 t_uint64 scan_hex_digits(char *hex_digits)
 {
@@ -296,12 +296,12 @@ void add_label(char *name)
 
         entry = &label_table[numLabels++];
         entry->name = _strdup(name);
-        entry->location = get_current_address();
+        entry->location = get_current_instruction_address();
     }
     else
     {
         entry = find_label(name);
-        entry->location = get_current_address();
+        entry->location = get_current_instruction_address();
     }
 }
 
@@ -372,11 +372,13 @@ int set_operand_label(char *name, jump_type_t jump_type, operand_t *operand)
     {
 		if (jump_type != JUMP_ABSOLUTE)
 		{
-			operand->literal.signed_val = (t_int64)entry->location - (t_int64)get_current_address();
+			operand->literal.signed_val = (t_int64)entry->location - (t_int64)get_current_instruction_address();
+//			if (pass == PASS_GET_FORWARDS + 1) printf("Label %s is at %08X (relative)\n", name, operand->literal.signed_val & 0xFFFFFFFF);
 		}
 		else
 		{
-			operand->literal.unsigned_val = (segment << 17) + (t_int64)entry->location;
+			operand->literal.unsigned_val = (t_int64)entry->location;
+//			if (pass == PASS_GET_FORWARDS + 1) printf("Label %s is at %08X (absolute)\n", name, operand->literal.unsigned_val & 0xFFFFFFFF);
 		}
 	}
 
@@ -799,9 +801,9 @@ static unsigned int get_current_descriptor_origin()
     return result;
 }
 
-static unsigned int get_current_address()
+static unsigned int get_current_instruction_address()
 {
-	unsigned int result = (segment << 16) + instructionNum;
+	unsigned int result = (segment << 17) + instructionNum; /* segment has to be shifted 1 to the left because this is 16-bit word address */
 	return result;
 }
 
