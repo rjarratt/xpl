@@ -140,6 +140,7 @@
   <ItemGroup>
     <None Include="console.xpl" />
     <None Include="Idle.xpl" />
+    <None Include="MU5ELR.xpl" />
     <None Include="ScalarProduct.xpl" />
     <None Include="StringProcessing.xpl" />
     <None Include="Tune.xpl" />
