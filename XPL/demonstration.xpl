@@ -73,12 +73,12 @@ B + V32NB1
 B * V32NB2
 B => V32NB3
 B - V32NB4
-B / V32NB6	:: should probably omit this as it's treated as a dummy order
+B / V32NB6	:: now a dummy order after RNI changed HASE model to reflect real machine
 B -/= V32NB8
 B V V32NB10
 B <= 3
 B & V32NB12
-B /: V32NB18	:: should probably omit this as it's treated as a dummy order
+B /: V32NB18	:: now a dummy order after RNI changed HASE model to reflect real machine
 B -: V32NB17
 B => V32NB11
 B = V32NB10
