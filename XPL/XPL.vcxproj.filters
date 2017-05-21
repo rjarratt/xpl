@@ -50,6 +50,7 @@
     <None Include="Idle.xpl" />
     <None Include="Tune.xpl" />
     <None Include="MU5ELR.xpl" />
+    <None Include="interrupt.xpl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="demonstration.xpl" />
