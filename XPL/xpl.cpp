@@ -33,6 +33,7 @@ in this Software without prior written authorization from Robert Jarratt.
 FILE *binary;
 int error_in_pass;
 unsigned int segment;
+symbol_t sn_ir_symbol = { IR, NOT_REL, "SN", 2 }; /* Not sure of correct syntax as there are two IR entries for SN, just picked one for now */
 symbol_t a_ir_symbol = { IR, NOT_REL, "A", 48 };
 symbol_t b_ir_symbol = { IR, NOT_REL, "B", 32 };
 symbol_t bn_ir_symbol = { IR, NOT_REL, "BN", 4 };
@@ -128,7 +129,7 @@ void set_pass(int new_pass)
     yylineno = 1;
 }
 
-void yyerror(char *msg, ...)
+void yyerror(const char *msg, ...)
 {
 	va_list ap;
 	va_start(ap, msg);

@@ -36,6 +36,8 @@ in this Software without prior written authorization from Robert Jarratt.
 #define PASS_CALC_SIZES 2
 #define PASS_CODE_GEN 3
 
+#define YYERROR_VERBOSE
+
 typedef signed __int64          t_int64;
 typedef unsigned __int64        t_uint64;
 
@@ -179,6 +181,7 @@ typedef struct INSTRUCTION
 extern unsigned int segment;
 extern int error_in_pass;
 extern FILE *binary;
+extern symbol_t sn_ir_symbol;
 extern symbol_t a_ir_symbol;
 extern symbol_t b_ir_symbol;
 extern symbol_t bn_ir_symbol;
@@ -187,7 +190,7 @@ extern symbol_t d_symbol;
 
 t_uint64 scan_hex_digits(char *hex_digits);
 void set_pass(int new_pass);
-void yyerror(char *msg, ...);
+void yyerror(const char *msg, ...);
 void start_segment(unsigned int segment_number);
 void end_segment(void);
 segment_t *get_segment(unsigned int segment_number);
