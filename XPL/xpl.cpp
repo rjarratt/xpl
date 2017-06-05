@@ -259,6 +259,7 @@ void add_symbol(var_type_t var_type, var_relative_to_t relativeTo, char *name, t
 	{
 		entry = find_symbol(name);
 		entry->value = value;
+		printf("%s at %016llX\n", name, value);
 	}
 }
 

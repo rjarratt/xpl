@@ -341,6 +341,7 @@ sf_ord:
   T_SF T_LOAD                { $$ = 24; }
 | T_SF T_PLUS                { $$ = 25; }
 | T_SF T_LOAD_NB_ADD         { $$ = 26; }
+| T_SF T_STORE               { $$ = 27; }
 
 nb_ord:
   T_NB T_LOAD                { $$ = 28; }
