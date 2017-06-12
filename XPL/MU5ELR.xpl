@@ -5,9 +5,24 @@ BEGIN
 :: The vectors below are the interrupt vectors, with space for the old link and values for the new link. The segment must be loaded as a virtually
 :: addressed segment with a CPR set up for it. The new link values set executive mode in MS and keep virtual addressing enabled, so a CPR must be
 :: coded for the interrupt handlers. The new link sets NB to zero, this assumes the interrupt procedures set SN to an executive data segment. The 
-:: CO register is set to JUMP instructions in the 32 words before the vectors. Each of the 8 JUMPs occupies 48 bits (16 for the instruction,
-:: 32 for the address), or 3 16-bit words, so 8 jumps is 24 16-bit words, which is 6 64-bit words, so padding for 10 more 64-bit words is required
-:: to place the vectors in the right place.
+:: CO register is set to JUMP instructions at the start of segment 8193.
+DATAVEC PAD(64)
+0,[16]
+END
+DATAVEC VECTORS(64)
+0, %001D000040020000
+0, %001D000040020003
+0, %001D000040020006
+0, %001D000040020009
+0, %001E00004002000C
+0, %001E00004002000F
+0, %001E000040020012
+0, %001E000040020015
+END
+END
+*END OF SEGMENT
+*SEGMENT 8193
+BEGIN
 JUMP HANDLE.INTERRUPT.0
 JUMP HANDLE.INTERRUPT.1
 JUMP HANDLE.INTERRUPT.2
@@ -16,23 +31,6 @@ JUMP HANDLE.INTERRUPT.4
 JUMP HANDLE.INTERRUPT.5
 JUMP HANDLE.INTERRUPT.6
 JUMP HANDLE.INTERRUPT.7
-DATAVEC PAD(64)
-0,[10]
-END
-DATAVEC VECTORS(64)
-0, %001D000040000000
-0, %001D000040000003
-0, %001D000040000006
-0, %001D000040000009
-0, %001E00004000000C
-0, %001E00004000000F
-0, %001E000040000012
-0, %001E000040000015
-END
-END
-*END OF SEGMENT
-*SEGMENT 8193
-BEGIN
 DATASTR INTERRUPT.0 "SYSTEM ERROR INTERRUPT|0D||0A|"
 DATASTR INTERRUPT.1 "CPR NON-EQUIVALENCE INTERRUPT|0D||0A|"
 DATASTR INTERRUPT.2 "EXCHANGE INTERRUPT|0D||0A|"
@@ -73,9 +71,6 @@ L0:
 A =' 0
 A => SYSTEM.ERROR.STATUS
 AOD = 0
-
-A = STACK.TOP
-SN = STACK.TOP
 
 A = STACK.TOP
 SN = SF.0
