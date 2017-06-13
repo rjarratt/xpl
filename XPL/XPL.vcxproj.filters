@@ -51,6 +51,9 @@
     <None Include="Tune.xpl" />
     <None Include="MU5ELR.xpl" />
     <None Include="interrupt.xpl" />
+    <None Include="Hoot.xpl">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="demonstration.xpl" />
