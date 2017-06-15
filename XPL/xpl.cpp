@@ -74,6 +74,7 @@ static void emit_datavec_line(void);
 static void emit_partial_literal(unsigned int value);
 static void write_16_bit_word(unsigned int word);
 static void set_datavec_size(t_uint64 size);
+static void align_datavec(void);
 static int get_datavec_partial_element_number(void);
 static unsigned int get_current_descriptor_origin(void);
 static unsigned int get_current_instruction_address(void);
@@ -927,9 +928,22 @@ static void set_datavec_size(t_uint64 size)
 	datavec_bits = (int)size;
 }
 
+static void align_datavec(void)
+{
+	if (datavec_size == SIZE_32_BIT || datavec_size == SIZE_64_BIT)
+	{
+		if ((instructionNum % 2) == 1)
+		{
+			printf("Adding alignment word\n");
+			emit_16_bit_word(0); // Align to 32-bit boundary
+		}
+	}
+}
+
 void process_datavec_start(t_uint64 size)
 {
     set_datavec_size(size);
+	align_datavec();
     datavec_origin = get_current_descriptor_origin();
     datavec_element_num = 0;
     datavec_partial_element = 0;
