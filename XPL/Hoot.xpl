@@ -22,7 +22,7 @@ A => NUMBER.OF.PERIODS
 A =' 0
 A => HOOT.VAL
 A => PERIOD.NUMBER
-A =' 5
+A =' 500
 A => CYCLES.IN.PERIOD
 
 CYCLELOOP:
@@ -57,7 +57,7 @@ A =' HOOT.VAL
 PERIODLOOP: :: Loop that outputs the square wave at the chosen frequency(period) for CYCLES.IN.PERIOD iterations
 B = CURRENT.CYCLE
 B + 1
-B COMP 5 ::CYCLES.IN.PERIOD
+B COMP CYCLES.IN.PERIOD
 IF >=0, -> CYCLELOOP
 B => CURRENT.CYCLE
 
