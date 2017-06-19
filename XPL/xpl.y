@@ -280,7 +280,8 @@ x_operator:
 | T_RDIV	                { $$ = 15; }
 
 a_ord:
-  T_A a_operator       { $$.cr = 7; $$.f = $2; }
+  T_A T_COMP           { $$.cr = 5; $$.f = 13; }
+| T_A a_operator       { $$.cr = 7; $$.f = $2; }
 | T_AU au_operator     { $$.cr = 5; $$.f = $2; }
 
 a_operator:
@@ -297,7 +298,6 @@ a_operator:
 | T_SHIFT	                { $$ = 10; }
 | T_AND		                { $$ = 11; }
 | T_RSUB	                { $$ = 12; }
-| T_COMP	                { $$ = 13; }
 | T_CONV	                { $$ = 14; }
 | T_RDIV	                { $$ = 15; }
 
