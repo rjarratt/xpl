@@ -632,9 +632,11 @@ void process_instruction(unsigned int cr, unsigned int f, operand_t *operand)
                             {
                                 case NB:
                                 {
-                                    k = 2;
-                                    n = operand->symbol->value;
-                                    break;
+									k = (cr == 0) ? 1 : 7;
+									kp = 2;
+									np = 2;
+									offset = (t_int64)operand->symbol->value;
+									break;
                                 }
                                 case STK:
                                 {
@@ -673,10 +675,12 @@ void process_instruction(unsigned int cr, unsigned int f, operand_t *operand)
                             {
                                 case NB:
                                 {
-                                    k = 3;
-                                    n = operand->symbol->value;
-                                    break;
-                                }
+									k = (cr == 0) ? 1 : 7;
+									kp = 3;
+									np = 2;
+									offset = operand->symbol->value;
+									break;
+								}
                                 case STK:
                                 {
                                     k = (cr == 0) ? 1 : 7;

@@ -321,13 +321,14 @@ aod_ord:
 | T_AOD T_COMP              { $$.cr = 6; $$.f = 12; }
 
 org:
-  T_RETURN                   { emit_extended_instruction(0, 5, 2, 4); }
-| misc_org_ord operand       { process_instruction(0, $1, &$2); }
-| ms_ord operand             { process_instruction(0, $1, &$2); }
-| sf_ord operand             { process_instruction(0, $1, &$2); }
-| nb_ord operand             { process_instruction(0, $1, &$2); }
-| xnb_ord operand            { process_instruction(0, $1, &$2); }
-| misc_ord operand           { process_instruction(0, $1, &$2); }
+  T_RETURN                      { emit_extended_instruction(0, 5, 2, 4); }
+| misc_org_ord operand          { process_instruction(0, $1, &$2); }
+| ms_ord operand                { process_instruction(0, $1, &$2); }
+| sf_ord operand                { process_instruction(0, $1, &$2); }
+| nb_ord operand                { process_instruction(0, $1, &$2); }
+| xnb_ord operand               { process_instruction(0, $1, &$2); }
+| T_XNB T_STORE simple_operand  { process_instruction(0, 23, &$3); }
+| misc_ord operand              { process_instruction(0, $1, &$2); }
 
 misc_org_ord:
   T_EXIT                     { $$ = 1; }
