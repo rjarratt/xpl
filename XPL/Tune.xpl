@@ -1,9 +1,22 @@
 *SEGMENT 1
 BEGIN
-:: Editor's Note. Listing identifies this as "TUNE" printed 12.19.50 16.05.78. Listing marked as "ES MUSIC PROGRAM FOR MU5", ES presumably standing for Eric Sunderland.
-::                The code below actions the pencilled comments on the original, so some lines have been added and removed.
-:: Editor's TODO note. Segment number above should be -1
-:: Editor's note. The original had a blank line between *SEGMENT and BEGIN, but the manual does not allow for it, so it has been removed because the correct grammar is unclear
+:: Editor's Notes *******************************************************************************************************
+:: Listing identifies this as "TUNE" printed 12.19.50 16.05.78. Listing marked as "ES MUSIC PROGRAM FOR MU5", ES presumably standing for Eric Sunderland.
+:: The code below actions the pencilled comments on the original, so some lines have been added and removed.
+:: The original had a blank line between *SEGMENT and BEGIN, but the manual does not allow for it, so it has been removed because the correct grammar is unclear
+:: TODO: The segment number above should be -1, the XPL compiler currently does not support -1 as a segment number.
+:: 
+:: Details on program operation
+::
+:: The program is driven by the engineer's handkeys. If switches 0 and 2 are set then a "snake" is displayed on the display lamps.
+:: If the 4 least significant handswitches are set the program terminates.
+::
+:: Variables
+:: N2 contains a copy of N14 and is used to XOR with N1
+:: N14 contains a number that depends on whether overlapping is enabled or not. If overlapping is enabled it is set to half the value it would otherwise be.
+:: 
+:: 
+:: **********************************************************************************************************************
 V64/0 XPLD:27
 V32/0 PW0:0, PW1:1, PO2:2
 V32/XNB XB0:0, XB1:1
@@ -13,6 +26,7 @@ VV/0  MODE:%30A,HOOT:%305
 
 -> BEG
 
+:: Editor's note, bound is 95.
 DATAVEC NOTE(4)
 15,[14]
 14,13,12,11,10,9,8,7,7,6,5,4,4,3,2,2,1,1
@@ -22,10 +36,11 @@ DATAVEC NOTE(4)
 END
 BEG:
 
+:: Editor's Note. This bit looks like some OS call setup. No idea what XPLD does. It looks like PW0 could be some kind of return value.
 SF = 164
 B = %200180000
 B => XPLD
-::XENTER CREATE.SEGMENT(0,6,%1F00,-1)
+::XENTER CREATE.SEGMENT(0,6,%1F00,-1) :: Editor's note: Creates segment 6 of size %1F00?
 ::XENTER UPDATE.TP(0,"T04SCR4",%40000D04")
 B = PW0
 B COMP 0
@@ -40,10 +55,12 @@ B => N14
 B = 0
 B => N10
 MS = %40402020
+:: Editor's Note. This section is checking the Console Mode switch for overlapped instruction mode
 B = MODE
 B & %10
 B COMP 0
 IF=0,->LL1
+:: Editor's Note. This code is reached if there is no overlapping of instructions
 B = -14
 B => N11
 B = %20002000
@@ -53,8 +70,8 @@ B = 9
 B & 15
 B COMP 9
 IF>0, -> L1
- D = %2100000000180074
-XNB = %60000
+ D = %2100000000180074 :: Editor's note Type 0 Vector, with 16-bit elements starting in segment 6 at 32-bit word offset 1D.
+XNB = %60000 :: Editor's note: Looks like it is accessing segment 6
 
 XNB + D[B]
 L4: BN = N10
@@ -82,6 +99,7 @@ B => N3
 B => N5
 B => N7
 B => N9
+:: Editor's Note: Load B with the value of XB0 and then do a loop to count up to the value in XB0 * 4
 B = XB0
 B & %FFFF
 B * 4

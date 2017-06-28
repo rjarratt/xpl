@@ -1,9 +1,22 @@
 *SEGMENT 1
 BEGIN
-:: Editor's Note: Listing identifies this as "IDLE" printed 11.58.52 12.05.78.  Listing marekd as "MU5 IDLE LOOP MUSIC PROGRAM ES", ES presumably standing for Eric Sunderland
-:: Editor's TODO note. Segment number above should be -1
-:: Editor's note. The original had a blank line between *SEGMENT and BEGIN, but the manual does not allow for it, so it has been removed because the correct grammar is unclear
-VV/0 EHK:%30B,INSC:%103
+:: Editor's Notes *******************************************************************************************************
+:: Listing identifies this as "IDLE" printed 11.58.52 12.05.78.  Listing marekd as "MU5 IDLE LOOP MUSIC PROGRAM ES", ES presumably standing for Eric Sunderland.
+:: The original had a blank line between *SEGMENT and BEGIN, but the manual does not allow for it, so it has been removed because the correct grammar is unclear
+:: TODO: The segment number above should be -1, the XPL compiler currently does not support -1 as a segment number.
+:: 
+:: Details on program operation
+::
+:: The program is driven by the engineer's handkeys. If switches 0 and 2 are set then a "snake" is displayed on the display lamps.
+:: If the 4 least significant handswitches are set the program terminates.
+::
+:: Variables
+:: N14 contains the engineer's handswitches. Seems to duplicate N20
+:: N15 is the outer loop counter. It counts down to -1 and is then turned into a positive number by masking the sign bit.
+:: N20 contains the engineer's handswitches. Seems to duplicate N14
+:: 
+:: **********************************************************************************************************************
+VV/0 EHK:%30B,INSC:%103 :: Editor's note. Engineer's Handkeys and Instruction Counter.
 
 V64/0 XPLD:27
 V32/0 PW0:0, PW1:1, PO2:2
