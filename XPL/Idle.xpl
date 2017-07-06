@@ -1,9 +1,10 @@
-*SEGMENT 1
+*SEGMENT 6
 BEGIN
 :: Editor's Notes *******************************************************************************************************
 :: Listing identifies this as "IDLE" printed 11.58.52 12.05.78.  Listing marekd as "MU5 IDLE LOOP MUSIC PROGRAM ES", ES presumably standing for Eric Sunderland.
 :: The original had a blank line between *SEGMENT and BEGIN, but the manual does not allow for it, so it has been removed because the correct grammar is unclear
-:: TODO: The segment number above should be -1, the XPL compiler currently does not support -1 as a segment number.
+:: TODO: The segment number above should be -1, the XPL compiler currently does not support -1 as a segment number. The program looks like it sets XPLD to
+:: indicate that it is to execute in segment 6, so the segment number is set to 6.
 :: 
 :: Details on program operation
 ::
@@ -11,6 +12,7 @@ BEGIN
 :: If the 4 least significant handswitches are set the program terminates.
 ::
 :: Variables
+:: XPLD From the MUSS Basic Library Manual (p2.5), this seems to be used at some point to determine the segment number in which code is to be executed.
 :: N14 contains the engineer's handswitches. Seems to duplicate N20
 :: N15 is the outer loop counter. It counts down to -1 and is then turned into a positive number by masking the sign bit.
 :: N20 contains the engineer's handswitches. Seems to duplicate N14
@@ -37,7 +39,7 @@ BEG:
 SF = 164
 B = %200180000
 B => XPLD
-::XENTER CREATE.SEGMENT(0,6,%1F00,-1)
+::XENTER CREATE.SEGMENT(0,6,%1F00,-1) :: Editor's note: Creates segment 6 of size %1F00 words, with default page size.
 ::XENTER UPDATE.TP(0,"T04SCR4",%40000D04")
 B = PW0
 B COMP 0
@@ -190,7 +192,7 @@ MOD 1
 B = %0256
 B => D[0]
 
-::XENTER CA(0,6,%1D)
+::XENTER CA(0,6,%1D) :: Sets Execute and Read access on segment 6
 
 B = N2
 B & 15
@@ -201,7 +203,7 @@ X = N2
 X <= -4
 X & 15
 AOD = %F80
-::XENTER CA(0,6,%1E)
+::XENTER CA(0,6,%1E) :: Sets Read and Write access on segment 6
 NB + -18
 -> CONT
 

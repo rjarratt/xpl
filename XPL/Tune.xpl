@@ -1,10 +1,11 @@
-*SEGMENT 1
+*SEGMENT 6
 BEGIN
 :: Editor's Notes *******************************************************************************************************
 :: Listing identifies this as "TUNE" printed 12.19.50 16.05.78. Listing marked as "ES MUSIC PROGRAM FOR MU5", ES presumably standing for Eric Sunderland.
 :: The code below actions the pencilled comments on the original, so some lines have been added and removed.
 :: The original had a blank line between *SEGMENT and BEGIN, but the manual does not allow for it, so it has been removed because the correct grammar is unclear
-:: TODO: The segment number above should be -1, the XPL compiler currently does not support -1 as a segment number.
+:: TODO: The segment number above should be -1, the XPL compiler currently does not support -1 as a segment number. The program looks like it sets XPLD to
+:: indicate that it is to execute in segment 6, so the segment number is set to 6.
 :: 
 :: Details on program operation
 ::
@@ -12,6 +13,7 @@ BEGIN
 :: If the 4 least significant handswitches are set the program terminates.
 ::
 :: Variables
+:: XPLD From the MUSS Basic Library Manual (p2.5), this seems to be used at some point to determine the segment number in which code is to be executed.
 :: N2 contains a copy of N14 and is used to XOR with N1
 :: N14 contains a number that depends on whether overlapping is enabled or not. If overlapping is enabled it is set to half the value it would otherwise be.
 :: 
@@ -40,7 +42,7 @@ BEG:
 SF = 164
 B = %200180000
 B => XPLD
-::XENTER CREATE.SEGMENT(0,6,%1F00,-1) :: Editor's note: Creates segment 6 of size %1F00?
+::XENTER CREATE.SEGMENT(0,6,%1F00,-1) :: Editor's note: Creates segment 6 of size %1F00 words, with default page size.
 ::XENTER UPDATE.TP(0,"T04SCR4",%40000D04")
 B = PW0
 B COMP 0
