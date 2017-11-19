@@ -39,6 +39,7 @@ in this Software without prior written authorization from Robert Jarratt.
 %token T_BEGIN
 %token T_END
 %token T_COMMENT
+%token T_LINE
 %token T_V32
 %token T_V64
 %token T_VV
@@ -201,6 +202,7 @@ statement:
 | label sep
 | declarative sep
 | instruction sep
+| special_directive_statement sep
 | table sep
 | text sep
 | block sep
@@ -441,6 +443,9 @@ decimal:
 | T_INTEGER                 { make_int_literal(0, $1, &$$); }
 
 sign: T_PLUS { $$ = 1; } | T_MINUS { $$ = -1; } /* TODO: can't express largest negative number */
+
+special_directive_statement: line_directive
+line_directive: T_LINE T_INTEGER { process_line_directive($2); }
 
 table: T_DATAVEC T_NAME T_L_BR T_INTEGER T_R_BR T_NL { process_datavec_start($4); } lit_list T_END { t_uint64 d = process_datavec_end(); add_symbol(DESCRIPTOR, NOT_REL, $2, d);}
 lit_list: lit_line T_NL | lit_line T_NL lit_list
