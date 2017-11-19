@@ -5,17 +5,27 @@ BEGIN
 :: The original had a blank line between *SEGMENT and BEGIN, but the manual does not allow for it, so it has been removed because the correct grammar is unclear
 :: TODO: The segment number above should be -1, the XPL compiler currently does not support -1 as a segment number. The program looks like it sets XPLD to
 :: indicate that it is to execute in segment 6, so the segment number is set to 6.
+::
+:: To make this program work some changes have had to be made. It is possible that the program does not work as originally coded
+:: because it is not running under MUSS. The particular problems seems to be to do with how XNB is set up to point to some variables
+:: related to the number of iterations required for the delay loop(s).
 :: 
 :: Details on program operation
 ::
 :: The program is driven by the engineer's handkeys. If switches 0 and 2 are set then a "snake" is displayed on the display lamps.
 :: If the 4 least significant handswitches are set the program terminates.
+:: If the 4 least significant handswitches are set to any other number greater than 9 then the program loops waiting to start.
+::
+:: The value of the least significant 4 handswitches determines which out of 10 different XNB blocks will be used for the XB0 and XB1
+:: variables. A descriptor stores the XNB offsets for each of the blocks.
 ::
 :: Variables
 :: XPLD From the MUSS Basic Library Manual (p2.5), this seems to be used at some point to determine the segment number in which code is to be executed.
 :: N14 contains the engineer's handswitches. Seems to duplicate N20
 :: N15 is the outer loop counter. It counts down to -1 and is then turned into a positive number by masking the sign bit.
 :: N20 contains the engineer's handswitches. Seems to duplicate N14
+:: XB0 used to load N10 and to control a delay loop at L2. It is only ever loaded, never stored, there are multiple "blocks" of XB1 selected by the handswitches.
+:: XB1 used to select the initial note. It is only ever loaded, never stored, there are multiple "blocks" of XB1 selected by the handswitches.
 :: 
 :: **********************************************************************************************************************
 VV/0 EHK:%30B,INSC:%103 :: Editor's note. Engineer's Handkeys and Instruction Counter.
@@ -34,6 +44,20 @@ DATAVEC NOTE(4)
 9,9,8,8,8,7,7,7,6,6,6,5,5,5,5,4,4,4,3,3,3,3,2,2,2,1,1,1,1
 0,[18]
 END
+:: Editor's note. The offsets vector is not original and has been added to make the program work without MUSS
+:: It provides XNB offsets to get to the block of variables XBVALS (also added) at the end of the program at an absolute location.
+DATAVEC OFFSETS(16)
+%200
+%202
+%204
+%206
+%208
+%20A
+%20C
+%20E
+%210
+%212
+END
 BEG:
 
 SF = 164
@@ -46,6 +70,7 @@ B COMP 0
 IF <0, -> FIN
 A =' %FF000000FF
 A => XPLD
+:: L1 is a loop that polls the Engineer's Handswitches. In the least significant 4 bits: 15=terminate, >9 poll waiting to star
 L1: NB = 164
 SF = 200
 :: XENTER EE(0)
@@ -62,9 +87,15 @@ B COMP 15
 IF =0, ->FIN
 B COMP 9
 IF>0, -> L1
+:: The descriptor in D below is supposed to store the XNB offset (from %60000) for one of 10 different blocks selected by the handswitches.
+:: The blocks each contain the values for XB0 and XB1 for the selected block. The original code hard codes the value of D as
+:: %2100000000180074, but this seems to point into the middle of the code and not correspond to any particular vector. Perhaps the fact
+:: that the line was indented in the original listing means that it was an uncertain value, or possibly incomplete code. There is no
+:: vector in the listing that corresponds to any kind of XNB offsets, and I wonder if this is something that MUSS provided.
  D = %2100000000180074
 XNB = %60000
-XNB + D[B]
+::XNB + D[B]
+XNB + OFFSETS[B]
 L4: BN = N10
 IF BN, -> L10
 B = 0
@@ -131,6 +162,7 @@ B => N1
 B = %80008000
 B => N2
 
+:: The main loop
 L3: B  = N7
 B + N6
 B => N7
@@ -164,7 +196,7 @@ XNB => N9
 ::XENTER EE(0)
 B = 0
 B => INSC
-MS = %20
+MS = %20 :: Editor's note, inhibit instruction counter.
 B = EHK
 B => N20
 
@@ -227,5 +259,10 @@ B => N0
 IF /=0, -> L3
 -> L4
 FIN: :: XENTER STOP(0,0)
+:: Editor's note. The following code is not original
+*LINE 512
+DATAVEC XBVALS(32)
+32767,0,[10]
+END
 END
 *END OF SEGMENT
