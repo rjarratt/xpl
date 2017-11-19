@@ -1047,6 +1047,14 @@ void emit_extended_instruction(unsigned char cr, unsigned char f, unsigned char 
     emit_instruction(cr, f, 7, n);
 }
 
+void process_line_directive(t_uint64 line)
+{
+    while (instructionNum < line)
+    {
+        emit_16_bit_word(0);
+    }
+}
+
 void start_proc(char *name)
 {
 	operand_t operand;

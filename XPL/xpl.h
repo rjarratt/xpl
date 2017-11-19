@@ -218,6 +218,7 @@ t_uint64 process_datavec_end();
 void process_datavec_line_repeat(unsigned int n);
 void emit_instruction(unsigned char cr, unsigned char f, unsigned char k, unsigned char n);
 void emit_extended_instruction(unsigned char cr, unsigned char f, unsigned char kp, unsigned char np);
+void process_line_directive(t_uint64 line);
 void start_proc(char *name);
 void end_proc(char *name);
 void stack_call_link(char *name);

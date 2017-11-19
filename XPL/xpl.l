@@ -41,6 +41,7 @@ INTEGER [0-9]+
 PROC               { return T_PROC; }
 BEGIN              { return T_BEGIN; }
 END                { return T_END; }
+\*LINE             { return T_LINE; }
 
 ,                  { return T_COMMA; }
 :                  { return T_COLON; }
